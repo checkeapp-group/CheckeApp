@@ -23,6 +23,7 @@
     "db:down": "turbo -F server db:down"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "drizzle-kit": "^0.31.4",
     "react-intl": "^7.1.11"
   },
