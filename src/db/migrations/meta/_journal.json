@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1756713688810,
+      "tag": "0000_milky_carlie_cooper",
+      "breakpoints": true
+    }
+  ]
+}
