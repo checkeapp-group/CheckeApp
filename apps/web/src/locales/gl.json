@@ -1,0 +1,19 @@
+{
+  "common.loading": "Cargando...",
+  "common.error": "Erro",
+  "common.success": "Éxito",
+  "common.cancel": "Cancelar",
+  "common.confirm": "Confirmar",
+  "common.save": "Gardar",
+  "common.delete": "Eliminar",
+  "common.edit": "Editar",
+  
+  "textInput.label": "Mensaxe",
+  "textInput.placeholder": "Escribe a túa mensaxe aquí...",
+  "textInput.submit": "Enviar",
+  "textInput.clear": "Limpar",
+  "textInput.minError": "Faltan {count} caracteres",
+  "textInput.maxError": "{count} caracteres de máis",
+  "textInput.valid": "Listo para enviar",
+  "textInput.minChars": "Mínimo {min} caracteres"
+}

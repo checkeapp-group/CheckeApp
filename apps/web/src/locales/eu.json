@@ -1,0 +1,19 @@
+{
+  "common.loading": "Kargatzen...",
+  "common.error": "Errorea",
+  "common.success": "Arrakasta",
+  "common.cancel": "Utzi",
+  "common.confirm": "Baieztatu",
+  "common.save": "Gorde",
+  "common.delete": "Ezabatu",
+  "common.edit": "Editatu",
+  
+  "textInput.label": "Mezua",
+  "textInput.placeholder": "Idatzi zure mezua hemen...",
+  "textInput.submit": "Bidali",
+  "textInput.clear": "Garbitu",
+  "textInput.minError": "{count} karaktere falta dira",
+  "textInput.maxError": "{count} karaktere gehiegi",
+  "textInput.valid": "Bidaltzeko prest",
+  "textInput.minChars": "Gutxienez {min} karaktere"
+}
