@@ -121,7 +121,7 @@ const TextInputForm = () => {
               onClick={handleSubmit}
               type="button"
             >
-              Enviar
+              {t('textInput.submit')}
             </button>
           </div>
         </div>
