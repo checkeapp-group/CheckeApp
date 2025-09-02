@@ -23,9 +23,11 @@
     "db:down": "turbo -F server db:down"
   },
   "dependencies": {
+    "@formkit/auto-animate": "github:formkit/auto-animate",
     "bcrypt": "^6.0.0",
     "drizzle-kit": "^0.31.4",
-    "react-intl": "^7.1.11"
+    "react-intl": "^7.1.11",
+    "react-textarea-autosize": "^8.5.9"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
