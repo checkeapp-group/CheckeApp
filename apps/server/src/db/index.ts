@@ -10,5 +10,8 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME ?? 'factchecker_db',
 });
 
+export { createVerificationRecord } from '@/db/services/verifications/verificationService';
+export { updateVerificationStatus } from '@/db/services/verifications/verificationService';
+
 // Cliente Drizzle
 export const db = drizzle(pool);
