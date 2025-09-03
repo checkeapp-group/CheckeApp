@@ -27,7 +27,8 @@
     "bcrypt": "^6.0.0",
     "drizzle-kit": "^0.31.4",
     "react-intl": "^7.1.11",
-    "react-textarea-autosize": "^8.5.9"
+    "react-textarea-autosize": "^8.5.9",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
