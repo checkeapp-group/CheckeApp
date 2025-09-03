@@ -1,4 +1,6 @@
 {
+  "auth.checking" : "Saio-hasiera egiaztatzen...",
+  "auth.loginRequired" : "Jarraitzeko saioa hasi behar duzu",
   "common.loading": "Kargatzen...",
   "common.error": "Errorea",
   "common.success": "Arrakasta",

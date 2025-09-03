@@ -1,4 +1,6 @@
 {
+  "auth.checking" : "Comprobando inicio de sesión...",
+  "auth.loginRequired" : "Necesitas iniciar sesión para continuar",
   "common.loading": "Cargando...",
   "common.error": "Erro",
   "common.success": "Éxito",
