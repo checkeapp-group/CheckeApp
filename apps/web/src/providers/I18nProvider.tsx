@@ -1,32 +1,46 @@
+'use client';
+
+import { useState, useEffect, type ReactNode, createContext, useContext } from 'react';
 import { IntlProvider } from 'react-intl';
-import { z } from 'zod';
-import ca from '@/locales/ca.json' with { type: 'json' };
 import es from '@/locales/es.json' with { type: 'json' };
 import eu from '@/locales/eu.json' with { type: 'json' };
+import ca from '@/locales/ca.json' with { type: 'json' };
 import gl from '@/locales/gl.json' with { type: 'json' };
 
-const translationSchema = z.record(z.string(), z.string());
+export const AVAILABLE_LOCALES = ['es', 'eu', 'ca', 'gl'] as const;
+export type Locale = (typeof AVAILABLE_LOCALES)[number];
 
-const createMessages = () => {
-  return {
-    es: translationSchema.parse(es),
-    eu: translationSchema.parse(eu),
-    ca: translationSchema.parse(ca),
-    gl: translationSchema.parse(gl),
-  };
-};
+const messagesMap = { es, eu, ca, gl };
 
-const messages = createMessages();
+const I18nContext = createContext<{
+  locale: Locale;
+  setLocale: (lng: Locale) => void;
+}>({
+  locale: 'es',
+  setLocale: () => {},
+});
 
-type Props = {
-  locale: 'es' | 'eu' | 'ca' | 'gl';
-  children: React.ReactNode;
-};
+export const useI18nContext = () => useContext(I18nContext);
 
-export default function I18nProvider({ locale, children }: Props) {
+export const I18nProvider = ({ children }: { children: ReactNode }) => {
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('locale') as Locale;
+      if (saved && AVAILABLE_LOCALES.includes(saved)) {
+        return saved;
+      }
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('locale', locale);
+  }, [locale]);
+
   return (
-    <IntlProvider locale={locale} messages={messages[locale]}>
-      {children}
-    </IntlProvider>
+    <I18nContext.Provider value={{ locale, setLocale }}>
+      <IntlProvider locale={locale} messages={messagesMap[locale]}>
+        {children}
+      </IntlProvider>
+    </I18nContext.Provider>
   );
-}
+};

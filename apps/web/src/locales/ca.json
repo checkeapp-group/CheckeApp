@@ -15,5 +15,21 @@
   "textInput.minError": "Falten {count} caràcters",
   "textInput.maxError": "{count} caràcters de més",
   "textInput.valid": "Llest per enviar",
-  "textInput.minChars": "Mínim {min} caràcters"
+  "textInput.minChars": "Mínim {min} caràcters",
+
+  "app.title": "FactChecker",
+  "app.tagline": "Verifica amb confiança",
+  "nav.verify": "Verificar",
+  "nav.about": "Sobre nosaltres",
+  "nav.help": "Ajuda",
+
+  "footer.copyright": "© {year} FactChecker. Tots els drets reservats.",
+  "languageSelector.ariaLabel": "Selector d'idioma",
+  "languageSelector.currentLanguageInstructions": "Idioma actual: {language}. Prem Enter o Espai per canviar l'idioma",
+  "languageSelector.noSelection": "No seleccionat",
+  "languageSelector.placeholder": "Selecciona idioma...",
+  "languageSelector.placeholderShort": "Idioma...",
+  "languageSelector.optionsAriaLabel": "Opcions d'idioma disponibles",
+  "languageSelector.flagAlt": "Bandera de {language}",
+  "common.selectOption": "Selecciona una opció"
 }

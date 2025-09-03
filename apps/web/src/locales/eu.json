@@ -15,5 +15,21 @@
   "textInput.minError": "{count} karaktere falta dira",
   "textInput.maxError": "{count} karaktere gehiegi",
   "textInput.valid": "Bidaltzeko prest",
-  "textInput.minChars": "Gutxienez {min} karaktere"
+  "textInput.minChars": "Gutxienez {min} karaktere",
+
+  "app.title": "FactChecker",
+  "app.tagline": "Egiaztatu konfiantzaz",
+  "nav.verify": "Egiaztatu",
+  "nav.about": "Honi buruz",
+  "nav.help": "Laguntza",
+
+  "footer.copyright": "© {year} FactChecker. Eskubide guztiak gordeak.",
+  "languageSelector.ariaLabel": "Hizkuntza-hautatzailea",
+  "languageSelector.currentLanguageInstructions": "Uneko hizkuntza: {language}. Sakatu Enter edo Space hizkuntza aldatzeko",
+  "languageSelector.noSelection": "Ez hautatuta",
+  "languageSelector.placeholder": "Hautatu hizkuntza...",
+  "languageSelector.placeholderShort": "Hizkuntza...",
+  "languageSelector.optionsAriaLabel": "Hizkuntza-aukerak eskuragarri",
+  "languageSelector.flagAlt": "{language} bandera",
+  "common.selectOption": "Hautatu aukera bat"
 }

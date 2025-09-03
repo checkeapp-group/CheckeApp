@@ -15,5 +15,21 @@
   "textInput.minError": "Faltan {count} caracteres",
   "textInput.maxError": "{count} caracteres de máis",
   "textInput.valid": "Listo para enviar",
-  "textInput.minChars": "Mínimo {min} caracteres"
+  "textInput.minChars": "Mínimo {min} caracteres",
+
+  "app.title": "FactChecker",
+  "app.tagline": "Verifica con confianza",
+  "nav.verify": "Verificar",
+  "nav.about": "Sobre nós",
+  "nav.help": "Axuda",
+
+  "footer.copyright": "© {year} FactChecker. Todos os dereitos reservados.",
+  "languageSelector.ariaLabel": "Selector de idioma",
+  "languageSelector.currentLanguageInstructions": "Idioma actual: {language}. Preme Intro ou Espazo para cambiar o idioma",
+  "languageSelector.noSelection": "Non seleccionado",
+  "languageSelector.placeholder": "Selecciona idioma...",
+  "languageSelector.placeholderShort": "Idioma...",
+  "languageSelector.optionsAriaLabel": "Opcións de idioma dispoñibles",
+  "languageSelector.flagAlt": "Bandeira de {language}",
+  "common.selectOption": "Selecciona unha opción"
 }
