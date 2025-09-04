@@ -1,7 +1,7 @@
-import RootLayout from '@/components/RootLayout';
 import '@/../index.css';
-import { I18nProvider } from '@/providers/I18nProvider';
 
+import RootLayout from '@/components/Layout/RootLayout';
+import { I18nProvider } from '@/providers/I18nProvider';
 
 type RootLayoutProps = {
   children: React.ReactNode;

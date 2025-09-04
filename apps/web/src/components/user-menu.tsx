@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +6,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { authClient } from '@/lib/auth-client';
+
 import { Button } from './ui/button';
+import Link from 'next/link';
 import { Skeleton } from './ui/skeleton';
+import { authClient } from '@/lib/auth-client';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
 
+  if (!session?.user) {
+    return null;
+  }
+  
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push('/login');
+          toast.success('You have been logged out successfully.');
+        },
+      },
+    });
+  };
+  
   if (isPending) {
     return <Skeleton className="h-9 w-24" />;
   }
@@ -40,15 +57,7 @@ export default function UserMenu() {
         <DropdownMenuItem asChild>
           <Button
             className="w-full"
-            onClick={() => {
-              authClient.signOut({
-                fetchOptions: {
-                  onSuccess: () => {
-                    router.push('/');
-                  },
-                },
-              });
-            }}
+            onClick={handleLogout}
             variant="destructive"
           >
             Sign Out
