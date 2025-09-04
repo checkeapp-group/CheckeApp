@@ -1,7 +1,9 @@
 'use client';
 
 import * as Select from '@radix-ui/react-select';
+
 import { Check, ChevronDown } from 'lucide-react';
+
 import { useI18n } from '@/hooks/use-i18n';
 
 const languages = [
@@ -44,11 +46,11 @@ export function LanguageSelector() {
     <Select.Root aria-label="Selector de idioma" onValueChange={setLocale} value={locale}>
       <Select.Trigger
         aria-label={`Idioma actual: ${currentLanguage?.label || 'No seleccionado'}. Presiona Enter o Espacio para cambiar idioma`}
-        className="inline-flex w-full min-w-0 max-w-[200px] items-center justify-between rounded-md border px-3 py-2 text-xs shadow-sm transition-all duration-200 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 data-[state=open]:ring-2 data-[state=open]:ring-blue-500 sm:w-[160px] sm:text-sm md:w-[180px] lg:w-[200px]"
+        className="inline-flex min-h-[44px] w-full min-w-0 max-w-[200px] items-center justify-between rounded-md border-2 border-gray-300 bg-white px-3 py-3 font-medium text-gray-900 text-sm shadow-sm transition-all duration-200 ease-in-out hover:border-gray-400 hover:bg-gray-50 focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700 focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2 data-[state=open]:border-teal-700 data-[state=open]:ring-2 data-[state=open]:ring-teal-700 sm:w-[160px] md:w-[180px] lg:w-[200px]"
       >
         <Select.Value
           placeholder={
-            <span className="truncate text-gray-500">
+            <span className="truncate font-medium text-gray-700">
               <span className="hidden sm:inline">Selecciona idioma...</span>
               <span className="sm:hidden">Idioma...</span>
             </span>
@@ -60,7 +62,7 @@ export function LanguageSelector() {
                 {currentLanguage.flag}
               </span>
               <span className="hidden truncate sm:inline">{currentLanguage.label}</span>
-              <span className="truncate font-medium text-xs sm:hidden">
+              <span className="truncate font-bold text-gray-900 text-sm sm:hidden">
                 {currentLanguage.shortLabel}
               </span>
             </span>
@@ -75,33 +77,33 @@ export function LanguageSelector() {
         <Select.Content
           aria-label="Opciones de idioma disponibles"
           avoidCollisions={true}
-          className="z-50 min-w-[140px] max-w-[90vw] rounded-md border bg-white shadow-lg will-change-[opacity,transform] sm:min-w-[160px] sm:max-w-none md:min-w-[200px]"
+          className="z-50 min-w-[160px] max-w-[90vw] rounded-md border-2 border-gray-300 bg-white shadow-lg will-change-[opacity,transform] sm:min-w-[180px] sm:max-w-none md:min-w-[200px]"
+          collisionPadding={8}
           position="popper"
+          role="listbox"
           side="bottom"
           sideOffset={4}
-          collisionPadding={8}
-          role="listbox"
         >
           <Select.Viewport className="max-h-[250px] overflow-y-auto p-1.5 sm:max-h-[300px] sm:p-2">
             {languages.map((lang) => (
               <Select.Item
                 aria-label={lang.ariaLabel}
                 aria-selected={locale === lang.value}
+                className="relative flex min-h-[44px] cursor-pointer touch-manipulation items-center rounded-sm px-6 py-3 font-medium text-gray-900 text-sm transition-colors duration-150 ease-in-out hover:bg-gray-100 focus:bg-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-inset data-[highlighted]:bg-teal-50 data-[state=checked]:bg-teal-100 data-[highlighted]:ring-2 data-[highlighted]:ring-teal-700 data-[state=checked]:ring-2 data-[state=checked]:ring-teal-700 data-[highlighted]:ring-inset data-[state=checked]:ring-inset sm:min-h-[48px] sm:px-8 sm:py-3.5"
                 key={lang.value}
                 value={lang.value}
-                className="relative flex min-h-[36px] cursor-pointer touch-manipulation items-center rounded-sm px-6 py-2 text-xs transition-colors duration-150 ease-in-out hover:bg-gray-100 focus:bg-blue-100 focus:outline-none data-[highlighted]:bg-blue-100 data-[state=checked]:bg-blue-50 sm:min-h-[40px] sm:px-8 sm:py-2.5 sm:text-sm"
               >
                 <Select.ItemText className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
                   <span
                     aria-hidden="true"
-                    role="img"
                     aria-label={`Bandera de ${lang.label}`}
                     className="flex-shrink-0 text-sm sm:text-base"
+                    role="img"
                   >
                     {lang.flag}
                   </span>
                   <span className="truncate font-medium">{lang.label}</span>
-                  <span className="ml-auto flex-shrink-0 text-gray-500 text-xs sm:hidden">
+                  <span className="ml-auto flex-shrink-0 font-medium text-gray-600 text-sm sm:hidden">
                     {lang.shortLabel}
                   </span>
                 </Select.ItemText>
