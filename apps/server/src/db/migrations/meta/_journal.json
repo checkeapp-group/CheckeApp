@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1756978608119,
+      "tag": "0000_milky_smiling_tiger",
+      "breakpoints": true
+    }
+  ]
+}
