@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useI18n } from '@/hooks/use-i18n';
 
@@ -81,16 +81,16 @@ const TextInputForm = () => {
   const currentSizeConfig = sizeConfig[size];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="mx-auto max-w-4xl">
         {/* Main form container with shadow and rounded corners like CheckerSearch */}
-        <div className="rounded-2xl bg-white p-4 shadow-sm sm:p-6" ref={parent}>
+        <div className="rounded-2xl bg-card p-4 shadow-sm sm:p-6" ref={parent}>
           <div className="w-full">
             {/* TextareaAutosize with CheckerSearch styling approach */}
             <TextareaAutosize
               aria-label="Área de texto principal"
-              className={`w-full resize-none rounded-lg border-2 border-gray-300 ${currentSizeConfig.textSize} 
-              ${currentSizeConfig.padding} bg-transparent shadow-sm transition-all duration-300 placeholder:text-gray-500 placeholder:opacity-75 hover:border-blue-400 hover:border-gray-400 focus:border-blue-500 focus:shadow-md focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60`}
+              className={`w-full resize-none rounded-lg border-2 border-input ${currentSizeConfig.textSize} 
+              ${currentSizeConfig.padding} bg-transparent shadow-sm transition-all duration-300 placeholder:text-muted-foreground placeholder:opacity-75 hover:border-info focus:border-ring focus:shadow-md focus:outline-none focus:ring-4 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60`}
               disabled={disabled}
               maxLength={maxLength}
               minLength={minLength}
@@ -104,19 +104,19 @@ const TextInputForm = () => {
 
           {/* Character counter and progress*/}
           <div className="mt-4 flex flex-col items-start justify-between gap-2 sm:mt-6 sm:flex-row sm:items-center md:mt-8">
-            <div className="flex items-center gap-4 text-gray-600 text-sm sm:gap-6 md:gap-8">
+            <div className="flex items-center gap-4 text-muted-foreground text-sm sm:gap-6 md:gap-8">
               <span className="font-medium">
                 {text.length}
-                <span className="text-gray-400">/{maxLength}</span>
+                <span className="text-muted-foreground/60">/{maxLength}</span>
               </span>
-              <span className="rounded-full bg-gray-100 px-2 py-1 text-gray-500 text-xs sm:px-4 sm:py-2 md:px-6 md:py-2">
+              <span className="rounded-full bg-muted px-2 py-1 text-muted-foreground text-xs sm:px-4 sm:py-2 md:px-6 md:py-2">
                 Ctrl+Enter
               </span>
             </div>
 
             {/* Submit button*/}
             <button
-              className="before:-translate-x-full relative overflow-hidden rounded-lg bg-blue-500 px-4 py-2 font-medium text-sm text-white transition-all duration-200 ease-in-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:transition-transform before:duration-500 focus:outline-none focus:ring-4 focus:ring-blue-200 enabled:hover:scale-103 enabled:hover:bg-blue-700 enabled:hover:shadow-md enabled:hover:before:translate-x-full disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-4 sm:text-base md:px-8 md:py-4"
+              className="before:-translate-x-full relative overflow-hidden rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-all duration-200 ease-in-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:transition-transform before:duration-500 focus:outline-none focus:ring-4 focus:ring-ring/20 enabled:hover:scale-103 enabled:hover:bg-success enabled:hover:shadow-md enabled:hover:before:translate-x-full disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 sm:py-4 sm:text-base md:px-8 md:py-4"
               disabled={text.trim() === '' || text.trim().length < minLength || disabled}
               onClick={handleSubmit}
               type="button"
