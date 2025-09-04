@@ -24,7 +24,9 @@
   },
   "dependencies": {
     "@formkit/auto-animate": "github:formkit/auto-animate",
+    "@headlessui/react": "^2.2.7",
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "drizzle-kit": "^0.31.4",
     "react-intl": "^7.1.11",
     "react-textarea-autosize": "^8.5.9",
