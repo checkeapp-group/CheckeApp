@@ -1,6 +1,12 @@
 {
   "auth.checking" : "Saio-hasiera egiaztatzen...",
   "auth.loginRequired" : "Jarraitzeko saioa hasi behar duzu",
+  "auth.signIn" : "Saioa hasi",
+  "auth.signOut" : "Saioa itxi",
+  "getStarted": "Hasi",
+  "loggedOut": "Saioa itxi duzu",
+  "nav.dashboard": "Kontrol-panelaren",
+
   "common.loading": "Kargatzen...",
   "common.error": "Errorea",
   "common.success": "Arrakasta",

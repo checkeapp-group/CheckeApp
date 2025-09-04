@@ -1,6 +1,17 @@
 {
   "auth.checking" : "Comprobando inicio de sesión...",
   "auth.loginRequired" : "Necesitas iniciar sesión para continuar",
+  "auth.signIn" : "Iniciar sesión",
+  "auth.signOut" : "Cerrar sesión",
+  "auth.getStarted": "Comenzar",
+  "loggedOut": "Has cerrado sesión",
+
+  "nav.dashboard": "Panel de control",
+  "nav.vertify": "Verificar",
+  "nav.about": "Acerca de",
+  "nav.help": "Ayuda",
+  "nav.verify": "Verificar",
+  
   "common.loading": "Cargando...",
   "common.error": "Error",
   "common.success": "Éxito",
@@ -21,9 +32,7 @@
 
   "app.title": "FactChecker",
   "app.tagline": "Verifica con confianza",
-  "nav.verify": "Verificar",
-  "nav.about": "Acerca de",
-  "nav.help": "Ayuda",
+  
 
   "footer.copyright": "© {year} FactChecker. Todos los derechos reservados.",
   "languageSelector.ariaLabel": "Selector de idioma",

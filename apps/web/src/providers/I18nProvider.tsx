@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, type ReactNode, createContext, useContext } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
+import ca from '@/locales/ca.json' with { type: 'json' };
 import es from '@/locales/es.json' with { type: 'json' };
 import eu from '@/locales/eu.json' with { type: 'json' };
-import ca from '@/locales/ca.json' with { type: 'json' };
 import gl from '@/locales/gl.json' with { type: 'json' };
 
 export const AVAILABLE_LOCALES = ['es', 'eu', 'ca', 'gl'] as const;

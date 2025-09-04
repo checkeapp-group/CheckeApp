@@ -1,6 +1,12 @@
 {
   "auth.checking" : "Comprobando inicio de sesión...",
   "auth.loginRequired" : "Necesitas iniciar sesión para continuar",
+  "auth.signIn" : "Iniciar sesión",
+  "auth.signOut" : "Cerrar sesión",
+  "getStarted": "Comenzar",
+  "loggedOut": "Has cerrado sesión",
+  "nav.dashboard": "Panel de control",
+
   "common.loading": "Cargando...",
   "common.error": "Erro",
   "common.success": "Éxito",

@@ -1,6 +1,12 @@
 {
   "auth.checking" : "Comprovant inici de sessió...",
   "auth.loginRequired" : "Necessites iniciar sessió per continuar",
+  "auth.signIn" : "Iniciar sessió",
+  "auth.signOut" : "Tancar sessió",
+  "getStarted": "Començar",
+  "loggedOut": "Has tancat sessió",
+  "nav.dashboard": "Panell de control",
+
   "common.loading": "Carregant...",
   "common.error": "Error",
   "common.success": "Èxit",
