@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
-
-import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 
 // biome-ignore lint/nursery/useConsistentTypeDefinitions: <explanation>
 interface User {
@@ -21,48 +19,26 @@ interface AuthState {
 
 export function useAuth() {
   const router = useRouter();
-  const [authState, setAuthState] = useState<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: true,
-  });
+  const { data: session, isPending: isLoading } = authClient.useSession();
 
-  useEffect(() => {
-    // Check authentication status on mount
-    checkAuthStatus();
-  }, []);
+  const authState: AuthState = {
+    user: session?.user
+      ? {
+          id: session.user.id,
+          email: session.user.email,
+          name: session.user.name,
+          emailVerified: session.user.emailVerified,
+          image: session.user.image,
+        }
+      : null,
+    isAuthenticated: !!session?.user,
+    isLoading,
+  };
 
   const checkAuthStatus = async () => {
-    try {
-      const session = await authClient.getSession();
-
-      if (session && session.user) {
-        setAuthState({
-          user: {
-            id: session.user.id,
-            email: session.user.email,
-            name: session.user.name,
-            emailVerified: session.user.emailVerified,
-            image: session.user.image,
-          },
-          isAuthenticated: true,
-          isLoading: false,
-        });
-      } else {
-        setAuthState({
-          user: null,
-          isAuthenticated: false,
-          isLoading: false,
-        });
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      setAuthState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
-    }
+    // This function is now handled automatically by authClient.useSession()
+    // Keep for backward compatibility but it's essentially a no-op
+    return Promise.resolve();
   };
 
   const logout = async () => {
@@ -70,11 +46,6 @@ export function useAuth() {
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            setAuthState({
-              user: null,
-              isAuthenticated: false,
-              isLoading: false,
-            });
             router.push('/');
           },
           onError: (ctx) => {
@@ -87,87 +58,16 @@ export function useAuth() {
     }
   };
 
+  // Note: Use useAuthNavigation hook for login/signup instead
+  // These are kept for backward compatibility but are deprecated
   const login = async (email: string, password: string) => {
-    try {
-      const response = await authClient.signIn.email({
-        email,
-        password,
-        fetchOptions: {
-          onSuccess: (ctx) => {
-            const user = ctx.data?.user;
-            if (user) {
-              setAuthState({
-                user: {
-                  id: user.id,
-                  email: user.email,
-                  name: user.name,
-                  emailVerified: user.emailVerified,
-                  image: user.image,
-                },
-                isAuthenticated: true,
-                isLoading: false,
-              });
-            }
-          },
-          onError: (ctx) => {
-            console.error('Login failed:', ctx.error);
-          },
-        },
-      });
-
-      return {
-        success: !!response?.user,
-        error: response?.user ? null : 'Login failed',
-      };
-    } catch (error) {
-      console.error('Login failed:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
-    }
+    console.warn('useAuth.login is deprecated, use useAuthNavigation.signIn instead');
+    return { success: false, error: 'Use useAuthNavigation.signIn instead' };
   };
 
   const signup = async (email: string, password: string, name?: string) => {
-    try {
-      const response = await authClient.signUp.email({
-        email,
-        password,
-        name,
-        fetchOptions: {
-          onSuccess: (ctx) => {
-            const user = ctx.data?.user;
-            if (user) {
-              setAuthState({
-                user: {
-                  id: user.id,
-                  email: user.email,
-                  name: user.name,
-                  emailVerified: user.emailVerified,
-                  image: user.image,
-                },
-                isAuthenticated: true,
-                isLoading: false,
-              });
-            }
-          },
-          onError: (ctx) => {
-            console.error('Signup failed:', ctx.error);
-          },
-        },
-      });
-
-      return {
-        success: !!response?.user,
-        error: response?.user ? null : 'Signup failed',
-      };
-    } catch (error) {
-      console.error('Signup failed:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
-    }
+    console.warn('useAuth.signup is deprecated, use useAuthNavigation.signUp instead');
+    return { success: false, error: 'Use useAuthNavigation.signUp instead' };
   };
 
   const signInWithProvider = async (provider: 'github' | 'google' | 'discord') => {
@@ -176,8 +76,7 @@ export function useAuth() {
         provider,
         fetchOptions: {
           onSuccess: () => {
-            // Session will be updated automatically by Better Auth
-            checkAuthStatus();
+            // Session will be updated automatically by authClient.useSession()
           },
           onError: (ctx) => {
             console.error(`${provider} signin failed:`, ctx.error);
@@ -224,17 +123,7 @@ export function useAuth() {
   const updateProfile = async (data: { name?: string; image?: string }) => {
     try {
       const response = await authClient.updateUser(data);
-
-      if (response && authState.user) {
-        setAuthState({
-          ...authState,
-          user: {
-            ...authState.user,
-            ...data,
-          },
-        });
-      }
-
+      // Session will be updated automatically by authClient.useSession()
       return { success: true };
     } catch (error) {
       console.error('Update profile failed:', error);
