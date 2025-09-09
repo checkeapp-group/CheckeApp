@@ -1,5 +1,6 @@
-import { getCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
+import { getCriticalQuestions, getGeneratedQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
 import {
+  confirmQuestions,
   createNewQuestion,
   deleteQuestionWithValidation,
   reorderVerificationQuestions,
@@ -17,9 +18,9 @@ import {
   reorderQuestionsSchema,
   updateQuestionSchema,
 } from '@/lib/questionsSchemas';
+import { z } from 'zod';
 
 export const questionsRouter = {
-
   // Gets all questions from critical_questions for a verification
   getVerificationQuestions: protectedProcedure
     .input(getQuestionsSchema)
@@ -116,6 +117,42 @@ export const questionsRouter = {
         message: 'Verificación lista para el siguiente paso',
         nextStep: 'sources',
       };
+    }),
+  getGeneratedQuestions: protectedProcedure
+    .input(z.object({ verificationId: z.string() }))
+    .handler(async ({ input, context }) => {
+      const { verificationId } = input;
+      const userId = context.session.user.id;
+
+      // You can add permission checks here if needed
+      await validateVerificationAccess(verificationId, userId);
+
+      const questions = await getGeneratedQuestions(verificationId);
+      return { questions };
+    }),
+
+  confirmQuestions: protectedProcedure
+    .input(
+      z.object({
+        verificationId: z.string(),
+        questions: z.array(
+          z.object({
+            question_text: z.string(),
+            original_question: z.string(),
+            order_index: z.number(),
+          })
+        ),
+      })
+    )
+    .handler(async ({ input, context }) => {
+      const { verificationId, questions } = input;
+      const userId = context.session.user.id;
+
+      // You can add permission checks here if needed
+      await validateVerificationAccess(verificationId, userId);
+
+      await confirmQuestions(verificationId, questions);
+      return { success: true, message: 'Questions confirmed successfully' };
     }),
 };
 
