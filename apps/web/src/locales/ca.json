@@ -43,6 +43,9 @@
   "textInput.maxError": "{count} caràcters de més",
   "textInput.valid": "Llest per enviar",
   "textInput.minChars": "Mínim {min} caràcters",
+  "textInput.verification_started": "Verificació iniciada correctament! S'han generat {questions_count} preguntes.",
+  "textInput.verification_failed": "Error a l'iniciar el procés de verificació",
+  "textInput.network_error": "Error de xarxa. Verifica la teva connexió i torna-ho a intentar.",
 
   "questions_edit.title": "Editar preguntes",
   "questions_edit.subtitle": "Personalitza les preguntes per al teu procés de verificació",

@@ -43,6 +43,9 @@
   "textInput.maxError": "{count} caracteres de más",
   "textInput.valid": "Listo para enviar",
   "textInput.minChars": "Mínimo {min} caracteres",
+  "textInput.verification_started": "¡Verificación iniciada correctamente! Se generaron {questions_count} preguntas.",
+  "textInput.verification_failed": "Error al iniciar el proceso de verificación",
+  "textInput.network_error": "Error de red. Verifica tu conexión e inténtalo de nuevo.",
 
   "questions_edit.title": "Editar preguntas",
   "questions_edit.subtitle": "Personaliza las preguntas para tu proceso de verificación",
