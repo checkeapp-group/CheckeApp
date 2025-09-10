@@ -29,16 +29,64 @@ export default function QuestionsReviewPage() {
   const queryClient = useQueryClient();
   const [pendingQuestions, setPendingQuestions] = useState<PendingQuestions | null>(null);
   const [questionsForReview, setQuestionsForReview] = useState<Question[]>([]);
-
-  // Extract verification ID from URL params if available, otherwise use temp-id
+  const [hasInitialized, setHasInitialized] = useState(false);
   const verificationId = (params?.id as string) || 'temp-id';
 
   // Auth guard
-  useEffect(() => {
-    if (!(authLoading || isAuthenticated)) {
-      router.push('/login');
+useEffect(() => {
+  if (hasInitialized || authLoading || !isAuthenticated) {
+    return;
+  }
+
+  const isExistingVerification = verificationId !== 'temp-id';
+
+  if (isExistingVerification) {
+    if (generatedQuestionsData?.questions) {
+      const questions: Question[] = generatedQuestionsData.questions.map((q, index) => ({
+        id: `api-${index}`,
+        verificationId,
+        questionText: q.question_text,
+        originalQuestion: q.original_question,
+        isEdited: false,
+        orderIndex: index,
+        createdAt: new Date(),
+        isActive: true, 
+      }));
+      setQuestionsForReview(questions);
+      setHasInitialized(true);
     }
-  }, [authLoading, isAuthenticated, router]);
+  }
+  else {
+    const stored = sessionStorage.getItem('pendingQuestions');
+    if (stored) {
+      try {
+        const parsed: PendingQuestions = JSON.parse(stored);
+        setPendingQuestions(parsed);
+
+        const questions: Question[] = parsed.questions.map((q, index) => ({
+          id: `temp-${index}`,
+          verificationId: 'temp-id',
+          questionText: q.question_text,
+          originalQuestion: q.original_question,
+          isEdited: false,
+          orderIndex: index,
+          createdAt: new Date(),
+          isActive: true,
+        }));
+
+        setQuestionsForReview(questions);
+      } catch (error) {
+        console.error('Error parsing pending questions:', error);
+        toast.error('Failed to load questions. Please try again.');
+        router.push('/');
+      }
+    } else {
+      toast.error('No questions to review. Please start a new verification.');
+      router.push('/');
+    }
+    setHasInitialized(true);
+  }
+}, [hasInitialized, authLoading, isAuthenticated, verificationId, generatedQuestionsData, router]);
 
   // Query to get generated questions (when we have a real verification ID)
   const {
@@ -99,7 +147,6 @@ export default function QuestionsReviewPage() {
     }
   }, [generatedQuestionsData, router, isLoadingQuestions, verificationId]);
 
-  // Mutation to confirm questions using oRPC
   const confirmQuestionsMutation = useMutation(
     orpc.confirmQuestions.mutationOptions({
       onMutate: async (variables) => {

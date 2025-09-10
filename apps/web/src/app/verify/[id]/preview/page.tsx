@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import QuestionsPreview from '@/components/QuestionsPreview';
-import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { orpc } from '@/utils/orpc';
 
@@ -96,9 +95,6 @@ export default function QuestionsPreviewPage() {
         }}
         questions={questions}
       />
-      <Button disabled={confirmQuestionsMutation.isPending} onClick={handleConfirmQuestions}>
-        {confirmQuestionsMutation.isPending ? 'Confirming...' : 'Confirm Questions'}
-      </Button>
     </div>
   );
 }

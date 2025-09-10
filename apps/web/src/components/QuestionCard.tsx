@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { Card } from './ui/card';
 
 type QuestionCardProps = {
-  question: Question & { isActive?: boolean }; 
+  question: Question & { isActive?: boolean };
   isEditing: boolean;
   isSaving: boolean;
   onEdit: (questionId: string) => void;
@@ -92,6 +92,12 @@ export function QuestionCard({
     }
   };
 
+  const handleBlur = () => {
+    if (localText !== question.questionText && isTextValid) {
+      handleSave();
+    }
+  };
+
   const isTextValid = localText.trim().length >= 5 && localText.length <= 200;
   const charCount = localText.length;
   const hasChanges = localText !== question.questionText;
@@ -146,6 +152,7 @@ export function QuestionCard({
                   'focus:border-white/50 focus:ring-white/30',
                   !isTextValid && 'border-red-500/50 focus:ring-red-500/30'
                 )}
+                onBlur={handleBlur}
                 onChange={(e) => handleTextChange(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={t('questions_edit.question_placeholder')}
