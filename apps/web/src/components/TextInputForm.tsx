@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { toast } from 'sonner';
 import AuthModal from '@/components/Auth/auth-modal';
@@ -21,6 +21,11 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
   const [isLoading, setIsLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  const modalStateRef = useRef({
+    isClosing: false,
+    lastCloseTime: 0,
+  });
+
   const isAuthenticated = propIsAuthenticated ?? hookIsAuthenticated;
 
   // Variables
@@ -28,6 +33,8 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
   const [size] = useState('medium');
   const [disabled] = useState(false);
   const parent = useRef(null);
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const maxLength = 5000;
   const minLength = 50;
@@ -57,12 +64,37 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
   };
 
   // Handle any interaction when not authenticated
-  const handleUnauthenticatedAction = () => {
-    // Don't show modal if auth is still loading or if user is authenticated
-    if (!(authLoading || isAuthenticated)) {
+  const handleUnauthenticatedAction = useCallback(
+    (event?: React.SyntheticEvent) => {
+      // Prevent if we're in auth loading state
+      if (authLoading) {
+        return;
+      }
+
+      // Prevent if already authenticated
+      if (isAuthenticated) {
+        return;
+      }
+
+      // Prevent immediate reopening after closing
+      const now = Date.now();
+      const timeSinceLastClose = now - modalStateRef.current.lastCloseTime;
+
+      if (modalStateRef.current.isClosing || timeSinceLastClose < 300) {
+        event?.preventDefault();
+        return;
+      }
+
+      // Prevent if modal is already open
+      if (showAuthModal) {
+        return;
+      }
+
       setShowAuthModal(true);
-    }
-  };
+      textareaRef.current?.blur();
+    },
+    [authLoading, isAuthenticated, showAuthModal]
+  );
 
   // Handle text change
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -71,7 +103,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
     }
 
     if (!isAuthenticated) {
-      handleUnauthenticatedAction();
+      handleUnauthenticatedAction(e);
       return;
     }
     setText(e.target.value);
@@ -84,7 +116,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
     }
 
     if (!isAuthenticated) {
-      handleUnauthenticatedAction();
+      handleUnauthenticatedAction(e);
       return;
     }
 
@@ -92,6 +124,34 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
       e.preventDefault();
       handleSubmit();
     }
+  };
+
+  // Handle click events
+  const handleTextareaClick = (e: React.MouseEvent<HTMLTextAreaElement>) => {
+    if (authLoading || isAuthenticated) {
+      return;
+    }
+
+    handleUnauthenticatedAction(e);
+  };
+
+  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (authLoading || isAuthenticated) {
+      return;
+    }
+
+    if (e.target === e.currentTarget) {
+      handleUnauthenticatedAction(e);
+    }
+  };
+
+  // Handle focus events
+  const handleTextareaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (authLoading || isAuthenticated) {
+      return;
+    }
+
+    handleUnauthenticatedAction(e);
   };
 
   const handleSubmit = async () => {
@@ -165,13 +225,22 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
   // Close modal when user becomes authenticated
   useEffect(() => {
     if (isAuthenticated && showAuthModal) {
-      setShowAuthModal(false);
+      handleCloseAuthModal();
     }
   }, [isAuthenticated, showAuthModal]);
 
-  const handleCloseAuthModal = () => {
+  // Handle modal close with proper state management
+  const handleCloseAuthModal = useCallback(() => {
+    modalStateRef.current.isClosing = true;
+    modalStateRef.current.lastCloseTime = Date.now();
+
     setShowAuthModal(false);
-  };
+
+    // Reset closing state after animation completes
+    setTimeout(() => {
+      modalStateRef.current.isClosing = false;
+    }, 350); // Slightly longer than modal close animation
+  }, []);
 
   const currentSizeConfig = sizeConfig[size];
 
@@ -180,11 +249,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
       <div className="min-h-[auto] bg-background p-4">
         <div className="mx-auto max-w-4xl">
           {/* Main form container */}
-          <Card
-            className="rounded-2xl p-4 sm:p-6"
-            onClick={authLoading || isAuthenticated ? undefined : handleUnauthenticatedAction}
-            ref={parent}
-          >
+          <Card className="rounded-2xl p-4 sm:p-6" onClick={handleContainerClick} ref={parent}>
             <div className="w-full">
               {/* TextareaAutosize */}
               <TextareaAutosize
@@ -198,8 +263,8 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
                 minLength={minLength}
                 minRows={currentSizeConfig.minRows}
                 onChange={handleTextChange}
-                onClick={authLoading || isAuthenticated ? undefined : handleUnauthenticatedAction}
-                onFocus={authLoading || isAuthenticated ? undefined : handleUnauthenticatedAction}
+                onClick={handleTextareaClick}
+                onFocus={handleTextareaFocus}
                 onKeyDown={handleKeyDown}
                 placeholder={
                   authLoading
@@ -209,11 +274,15 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
                       : t('textInput.loginPlaceholder') || 'Click to login and start writing...'
                 }
                 readOnly={authLoading || !isAuthenticated}
+                ref={textareaRef}
                 value={text}
               />
 
               {/* Character counter and progress*/}
-              <div className="mt-4 flex flex-col items-start justify-between gap-2 sm:mt-6 sm:flex-row sm:items-center md:mt-8">
+              <div
+                className="mt-4 flex flex-col items-start justify-between gap-2 sm:mt-6 sm:flex-row sm:items-center md:mt-8"
+                onClick={handleContainerClick}
+              >
                 <div className="flex items-center gap-4 text-muted-foreground text-sm sm:gap-6 md:gap-8">
                   <span className="font-medium">
                     {text.length}
@@ -262,7 +331,6 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
         }
         onClose={handleCloseAuthModal}
         showRegisterOption={true}
-        title={t('textInput.authModalTitle') || 'Text Input Access'}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import SignInForm from '@/components/Auth/sign-in-form';
 import SignUpForm from '@/components/Auth/sign-up-form';
 
@@ -9,13 +9,8 @@ type AuthModalProps = {
 };
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
 
-  useEffect(() => {
-    if (!isOpen) {
-      setMode('signIn');
-    }
-  }, [isOpen]);
+  const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
 
   const switchToSignUp = () => setMode('signUp');
   const switchToSignIn = () => setMode('signIn');

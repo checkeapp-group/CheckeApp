@@ -22,7 +22,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
       await signIn(
         { email: value.email, password: value.password },
         {
-          redirectTo: window.location.pathname, // Stay on current page
+          redirectTo: window.location.pathname,
           onSuccess: () => {
             onClose();
           },
