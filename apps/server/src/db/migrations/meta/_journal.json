@@ -8,6 +8,13 @@
       "when": 1756978608119,
       "tag": "0000_milky_smiling_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1757326248529,
+      "tag": "0001_whole_arclight",
+      "breakpoints": true
     }
   ]
 }

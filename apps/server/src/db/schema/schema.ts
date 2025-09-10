@@ -80,7 +80,7 @@ export const criticalQuestion = mysqlTable(
     orderIndexCheck: check('chk_critical_questions_order_index', sql`${table.orderIndex} >= 0`),
     questionTextLengthCheck: check(
       'chk_critical_questions_text_length',
-      sql`CHAR_LENGTH(${table.questionText}) >= 5 AND CHAR_LENGTH(${table.questionText}) <= 1000`
+      sql`CHAR_LENGTH(${table.questionText}) >= 5 AND CHAR_LENGTH(${table.questionText}) <= 200`
     ),
   })
 );
