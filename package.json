@@ -23,6 +23,8 @@
     "db:down": "turbo -F server db:down"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
     "@formkit/auto-animate": "github:formkit/auto-animate",
     "@headlessui/react": "^2.2.7",
     "bcrypt": "^6.0.0",
@@ -30,10 +32,11 @@
     "drizzle-kit": "^0.31.4",
     "react-intl": "^7.1.11",
     "react-textarea-autosize": "^8.5.9",
+    "use-debounce": "^10.0.6",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
+    "@biomejs/biome": "^2.2.0",
     "turbo": "^2.5.4",
     "ultracite": "5.2.4"
   },
