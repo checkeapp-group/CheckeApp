@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -8,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth';
 import { useI18n } from '@/hooks/use-i18n';
+import { useAppRouter } from '@/lib/router';
 
 type TextInputFormProps = {
   isAuthenticated?: boolean;
@@ -17,7 +17,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
   // States
   const { t } = useI18n();
   const { isAuthenticated: hookIsAuthenticated, isLoading: authLoading } = useAuth();
-  const router = useRouter();
+  const { navigate } = useAppRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -171,17 +171,14 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
     setIsLoading(true);
 
     try {
-      // Call fake API to generate questions first
-      const response = await fetch('/api/fakeAPI/generate-questions', {
+      // Use proper documented flow via /api/verify/start
+      const response = await fetch('/api/verify/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          verification_id: 'temp-id',
-          original_text: text.trim(),
-          language: 'es',
-          max_questions: 5,
+          text: text.trim(),
         }),
       });
 
@@ -189,27 +186,17 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
 
       if (result.success) {
         toast.success(
-          t('textInput.questions_generated') ||
-            `Generated ${result.questions.length} questions for review.`
+          t('textInput.verification_started') ||
+            'Verification started successfully! Questions are being generated.'
         );
 
-        // Store questions in sessionStorage and navigate to review page
-        sessionStorage.setItem(
-          'pendingQuestions',
-          JSON.stringify({
-            originalText: text.trim(),
-            questions: result.questions,
-          })
-        );
-
-        router.push('/questions/review');
+        // Navigate directly to edit page with the verification ID
+        navigate(`/verify/${result.verification_id}/edit`);
         setText('');
       } else {
         // Show error message
         toast.error(
-          result.message ||
-            t('textInput.question_generation_failed') ||
-            'Failed to generate questions'
+          result.message || t('textInput.verification_failed') || 'Failed to start verification'
         );
       }
     } catch (error) {
@@ -239,7 +226,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
     // Reset closing state after animation completes
     setTimeout(() => {
       modalStateRef.current.isClosing = false;
-    }, 350); // Slightly longer than modal close animation
+    }, 350);
   }, []);
 
   const currentSizeConfig = sizeConfig[size];

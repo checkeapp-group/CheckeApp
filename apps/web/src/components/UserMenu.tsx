@@ -2,13 +2,14 @@
 
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, LogInIcon, LogOutIcon, UserIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
+import { toast } from 'sonner';
 import { useI18n } from '@/hooks/use-i18n';
 import { authClient } from '@/lib/auth-client';
+import { useAppRouter } from '@/lib/router';
 
 export default function UserMenu() {
-  const router = useRouter();
+  const { navigate } = useAppRouter();
   const { t } = useI18n();
   const { data: session } = authClient.useSession();
 
@@ -17,18 +18,19 @@ export default function UserMenu() {
       redirect: true,
       redirectTo: '/',
     });
+    toast.success(t('auth.loggedOut') || 'Successfully logged out');
   };
 
   const handleLogin = () => {
-    router.push('/login');
+    navigate('/login');
   };
 
   const handleDashboard = () => {
     if (!session?.user) {
-      router.push('/login');
+      navigate('/login');
       return;
     }
-    router.push('/dashboard');
+    navigate('/dashboard');
   };
 
   return (

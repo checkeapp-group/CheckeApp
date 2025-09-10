@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import QuestionsList from '@/components/QuestionsList';
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth';
 import { useI18n } from '@/hooks/use-i18n';
+import { useAppRouter } from '@/lib/router';
 import type { Question } from '@/hooks/use-questions-editor';
 import { orpc } from '@/utils/orpc';
 
@@ -22,9 +23,9 @@ type PendingQuestions = {
 };
 
 export default function QuestionsReviewPage() {
-  const router = useRouter();
+  const { navigate } = useAppRouter();
   const params = useParams();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const [pendingQuestions, setPendingQuestions] = useState<PendingQuestions | null>(null);
@@ -32,9 +33,9 @@ export default function QuestionsReviewPage() {
   const [hasInitialized, setHasInitialized] = useState(false);
   const verificationId = (params?.id as string) || 'temp-id';
 
-  // Auth guard
+  // Initialize questions
 useEffect(() => {
-  if (hasInitialized || authLoading || !isAuthenticated) {
+  if (hasInitialized || !isAuthenticated) {
     return;
   }
 
@@ -78,15 +79,15 @@ useEffect(() => {
       } catch (error) {
         console.error('Error parsing pending questions:', error);
         toast.error('Failed to load questions. Please try again.');
-        router.push('/');
+        navigate('/');
       }
     } else {
       toast.error('No questions to review. Please start a new verification.');
-      router.push('/');
+      navigate('/');
     }
     setHasInitialized(true);
   }
-}, [hasInitialized, authLoading, isAuthenticated, verificationId, generatedQuestionsData, router]);
+}, [hasInitialized, isAuthenticated, verificationId, generatedQuestionsData, navigate]);
 
   // Query to get generated questions (when we have a real verification ID)
   const {
@@ -139,13 +140,13 @@ useEffect(() => {
       } catch (error) {
         console.error('Error parsing pending questions:', error);
         toast.error('Failed to load questions. Please try again.');
-        router.push('/');
+        navigate('/');
       }
     } else if (!isLoadingQuestions && verificationId === 'temp-id') {
       toast.error('No questions to review. Please start a new verification.');
-      router.push('/');
+      navigate('/');
     }
-  }, [generatedQuestionsData, router, isLoadingQuestions, verificationId]);
+  }, [generatedQuestionsData, navigate, isLoadingQuestions, verificationId]);
 
   const confirmQuestionsMutation = useMutation(
     orpc.confirmQuestions.mutationOptions({
@@ -160,7 +161,7 @@ useEffect(() => {
         });
 
         sessionStorage.removeItem('pendingQuestions');
-        router.push(`/verify/${variables.verificationId}/edit`);
+        navigate(`/verify/${variables.verificationId}/edit`);
       },
       onError: (error, variables, context) => {
         toast.error(error.message || 'Failed to confirm questions');
@@ -210,7 +211,7 @@ useEffect(() => {
       if (result.success) {
         toast.success(t('textInput.verification_started') || 'Verification started successfully!');
         sessionStorage.removeItem('pendingQuestions');
-        router.push(`/verify/${result.verification_id}/edit`);
+        navigate(`/verify/${result.verification_id}/edit`);
       } else {
         toast.error(result.message || 'Failed to start verification');
       }
@@ -222,22 +223,13 @@ useEffect(() => {
 
   const handleCancel = () => {
     sessionStorage.removeItem('pendingQuestions');
-    router.push('/');
+    navigate('/');
   };
 
   const updateQuestionsForReview = (updatedQuestions: Question[]) => {
     setQuestionsForReview(updatedQuestions);
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-background p-4">
-        <div className="mx-auto max-w-4xl">
-          <div className="py-8 text-center">Loading authentication...</div>
-        </div>
-      </div>
-    );
-  }
 
   if (!pendingQuestions) {
     return (

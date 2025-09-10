@@ -1,25 +1,20 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import QuestionsPreview from '@/components/QuestionsPreview';
 import { useAuth } from '@/hooks/use-auth';
+import { useAppRouter } from '@/lib/router';
 import { orpc } from '@/utils/orpc';
 
 export default function QuestionsPreviewPage() {
-  const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { navigate } = useAppRouter();
+  const { isAuthenticated } = useAuth();
   const { id: verificationId } = useParams();
   const [questions, setQuestions] = useState<any[]>([]);
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (!(authLoading || isAuthenticated)) {
-      router.push('/login');
-    }
-  }, [authLoading, isAuthenticated, router]);
 
   const { data, isLoading, error } = useQuery(
     orpc.getGeneratedQuestions.queryOptions({
@@ -44,7 +39,7 @@ export default function QuestionsPreviewPage() {
             verificationId: verificationId as string,
           }),
         });
-        router.push(`/verify/${verificationId}/edit`);
+        navigate(`/verify/${verificationId}/edit`);
       },
       onError: (err: any) => {
         toast.error(err.message || 'Failed to confirm questions');

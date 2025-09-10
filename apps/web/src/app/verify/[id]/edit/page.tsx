@@ -1,8 +1,8 @@
 'use client';
 
 import { AlertCircle, ArrowLeft } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useState, type SetStateAction } from 'react';
 import { toast } from 'sonner';
 import QuestionsList from '@/components/QuestionsList';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
 import { useI18n } from '@/hooks/use-i18n';
 import { useQuestionsEditor } from '@/hooks/use-questions-editor';
+import { useAppRouter } from '@/lib/router';
 import { orpc } from '@/utils/orpc';
 
 type PageProps = {
@@ -20,8 +21,8 @@ type PageProps = {
 }
 
 export default function EditQuestionsPage({ params }: PageProps) {
-  const router = useRouter();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { navigate } = useAppRouter();
+  const { isAuthenticated } = useAuth();
   const { t } = useI18n();
   const { id: verificationId } = useParams();
 
@@ -43,12 +44,12 @@ export default function EditQuestionsPage({ params }: PageProps) {
     { verificationId: verificationId as string },
     {
       enabled: isAuthenticated && !!verificationId,
-      onSuccess: (data) => {
+      onSuccess: (data: { canEdit: boolean | ((prevState: boolean) => boolean); }) => {
         setHasPermissions(data.canEdit);
         setIsValidating(false);
         setPageError(null);
       },
-      onError: (error) => {
+      onError: (error: { message: string[] | SetStateAction<string | null>; }) => {
         setHasPermissions(false);
         setIsValidating(false);
         if (error.message.includes('403') || error.message.includes('Forbidden')) {
@@ -65,14 +66,6 @@ export default function EditQuestionsPage({ params }: PageProps) {
     }
   );
 
-  useEffect(() => {
-    if (!authLoading) {
-      if (!(isAuthenticated && user)) {
-        router.push('/login');
-        return;
-      }
-    }
-  }, [authLoading, isAuthenticated, user, router]);
 
   const handleGoBack = () => {
     if (pendingChanges) {
@@ -82,10 +75,10 @@ export default function EditQuestionsPage({ params }: PageProps) {
             'You have unsaved changes. Are you sure you want to leave?'
         )
       ) {
-        router.back();
+        navigate('/dashboard');
       }
     } else {
-      router.back();
+      navigate('/dashboard');
     }
   };
 
@@ -112,9 +105,9 @@ export default function EditQuestionsPage({ params }: PageProps) {
 
 
       if (result?.nextStep) {
-        router.push(`/verify/${verificationId}/${result.nextStep}`);
+        navigate(`/verify/${verificationId}/${result.nextStep}`);
       } else {
-        router.push(`/verify/${verificationId}`);
+        navigate(`/verify/${verificationId}`);
       }
 
       toast.success(t('questions_edit.continued') || 'Questions saved successfully');
@@ -136,12 +129,8 @@ export default function EditQuestionsPage({ params }: PageProps) {
     permissionsQuery.refetch();
   };
 
-  if (authLoading || isValidating) {
+  if (isValidating) {
     return <EditPageSkeleton />;
-  }
-
-  if (!isAuthenticated) {
-    return null;
   }
 
   if (pageError) {
@@ -161,7 +150,7 @@ export default function EditQuestionsPage({ params }: PageProps) {
           t('questions_edit.access_denied') ||
           'Access denied. You do not have permission to edit this verification.'
         }
-        onRetry={() => router.push('/dashboard')}
+        onRetry={() => navigate('/dashboard')}
         retryText={t('common.go_back') || 'Go Back'}
         showRetry={false}
       />
