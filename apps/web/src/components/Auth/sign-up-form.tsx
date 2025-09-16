@@ -5,6 +5,7 @@ import { z } from 'zod';
 import Loader from '@/components/loader';
 import { Button } from '@/components/ui/button';
 import { useAuthNavigation } from '@/hooks/use-auth-navigation';
+import { useI18n } from '@/hooks/use-i18n';
 import { authClient } from '@/lib/auth-client';
 
 type SignUpFormProps = {
@@ -15,6 +16,7 @@ type SignUpFormProps = {
 export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProps) {
   const { signUp } = useAuthNavigation();
   const { isPending } = authClient.useSession();
+  const { t } = useI18n();
 
   const form = useForm({
     defaultValues: { name: '', email: '', password: '' },
@@ -27,7 +29,7 @@ export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProp
             onClose?.();
           },
           onError: (error) => {
-            const errorMessage = error?.error?.message || 'Sign up failed. Please try again.';
+            const errorMessage = error?.error?.message || t('auth.signUp.error');
             toast.error(errorMessage);
           },
         }
@@ -35,9 +37,9 @@ export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProp
     },
     validators: {
       onSubmit: z.object({
-        name: z.string().min(2, 'Name must be at least 2 characters'),
-        email: z.string().email('Invalid email address'),
-        password: z.string().min(8, 'Password must be at least 8 characters'),
+        name: z.string().min(2, t('auth.validation.name.min')),
+        email: z.string().email(t('auth.validation.email.invalid')),
+        password: z.string().min(8, t('auth.validation.password.min')),
       }),
     },
   });
@@ -50,7 +52,7 @@ export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProp
     <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-2xl">
       {onClose && (
         <Button
-          aria-label="Close modal"
+          aria-label={t('auth.closeModal')}
           className="absolute top-4 right-4 h-8 w-8"
           onClick={onClose}
           size="icon"
@@ -72,9 +74,9 @@ export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProp
       <div className="px-6 py-8 sm:px-8 sm:py-10">
         <div className="mb-6 text-center">
           <h1 className="font-bold text-2xl text-foreground tracking-tight sm:text-3xl">
-            Create an Account
+            {t('auth.SignUp.title')}
           </h1>
-          <p className="mt-2 text-gray-600 text-sm">Sign up to get started with our platform</p>
+          <p className="mt-2 text-gray-600 text-sm">{t('auth.signUp.description')}</p>
         </div>
 
         {/* Form */}
@@ -87,52 +89,131 @@ export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProp
           }}
         >
           <Fieldset className="space-y-5">
-            {['name', 'email', 'password'].map((fieldName) => (
-              <form.Field key={fieldName} name={fieldName}>
-                {(field) => (
-                  <Field className="space-y-2">
-                    <Label
-                      className="block font-semibold text-gray-700 text-sm"
-                      htmlFor={field.name}
+            <form.Field name="name">
+              {(field) => (
+                <Field className="space-y-2">
+                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
+                    {t('auth.Name')}
+                  </Label>
+                  <Input
+                    aria-describedby={
+                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
+                    }
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
+                      field.state.meta.errors.length > 0
+                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
+                        : 'text-foreground ring-border'
+                    }`}
+                    id={field.name}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder={t('auth.Name.placeholder')}
+                    type="text"
+                    value={field.state.value}
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <div
+                      aria-live="polite"
+                      className="space-y-1"
+                      id={`${field.name}-error`}
+                      role="alert"
                     >
-                      {field.name[0].toUpperCase() + field.name.slice(1)}
-                    </Label>
-                    <Input
-                      aria-describedby={
-                        field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
-                      }
-                      aria-invalid={field.state.meta.errors.length > 0}
-                      className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
-                        field.state.meta.errors.length > 0
-                          ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
-                          : 'text-foreground ring-border'
-                      }`}
-                      id={field.name}
-                      name={field.name}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder={`Enter your ${field.name}`}
-                      type={field.name === 'password' ? 'password' : 'text'}
-                      value={field.state.value}
-                    />
-                    {field.state.meta.errors.length > 0 && (
-                      <div
-                        aria-live="polite"
-                        className="space-y-1"
-                        id={`${field.name}-error`}
-                        role="alert"
-                      >
-                        {field.state.meta.errors.map((error, i) => (
-                          <p className="flex items-center text-destructive text-sm" key={i}>
-                            {error.message}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-                  </Field>
-                )}
-              </form.Field>
-            ))}
+                      {field.state.meta.errors.map((error, i) => (
+                        <p className="flex items-center text-destructive text-sm" key={i}>
+                          {error.message}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="email">
+              {(field) => (
+                <Field className="space-y-2">
+                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
+                    {t('auth.Email')}
+                  </Label>
+                  <Input
+                    aria-describedby={
+                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
+                    }
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
+                      field.state.meta.errors.length > 0
+                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
+                        : 'text-foreground ring-border'
+                    }`}
+                    id={field.name}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder={t('auth.Email.placeholder')}
+                    type="email"
+                    value={field.state.value}
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <div
+                      aria-live="polite"
+                      className="space-y-1"
+                      id={`${field.name}-error`}
+                      role="alert"
+                    >
+                      {field.state.meta.errors.map((error, i) => (
+                        <p className="flex items-center text-destructive text-sm" key={i}>
+                          {error.message}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="password">
+              {(field) => (
+                <Field className="space-y-2">
+                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
+                    {t('auth.Password')}
+                  </Label>
+                  <Input
+                    aria-describedby={
+                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
+                    }
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
+                      field.state.meta.errors.length > 0
+                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
+                        : 'text-foreground ring-border'
+                    }`}
+                    id={field.name}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder={t('auth.Password.placeholder')}
+                    type="password"
+                    value={field.state.value}
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <div
+                      aria-live="polite"
+                      className="space-y-1"
+                      id={`${field.name}-error`}
+                      role="alert"
+                    >
+                      {field.state.meta.errors.map((error, i) => (
+                        <p className="flex items-center text-destructive text-sm" key={i}>
+                          {error.message}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </Field>
+              )}
+            </form.Field>
           </Fieldset>
 
           <form.Subscribe>
@@ -142,7 +223,7 @@ export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProp
                 disabled={!state.canSubmit || state.isSubmitting}
                 type="submit"
               >
-                {state.isSubmitting ? 'Signing you up...' : 'Sign Up'}
+                {state.isSubmitting ? t('auth.signUp.loading') : t('auth.signUp.button')}
               </Button>
             )}
           </form.Subscribe>
@@ -150,7 +231,7 @@ export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProp
 
         <div className="mt-6 text-center">
           <Button className="font-semibold text-sm" onClick={onSwitchToSignIn} variant="link">
-            Already have an account? Sign In
+            {t('auth.signIn.cta')}
           </Button>
         </div>
       </div>

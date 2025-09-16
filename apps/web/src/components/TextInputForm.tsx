@@ -1,3 +1,5 @@
+'use client';
+
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -11,36 +13,50 @@ import { useAppRouter } from '@/lib/router';
 
 type TextInputFormProps = {
   isAuthenticated?: boolean;
-};
+  onSuccess?: (verificationId: string) => void;
+}
 
-const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormProps) => {
-  // States
+type SizeType = 'small' | 'medium' | 'large' | 'xlarge';
+
+type SizeConfig = {
+  minRows: number;
+  textSize: string;
+  padding: string;
+}
+
+type ModalState = {
+  isClosing: boolean;
+  lastCloseTime: number;
+}
+
+const TextInputForm = ({ isAuthenticated: propIsAuthenticated, onSuccess }: TextInputFormProps) => {
+  // Hooks
   const { t } = useI18n();
   const { isAuthenticated: hookIsAuthenticated, isLoading: authLoading } = useAuth();
   const { navigate } = useAppRouter();
+
+  // States
   const [isLoading, setIsLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [text, setText] = useState('');
+  const [size] = useState<SizeType>('medium');
+  const [disabled] = useState(false);
 
-  const modalStateRef = useRef({
+  // Refs
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const parent = useRef<HTMLDivElement>(null);
+  const modalStateRef = useRef<ModalState>({
     isClosing: false,
     lastCloseTime: 0,
   });
 
+  // Constants
   const isAuthenticated = propIsAuthenticated ?? hookIsAuthenticated;
-
-  // Variables
-  const [text, setText] = useState('');
-  const [size] = useState('medium');
-  const [disabled] = useState(false);
-  const parent = useRef(null);
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   const maxLength = 5000;
   const minLength = 50;
 
   // Size config for responsive design
-  const sizeConfig = {
+  const sizeConfig: Record<SizeType, SizeConfig> = {
     small: {
       minRows: 2,
       textSize: 'text-sm sm:text-base md:text-lg',
@@ -63,7 +79,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
     },
   };
 
-  // Handle any interaction when not authenticated
+  // Handle unauthenticated interactions
   const handleUnauthenticatedAction = useCallback(
     (event?: React.SyntheticEvent) => {
       // Prevent if we're in auth loading state
@@ -154,67 +170,53 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
     handleUnauthenticatedAction(e);
   };
 
+  // Handle form submission
   const handleSubmit = async () => {
-    if (authLoading) {
-      return;
-    }
-
-    if (!isAuthenticated) {
-      handleUnauthenticatedAction();
-      return;
-    }
-
-    if (text.trim() === '' || text.trim().length < minLength || disabled || isLoading) {
+    // Validations
+    if (
+      authLoading ||
+      !isAuthenticated ||
+      text.trim().length < minLength ||
+      disabled ||
+      isLoading
+    ) {
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Use proper documented flow via /api/verify/start
+      // Call the API to start verification
       const response = await fetch('/api/verify/start', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text.trim(),
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text.trim() }),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        toast.success(
-          t('textInput.verification_started') ||
-            'Verification started successfully! Questions are being generated.'
-        );
+        const successMessage = 'Verificación iniciada. Ahora revisa las preguntas.';
+        toast.success(successMessage);
 
-        // Navigate directly to edit page with the verification ID
-        navigate(`/verify/${result.verification_id}/edit`);
+        // Use onSuccess callback if provided, otherwise navigate
+        if (onSuccess) {
+          onSuccess(result.verification_id);
+        } else {
+          navigate(`/verify/${result.verification_id}/edit`);
+        }
         setText('');
       } else {
-        // Show error message
-        toast.error(
-          result.message || t('textInput.verification_failed') || 'Failed to start verification'
-        );
+        const errorMessage = result.message || 'Falló el inicio de la verificación.';
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error('Error starting verification:', error);
-      toast.error(
-        t('textInput.network_error') || 'Network error. Please check your connection and try again.'
-      );
+      toast.error('Error de red. Por favor, inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
   };
-
-  // Close modal when user becomes authenticated
-  useEffect(() => {
-    if (isAuthenticated && showAuthModal) {
-      handleCloseAuthModal();
-    }
-  }, [isAuthenticated, showAuthModal]);
 
   // Handle modal close with proper state management
   const handleCloseAuthModal = useCallback(() => {
@@ -228,6 +230,13 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
       modalStateRef.current.isClosing = false;
     }, 350);
   }, []);
+
+  // Close modal when user becomes authenticated
+  useEffect(() => {
+    if (isAuthenticated && showAuthModal) {
+      handleCloseAuthModal();
+    }
+  }, [isAuthenticated, showAuthModal, handleCloseAuthModal]);
 
   const currentSizeConfig = sizeConfig[size];
 
@@ -299,9 +308,9 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
                     ? 'Loading...'
                     : isAuthenticated
                       ? isLoading
-                        ? t('textInput.submitting') || 'Submitting...'
-                        : t('textInput.submit')
-                      : t('textInput.loginToSubmit') || 'Login to Submit'}
+                        ? t('textInput.submitting') || 'Enviando...'
+                        : t('textInput.submit') || 'Verificar Texto'
+                      : t('textInput.loginToSubmit') || 'Inicia Sesión para Enviar'}
                 </Button>
               </div>
             </div>
@@ -314,7 +323,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated }: TextInputFormPr
         isOpen={showAuthModal}
         message={
           t('textInput.authModalMessage') ||
-          'To use our text verification service, you need to be logged in. This helps us provide personalized and secure results.'
+          'Para usar nuestro servicio de verificación de texto, necesitas iniciar sesión. Esto nos ayuda a proporcionar resultados personalizados y seguros.'
         }
         onClose={handleCloseAuthModal}
         showRegisterOption={true}

@@ -6,6 +6,7 @@ import Loader from '@/components/loader';
 import { Button } from '@/components/ui/button';
 import { useAuthNavigation } from '@/hooks/use-auth-navigation';
 import { authClient } from '@/lib/auth-client';
+import { useI18n } from '@/hooks/use-i18n';
 
 type SignInFormProps = {
   onSwitchToSignUp: () => void;
@@ -15,6 +16,7 @@ type SignInFormProps = {
 export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProps) {
   const { signIn } = useAuthNavigation();
   const { isPending } = authClient.useSession();
+  const { t } = useI18n();
 
   const form = useForm({
     defaultValues: { email: '', password: '' },
@@ -86,9 +88,9 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
             </svg>
           </div>
           <h1 className="mt-4 font-bold text-2xl text-foreground tracking-tight sm:text-3xl">
-            Welcome Back
+            {t('auth.welcome')}
           </h1>
-          <p className="mt-2 text-gray-600 text-sm">Sign in to your account to continue</p>
+          <p className="mt-2 text-gray-600 text-sm">{t('textInput.loginToSubmit')}</p>
         </div>
 
         {/* Form */}
@@ -104,7 +106,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
               {(field) => (
                 <Field className="space-y-2" key="email">
                   <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
-                    Email
+                    {t('auth.Email')}
                   </Label>
                   <Input
                     aria-describedby={
@@ -121,7 +123,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
                     name={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder={t('auth.Email.placeholder')}
                     type="email"
                     value={field.state.value as string}
                   />
@@ -147,7 +149,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
               {(field) => (
                 <Field className="space-y-2" key="password">
                   <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
-                    Password
+                    {t('auth.Password')}
                   </Label>
                   <Input
                     aria-describedby={
@@ -164,7 +166,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
                     name={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder={t('auth.Password.placeholder')}
                     type="password"
                     value={field.state.value as string}
                   />
@@ -194,7 +196,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
                 disabled={!state.canSubmit || state.isSubmitting}
                 type="submit"
               >
-                {state.isSubmitting ? 'Signing you in...' : 'Sign In'}
+                {state.isSubmitting ? t('auth.signIn.Loader') : t('auth.signIn')}
               </Button>
             )}
           </form.Subscribe>
@@ -202,7 +204,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
 
         <div className="mt-6 text-center">
           <Button className="font-semibold text-sm" onClick={onSwitchToSignUp} variant="link">
-            Need an account? Sign Up
+            {t('auth.signUp.cta')}
           </Button>
         </div>
       </div>
