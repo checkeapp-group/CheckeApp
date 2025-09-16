@@ -1,1 +1,89 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #0f766e; /* teal-700 */
+  --color-primary-foreground: #ffffff;
+  --color-success: #059669; /* emerald-600 */
+  --color-success-foreground: #064e3b;
+  --color-info: #3b82f6; /* sky-500 */
+  --color-info-foreground: #1e3a8a;
+  --color-positive: #a3e635; /* lime-400 */
+  --color-positive-foreground: #365314;
+  --color-neutral: #f3f4f6; /* gray-100 */
+  --color-neutral-foreground: #111827;
+
+  --color-background: #ffffff;
+  --color-foreground: #0f766e; /* teal-700 for main text */
+  --color-card: #f3f4f6;
+  --color-card-foreground: #0f766e;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f766e;
+  --color-muted: #f3f4f6;
+  --color-muted-foreground: #6b7280;
+  --color-accent: #34d399;
+  --color-accent-foreground: #064e3b;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e5e7eb;
+  --color-input: #e5e7eb;
+  --color-ring: #0f766e;
+  --color-secondary: #f3f4f6;
+  --color-secondary-foreground: #111827;
+  --color-check: var(--color-success);
+  --color-check-foreground: #ffffff;
+
+  --radius: 0.5rem;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border: #000000;
+    --color-input: #ffffff;
+    --color-ring: #000000;
+    --color-foreground: #000000;
+    --color-background: #ffffff;
+  }
+}
+
+/* Focus-visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+/* Ensure minimum touch target size */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+select {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
