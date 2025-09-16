@@ -61,22 +61,35 @@ export async function validateVerificationAccess(
   userId: string,
   requireEditPermissions = false
 ): Promise<void> {
+  console.log(
+    `[Permissions] Validando acceso para userId: ${userId} en verificationId: ${verificationId}. Requiere edición: ${requireEditPermissions}`
+  );
+
   const permissions = await checkVerificationPermissions(verificationId, userId);
+  console.log('[Permissions] Resultado de checkVerificationPermissions:', permissions);
 
   if (!permissions.exists) {
+    console.error(`[Permissions] Fallo: Verificación no encontrada (${verificationId})`);
     throw new Error('Verificación no encontrada');
   }
 
   if (!permissions.isOwner) {
+    console.error(`[Permissions] Fallo: El usuario ${userId} no es propietario.`);
     throw new Error('No tienes permisos para acceder a esta verificación');
   }
 
   if (requireEditPermissions && !permissions.canEdit) {
+    console.error(
+      `[Permissions] Fallo: Se requieren permisos de edición, pero no se tienen. Estado actual: ${permissions.status}`
+    );
     if (permissions.status !== 'processing_questions') {
       throw new Error(
         `La verificación no está en estado editable. Estado actual: ${permissions.status}`
       );
     }
+    // Este caso es redundante si el anterior se cumple, pero lo dejamos por claridad
     throw new Error('No tienes permisos para editar esta verificación');
   }
+
+  console.log('[Permissions] Validación de acceso exitosa.');
 }

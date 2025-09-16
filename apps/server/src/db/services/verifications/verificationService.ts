@@ -1,6 +1,6 @@
-import { db } from '@/db';
-import { verification, type NewVerification } from '@/db/schema/schema';
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '@/db';
+import { type NewVerification, verification } from '@/db/schema/schema';
 
 /**
  * Creates a new verification record in the database
@@ -66,6 +66,17 @@ export async function updateVerificationStatus(
     throw new Error(
       `Failed to update verification status: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
+  }
+}
+export async function getVerificationById(verificationId: string) {
+  try {
+    const result = await db.query.verification.findFirst({
+      where: eq(verification.id, verificationId),
+    });
+    return result || null;
+  } catch (error) {
+    console.error(`Error al obtener la verificación con ID: ${verificationId}`, error);
+    throw new Error('No se pudo obtener la verificación.');
   }
 }
 

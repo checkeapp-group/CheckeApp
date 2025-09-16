@@ -3,3 +3,5 @@ node_modules
 .alchemy
 .env
 PROJECT_MAP.md
+.bmad-core
+.claude

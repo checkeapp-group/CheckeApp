@@ -1,14 +1,18 @@
-import { getCriticalQuestions, getGeneratedQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
+import { getCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
 import {
-  confirmQuestions,
   createNewQuestion,
   deleteQuestionWithValidation,
   reorderVerificationQuestions,
   updateQuestionWithValidation,
   validateVerificationReadyToContinue,
 } from '@/db/services/criticalQuestions/criticalQuestionsExtendedService';
-import { updateVerificationStatus } from '@/db/services/verifications/verificationService';
+import { saveSourcesFromAPI } from '@/db/services/sources/sourcesService';
+import {
+  getVerificationById,
+  updateVerificationStatus,
+} from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
+import { callExternalApiWithLogging, searchSources } from '@/lib/externalApiClient';
 import { protectedProcedure } from '@/lib/orpc';
 import {
   addQuestionSchema,
@@ -18,7 +22,6 @@ import {
   reorderQuestionsSchema,
   updateQuestionSchema,
 } from '@/lib/questionsSchemas';
-import { z } from 'zod';
 
 export const questionsRouter = {
   // Gets all questions from critical_questions for a verification
@@ -30,6 +33,8 @@ export const questionsRouter = {
 
       // Verify that there is a verification with status "processing_questions"
       await validateVerificationAccess(verificationId, userId, true);
+
+      console.log(`[oRPC] Acceso validado para ${userId} en ${verificationId}`);
 
       const questions = await getCriticalQuestions(verificationId);
       return questions;
@@ -96,63 +101,78 @@ export const questionsRouter = {
       return { success: true, message: 'Preguntas reordenadas correctamente' };
     }),
 
-  continueVerification: protectedProcedure
+  confirmQuestionsAndSearchSources: protectedProcedure
     .input(continueVerificationSchema)
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
       const userId = context.session.user.id;
+      console.log(`[oRPC confirm] Iniciando para verificationId: ${verificationId}`);
 
-      await validateVerificationAccess(verificationId, userId, true);
+      try {
+        await validateVerificationAccess(verificationId, userId, true);
+        const { canContinue, message } = await validateVerificationReadyToContinue(verificationId);
+        if (!canContinue) {
+          console.error(`[oRPC confirm] Fallo de validación: ${message}`);
+          throw new Error(message);
+        }
+        console.log(`[oRPC confirm] Validación de acceso y preguntas completada.`);
 
-      const { canContinue, message } = await validateVerificationReadyToContinue(verificationId);
+        const finalQuestions = await getCriticalQuestions(verificationId);
+        const verification = await getVerificationById(verificationId);
+        if (!verification) {
+          console.error(
+            `[oRPC confirm] Fallo crítico: No se encontró la verificación ${verificationId} en la BD.`
+          );
+          throw new Error('Verificación no encontrada.');
+        }
+        console.log(
+          `[oRPC confirm] Obtenidas ${finalQuestions.length} preguntas y el texto original.`
+        );
 
-      if (!canContinue) {
-        throw new Error(message);
+        console.log(`[oRPC confirm] Llamando a la API externa para buscar fuentes...`);
+        const sourcesResult = await callExternalApiWithLogging(
+          verificationId,
+          'search_sources',
+          () =>
+            searchSources({
+              verification_id: verificationId,
+              questions: finalQuestions.map((q) => ({
+                id: q.id,
+                question_text: q.questionText,
+                order_index: q.orderIndex,
+              })),
+              original_text: verification.originalText,
+            })
+        );
+        console.log(
+          `[oRPC confirm] API externa respondió. Se encontraron ${sourcesResult.sources?.length || 0} fuentes.`
+        );
+
+        if (sourcesResult.sources && sourcesResult.sources.length > 0) {
+          console.log(
+            `[oRPC confirm] Guardando ${sourcesResult.sources.length} fuentes en la BD...`
+          );
+          await saveSourcesFromAPI(verificationId, sourcesResult.sources);
+          console.log(`[oRPC confirm] Fuentes guardadas correctamente.`);
+        }
+
+        console.log(`[oRPC confirm] Actualizando estado de la verificación a 'sources_ready'...`);
+        await updateVerificationStatus(verificationId, 'sources_ready');
+        console.log(`[oRPC confirm] Estado actualizado.`);
+
+        return {
+          success: true,
+          message: 'Fuentes encontradas y guardadas correctamente.',
+          nextStep: 'sources',
+          sources_count: sourcesResult.sources?.length || 0,
+        };
+      } catch (error) {
+        console.error(
+          `[oRPC confirm] --- ERROR CATCHED --- en verificationId ${verificationId}:`,
+          error
+        );
+        throw error;
       }
-
-      await updateVerificationStatus(verificationId, 'sources_ready');
-
-      return {
-        success: true,
-        message: 'Verificación lista para el siguiente paso',
-        nextStep: 'sources',
-      };
-    }),
-  getGeneratedQuestions: protectedProcedure
-    .input(z.object({ verificationId: z.string() }))
-    .handler(async ({ input, context }) => {
-      const { verificationId } = input;
-      const userId = context.session.user.id;
-
-      // You can add permission checks here if needed
-      await validateVerificationAccess(verificationId, userId);
-
-      const questions = await getGeneratedQuestions(verificationId);
-      return { questions };
-    }),
-
-  confirmQuestions: protectedProcedure
-    .input(
-      z.object({
-        verificationId: z.string(),
-        questions: z.array(
-          z.object({
-            question_text: z.string(),
-            original_question: z.string(),
-            order_index: z.number(),
-          })
-        ),
-      })
-    )
-    .handler(async ({ input, context }) => {
-      const { verificationId, questions } = input;
-      const userId = context.session.user.id;
-
-      // You can add permission checks here if needed
-      await validateVerificationAccess(verificationId, userId);
-
-      await confirmQuestions(verificationId, questions);
-      return { success: true, message: 'Questions confirmed successfully' };
     }),
 };
 

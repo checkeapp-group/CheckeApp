@@ -2,26 +2,28 @@ import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
 import { criticalQuestion, type NewCriticalQuestion } from '@/db/schema/schema';
+import { updateVerificationStatus } from '../verifications/verificationService';
 import {
   deleteCriticalQuestion,
   getCriticalQuestionById,
   getCriticalQuestions,
+  saveCriticalQuestions,
   updateCriticalQuestion,
 } from './criticalQuestionService';
 
-export interface QuestionUpdateData {
+export type QuestionUpdateData = {
   questionText: string;
-}
+};
 
-export interface QuestionCreateData {
+export type QuestionCreateData = {
   verificationId: string;
   questionText: string;
-}
+};
 
-export interface QuestionReorderItem {
+export type QuestionReorderItem = {
   id: string;
   orderIndex: number;
-}
+};
 
 /**
  * Validate that a question belongs to a specific verification
@@ -75,7 +77,6 @@ export async function deleteQuestionWithValidation(
 
   await deleteCriticalQuestion(questionId);
 }
-
 
 export async function createNewQuestion(data: QuestionCreateData): Promise<any> {
   const trimmedText = data.questionText.trim();
@@ -183,5 +184,28 @@ export async function validateVerificationReadyToContinue(
       canContinue: false,
       message: 'Error al validar el estado de la verificación',
     };
+  }
+}
+export async function confirmQuestions(
+  verificationId: string,
+  questions: Array<{
+    question_text: string;
+    original_question: string;
+    order_index: number;
+  }>
+): Promise<void> {
+  try {
+    // Save the questions to the database
+    await saveCriticalQuestions(verificationId, questions);
+
+    // Update the verification status to 'sources_ready'
+    await updateVerificationStatus(verificationId, 'sources_ready');
+
+    console.log(
+      `Confirmed and saved ${questions.length} questions for verification: ${verificationId}`
+    );
+  } catch (error) {
+    console.error('Error confirming questions:', error);
+    throw new Error('Failed to confirm questions');
   }
 }

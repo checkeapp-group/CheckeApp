@@ -8,6 +8,17 @@ const authInstance = betterAuth({
   baseURL: process.env.AUTH_BASE_URL ?? 'http://localhost:3000',
   secret: process.env.AUTH_SECRET! ?? 'default_secret',
   providers: [],
+  session: {
+    freshAge: 60 * 10,
+    expiresIn: 60 * 60 * 24 * 7,
+  },
+  advanced: {
+    cookiePrefix: 'factchecker-auth',
+    crossSubDomainCookies: {
+      domain: process.env.COOKIE_DOMAIN,
+      enabled: false,
+    },
+  },
 });
 
 export default authInstance;

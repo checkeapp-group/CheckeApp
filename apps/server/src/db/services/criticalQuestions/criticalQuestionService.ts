@@ -1,7 +1,9 @@
+/** biome-ignore-all lint/style/useFilenamingConvention: <explanation> */
+import { eq } from 'drizzle-orm';
+import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
 import { criticalQuestion, type NewCriticalQuestion } from '@/db/schema/schema';
-import { v4 as uuidv4 } from 'uuid';
-import { eq } from 'drizzle-orm';
+import { generateQuestions } from '@/lib/externalApiClient';
 
 /**
  * Type for questions received from external API
@@ -42,7 +44,7 @@ export async function saveCriticalQuestions(
 
       const trimmedText = question.question_text.trim();
 
-      if (trimmedText.length < 50 || trimmedText.length > 5000) {
+      if (trimmedText.length < 5 || trimmedText.length > 200) {
         console.warn(
           `Skipping question at index ${i}: invalid length (${trimmedText.length} characters)`
         );
@@ -124,8 +126,8 @@ export async function updateCriticalQuestion(questionId: string, newText: string
   const trimmedText = newText.trim();
 
   // Validate length
-  if (trimmedText.length < 50 || trimmedText.length > 5000) {
-    throw new Error('Question text must be between 50 and 5000 characters');
+  if (trimmedText.length < 5 || trimmedText.length > 200) {
+    throw new Error('Question text must be between 5 and 200 characters');
   }
 
   try {
@@ -181,6 +183,58 @@ export async function getCriticalQuestionById(questionId: string) {
     console.error('Error getting critical question by ID:', error);
     throw new Error(
       `Failed to get critical question: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+  }
+}
+
+export async function getGeneratedQuestions(verificationId: string) {
+  try {
+    // This function will now call your fake API
+    const response = await generateQuestions({
+      verification_id: verificationId,
+      original_text: 'This is a placeholder, you might want to fetch the real text from the DB',
+      language: 'es',
+      max_questions: 5,
+    });
+
+    if (response.success) {
+      return response.questions;
+    }
+    throw new Error(response.message || 'Failed to generate questions');
+  } catch (error) {
+    console.error('Error fetching generated questions:', error);
+    throw new Error(
+      `Failed to fetch generated questions: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+  }
+}
+
+/** Send critical questions to external API for source finding
+ * Sends critical questions to an external API for source finding
+ * @param verificationId - The verification ID
+ * @param questions - The critical questions to send
+ */
+
+export async function sendCriticalQuestions(
+  verificationId: string,
+  questions: ReceivedQuestion[]
+): Promise<void> {
+  try {
+    // This function will now call your API
+    const response = await sendCriticalQuestionsToAPI({
+      verification_id: verificationId,
+      questions,
+    });
+
+    if (response.success) {
+      console.log(`Successfully sent questions for verification: ${verificationId}`);
+    } else {
+      throw new Error(response.message || 'Failed to send questions');
+    }
+  } catch (error) {
+    console.error('Error sending critical questions:', error);
+    throw new Error(
+      `Failed to send critical questions: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
   }
 }

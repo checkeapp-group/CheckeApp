@@ -2,6 +2,7 @@ import type { RouterClient } from '@orpc/server';
 import { z } from 'zod';
 import { checkVerificationPermissions } from '@/db/services/verifications/verificationsPermissionsService';
 import { questionsRouter } from '@/routers/questionRouter';
+import { sourcesRouter } from '@/routers/sourcesRouter';
 import { protectedProcedure, publicProcedure } from '../lib/orpc';
 
 export const appRouter = {
@@ -28,6 +29,7 @@ export const appRouter = {
     }),
 
   ...questionsRouter,
+  ...sourcesRouter
 };
 
 export type AppRouter = typeof appRouter;
