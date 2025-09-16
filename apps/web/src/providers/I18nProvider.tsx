@@ -17,27 +17,29 @@ const I18nContext = createContext<{
   setLocale: (lng: Locale) => void;
 }>({
   locale: 'es',
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
   setLocale: () => {},
 });
 
 export const useI18nContext = () => useContext(I18nContext);
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
-  const [locale, setLocale] = useState<Locale>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('locale') as Locale;
-      if (saved && AVAILABLE_LOCALES.includes(saved)) {
-        return saved;
-      }
-    }
-  });
+  const [locale, setLocale] = useState<Locale>('es');
 
   useEffect(() => {
-    localStorage.setItem('locale', locale);
-  }, [locale]);
+    const saved = localStorage.getItem('locale') as Locale;
+    if (saved && AVAILABLE_LOCALES.includes(saved)) {
+      setLocale(saved);
+    }
+  }, []);
+
+  const handleSetLocale = (newLocale: Locale) => {
+    localStorage.setItem('locale', newLocale);
+    setLocale(newLocale);
+  };
 
   return (
-    <I18nContext.Provider value={{ locale, setLocale }}>
+    <I18nContext.Provider value={{ locale, setLocale: handleSetLocale }}>
       <IntlProvider locale={locale} messages={messagesMap[locale]}>
         {children}
       </IntlProvider>
