@@ -8,6 +8,7 @@ import { LanguageSelector } from '@/components/ui/lenguage-selector';
 import { useAuth } from '@/hooks/use-auth';
 import { useI18n } from '@/hooks/use-i18n';
 import FactCheckerLogo from '@/public/FactCheckerLogo.webp';
+import { Button } from '../ui/button';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -22,50 +23,38 @@ export default function RootLayout({ children, showHeader = true }: LayoutProps)
     <Providers>
       <div className="flex min-h-screen flex-col bg-background">
         {showHeader && (
-          <header className="border-border border-b bg-card shadow-sm">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="flex h-16 items-center justify-between">
-                <div className="flex items-center">
-                  <Image
-                    alt="FactChecker Logo"
-                    className="h-auto w-32 md:w-40 lg:w-48"
-                    height={128}
-                    priority
-                    src={FactCheckerLogo}
-                    width={128}
-                  />
-                  <span className="sr-only">FactChecker - fact verification platform</span>
-                </div>
-                <div className="flex items-center space-x-6">
-                  <nav className="hidden space-x-8 md:flex">
-                    <Link
-                      className="font-medium text-muted-foreground text-sm hover:text-foreground"
-                      href="/verify"
-                    >
-                      {t('nav.verify')}
-                    </Link>
-                  </nav>
-                  <div className="flex items-center space-x-4">
-                    {isAuthenticated ? (
-                      <UserMenu />
-                    ) : (
-                      <div className="flex items-center space-x-3">
-                        <Link
-                          className="font-medium text-muted-foreground text-sm transition-colors hover:text-foreground"
-                          href="/login"
-                        >
-                          {t('auth.signIn')}
-                        </Link>
-                        <Link
-                          className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-success"
-                          href="/verify"
-                        >
-                          {t('auth.getStarted')}
-                        </Link>
-                      </div>
-                    )}
-                    <LanguageSelector />
-                  </div>
+          <header className="sticky top-0 z-50 w-full border-border border-b bg-card/95 backdrop-blur-sm">
+            <div className="container mx-auto flex h-16 items-center justify-between">
+              <Link className="flex items-center gap-2" href="/">
+                <Image
+                  alt="FactChecker Logo"
+                  className="h-8 w-auto"
+                  height={32}
+                  priority
+                  src={FactCheckerLogo}
+                  width={104}
+                />
+              </Link>
+
+              <div className="flex items-center gap-4">
+                <nav className="hidden items-center gap-6 md:flex">
+                  <Link href="/verify">{t('nav.verify')}</Link>
+                </nav>
+
+                <div className="flex items-center gap-2">
+                  {isAuthenticated ? (
+                    <UserMenu />
+                  ) : (
+                    <div className="hidden items-center gap-2 sm:flex">
+                      <Button asChild variant="ghost">
+                        <Link href="/login">{t('auth.signIn')}</Link>
+                      </Button>
+                      <Button asChild>
+                        <Link href="/verify">{t('auth.getStarted')}</Link>
+                      </Button>
+                    </div>
+                  )}
+                  <LanguageSelector />
                 </div>
               </div>
             </div>
@@ -74,11 +63,35 @@ export default function RootLayout({ children, showHeader = true }: LayoutProps)
 
         <main className="flex-1">{children}</main>
 
-        <footer className="border-border border-t bg-card py-6">
-          <div className="mx-auto max-w-7xl px-4 text-center">
-            <p className="text-muted-foreground text-sm">
-              {t('footer.copyright', { year: new Date().getFullYear() })}
-            </p>
+        <footer className="border-border border-t bg-card">
+          {/* Sección principal del footer */}
+          <div className="container mx-auto flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
+            {/* Logo y tagline */}
+            <div className="flex flex-col items-center gap-2 sm:items-start">
+              <Link className="flex items-center gap-2" href="/">
+                <Image
+                  alt="FactChecker Logo"
+                  className="h-6 w-auto"
+                  height={24}
+                  src={FactCheckerLogo}
+                  width={78}
+                />
+              </Link>
+              <p className="text-muted-foreground text-sm">{t('app.tagline')}</p>
+            </div>
+            {/* Enlaces secundarios */}
+            <div className="flex items-center gap-4 text-muted-foreground text-sm">
+              <Link className="transition-colors hover:text-foreground" href="/about">
+                {t('nav.about')}
+              </Link>
+              <Link className="transition-colors hover:text-foreground" href="/help">
+                {t('nav.help')}
+              </Link>
+            </div>
+          </div>
+          {/* Barra de copyright */}
+          <div className="container mx-auto border-border border-t py-4 text-center text-muted-foreground text-xs">
+            <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
           </div>
         </footer>
       </div>

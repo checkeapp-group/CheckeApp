@@ -1,7 +1,7 @@
 'use client';
 
 import type { source } from '@/../server/src/db/schema/schema';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card } from '@/components/ui/Card';
 import { Checkbox } from '@/components/ui/checkbox';
 
 type SourceCardProps = {
@@ -11,15 +11,21 @@ type SourceCardProps = {
 
 export default function SourceCard({ source, onSelectionChange }: SourceCardProps) {
   return (
-    <Card className={`transition-all ${source.isSelected ? 'border-primary' : ''}`}>
-      <CardHeader className="flex-row items-start gap-4 space-y-0">
+    <Card
+      className={`p-4 transition-all ${source.isSelected ? 'border-primary ring-2 ring-primary/20' : ''}`}
+    >
+      <div className="flex items-start gap-4">
         <Checkbox
           checked={source.isSelected}
+          className="mt-1"
           id={source.id}
           onCheckedChange={(checked) => onSelectionChange(Boolean(checked))}
         />
         <div className="grid gap-1.5 leading-none">
-          <label className="cursor-pointer font-medium text-base" htmlFor={source.id}>
+          <label
+            className="cursor-pointer font-semibold text-base text-foreground"
+            htmlFor={source.id}
+          >
             {source.title}
           </label>
           <a
@@ -30,11 +36,9 @@ export default function SourceCard({ source, onSelectionChange }: SourceCardProp
           >
             {source.domain}
           </a>
+          <p className="mt-2 text-muted-foreground text-sm">{source.summary}</p>
         </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground text-sm">{source.summary}</p>
-      </CardContent>
+      </div>
     </Card>
   );
 }

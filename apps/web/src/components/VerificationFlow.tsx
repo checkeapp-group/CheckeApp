@@ -68,7 +68,7 @@ export default function VerificationFlow() {
         isCompleted={completedSteps.includes('step-1')}
         isDisabled={false}
         isOpen={activeStep === 'step-1'}
-        stepValue="step-1"
+        stepNumber={1}
         title="Paso 1: Envía tu texto a verificar"
       >
         <TextInputForm isAuthenticated={isAuthenticated} onSuccess={handleTextSubmitSuccess} />
@@ -79,7 +79,7 @@ export default function VerificationFlow() {
         isCompleted={completedSteps.includes('step-2')}
         isDisabled={!completedSteps.includes('step-1')}
         isOpen={activeStep === 'step-2'}
-        stepValue="step-2"
+        stepNumber={2}
         title="Paso 2: Revisa y edita las preguntas"
       >
         {verificationId && (
@@ -96,14 +96,11 @@ export default function VerificationFlow() {
         isCompleted={completedSteps.includes('step-3')}
         isDisabled={!completedSteps.includes('step-2')}
         isOpen={activeStep === 'step-3'}
-        stepValue="step-3"
+        stepNumber={3}
         title="Paso 3: Selecciona las fuentes"
       >
         {verificationId && (
-          <SourcesList
-            onComplete={handleSourcesConfirmed}
-            verificationId={verificationId}
-          />
+          <SourcesList onComplete={handleSourcesConfirmed} verificationId={verificationId} />
         )}
       </Step>
     </div>
