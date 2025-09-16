@@ -1,14 +1,14 @@
+'use client';
+
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { type SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'sonner';
-import { useDebounce } from 'use-debounce';
 import { client } from '@/utils/orpc';
 
 export const orpc = createTanstackQueryUtils(client);
 
 export type Question = {
-  isActive: boolean;
   id: string;
   verificationId: string;
   questionText: string;
@@ -16,123 +16,86 @@ export type Question = {
   isEdited: boolean;
   orderIndex: number;
   createdAt: Date;
+  isActive?: boolean;
 };
 
 type UseQuestionsEditorProps = {
   verificationId: string;
-  reviewMode?: boolean;
 };
 
-export function useQuestionsEditor({
-  verificationId,
-  reviewMode = false,
-}: UseQuestionsEditorProps) {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [pendingChanges, setPendingChanges] = useState<Set<string>>(new Set());
-  const [savingStates, setSavingStates] = useState<Record<string, boolean>>({});
+export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) {
   const queryClient = useQueryClient();
 
-  // ✅ Query principal
   const questionsQuery = useQuery(
     orpc.getVerificationQuestions.queryOptions({
       input: { verificationId },
-      enabled: !reviewMode,
-      onSuccess: (data: SetStateAction<Question[]>) => setQuestions(data),
-      onError: (error: any) => toast.error(error.message),
+      enabled: !!verificationId,
     })
   );
 
+  const invalidateAndRefetch = () => {
+    queryClient.invalidateQueries({
+      queryKey: orpc.getVerificationQuestions.key({ input: { verificationId } }),
+    });
+  };
+
   const updateQuestionMutation = useMutation(
     orpc.updateQuestion.mutationOptions({
-      onSuccess: (_, { questionId }) => {
-        setSavingStates((prev) => ({ ...prev, [questionId]: false }));
-        setPendingChanges((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(questionId);
-          return newSet;
-        });
-
-        // ✅ Refetch usando queryKey de oRPC
-        queryClient.invalidateQueries(
-          orpc.getVerificationQuestions.queryKey({
-            input: { verificationId },
-          })
-        );
-
-        toast.success('Pregunta guardada automáticamente');
+      onSuccess: () => {
+        toast.success('Pregunta actualizada.');
+        invalidateAndRefetch();
       },
       onError: (error: any) => {
-        toast.error(`Error al guardar: ${error.message}`);
-        queryClient.invalidateQueries(
-          orpc.getVerificationQuestions.queryKey({
-            input: { verificationId },
-          })
-        );
+        toast.error(`Error al actualizar: ${error.message}`);
+        invalidateAndRefetch(); // Revertir a los datos del servidor
       },
     })
   );
 
   const deleteQuestionMutation = useMutation(
     orpc.deleteQuestion.mutationOptions({
-      onMutate: ({ questionId }) => {
-        setQuestions((prev) => prev.filter((q) => q.id !== questionId));
+      onSuccess: () => {
+        toast.success('Pregunta eliminada.');
+        invalidateAndRefetch();
       },
-      onSuccess: () => toast.success('Pregunta eliminada'),
       onError: (error: any) => {
         toast.error(`Error al eliminar: ${error.message}`);
-        queryClient.invalidateQueries(
-          orpc.getVerificationQuestions.queryKey({ input: { verificationId } })
-        );
+        invalidateAndRefetch();
       },
     })
   );
 
   const addQuestionMutation = useMutation(
     orpc.addQuestion.mutationOptions({
-      onSuccess: (data) => {
-        const newQuestion = data.question || data;
-        setQuestions((prev) => [...prev, newQuestion]);
-        toast.success('Pregunta añadida');
+      onSuccess: () => {
+        toast.success('Pregunta añadida.');
+        invalidateAndRefetch();
       },
-      onError: (error: any) => toast.error(`Error al añadir pregunta: ${error.message}`),
+      onError: (error: any) => {
+        toast.error(`Error al añadir: ${error.message}`);
+      },
     })
   );
 
   const reorderQuestionsMutation = useMutation(
     orpc.reorderQuestions.mutationOptions({
-      onSuccess: () => toast.success('Orden actualizado'),
+      onSuccess: () => {
+        toast.success('Orden de preguntas actualizado.');
+        invalidateAndRefetch();
+      },
       onError: (error: any) => {
         toast.error(`Error al reordenar: ${error.message}`);
-        queryClient.invalidateQueries(
-          orpc.getVerificationQuestions.queryKey({ input: { verificationId } })
-        );
+        invalidateAndRefetch();
       },
     })
   );
 
-  // Auto-save con debounce
-  const [debouncedQuestions] = useDebounce(questions, 2000);
-
-  useEffect(() => {
-    if (pendingChanges.size > 0 && !reviewMode) {
-      for (const questionId of pendingChanges) {
-        const question = debouncedQuestions.find((q) => q.id === questionId);
-        if (question) {
-          updateQuestionMutation.mutate({
-            verificationId,
-            questionId,
-            questionText: question.questionText,
-          });
-        }
-      }
-    }
-  }, [debouncedQuestions, pendingChanges, reviewMode, updateQuestionMutation]);
-
-  // Funciones auxiliares
-  const updateQuestion = useCallback((questionId: string, questionText: string) => {
-    setPendingChanges((prev) => new Set(prev).add(questionId));
-    setQuestions((prev) => prev.map((q) => (q.id === questionId ? { ...q, questionText } : q)));
-  }, []);
+  const updateQuestion = useCallback(
+    (questionId: string, questionText: string) => {
+      updateQuestionMutation.mutate({ verificationId, questionId, questionText });
+    },
+    [updateQuestionMutation, verificationId]
+  );
 
   const deleteQuestion = useCallback(
     (questionId: string) => {
@@ -150,27 +113,30 @@ export function useQuestionsEditor({
 
   const reorderQuestions = useCallback(
     (newOrder: Question[]) => {
-      setQuestions(newOrder);
       const questionsData = newOrder.map((q, index) => ({ id: q.id, orderIndex: index }));
       reorderQuestionsMutation.mutate({ verificationId, questions: questionsData });
     },
     [reorderQuestionsMutation, verificationId]
   );
 
+  const questions = questionsQuery.data || [];
   const canContinue =
-    questions.length > 0 && questions.every((q) => q.questionText.trim().length >= 5);
+    !questionsQuery.isLoading &&
+    questions.length > 0 &&
+    questions.every((q) => q.questionText.trim().length >= 5);
 
   return {
     questions,
     isLoading: questionsQuery.isLoading,
     error: questionsQuery.error,
+
     updateQuestion,
     deleteQuestion,
     addQuestion,
     reorderQuestions,
+
     canContinue,
-    savingStates,
-    pendingChanges: pendingChanges.size > 0,
+
     refetch: questionsQuery.refetch,
   };
 }

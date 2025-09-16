@@ -1,4 +1,5 @@
 import { useRouter } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
 import { authClient } from '@/lib/auth-client';
 
 // biome-ignore lint/nursery/useConsistentTypeDefinitions: <explanation>
@@ -21,27 +22,32 @@ export function useAuth() {
   const router = useRouter();
   const { data: session, isPending: isLoading } = authClient.useSession();
 
-  const authState: AuthState = {
-    user: session?.user
-      ? {
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.name,
-          emailVerified: session.user.emailVerified,
-          image: session.user.image,
-        }
-      : null,
-    isAuthenticated: !!session?.user,
-    isLoading,
-  };
+  // Memoize the auth state object to prevent unnecessary re-renders
+  const authState: AuthState = useMemo(
+    () => ({
+      user: session?.user
+        ? {
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.name,
+            emailVerified: session.user.emailVerified,
+            image: session.user.image,
+          }
+        : null,
+      isAuthenticated: !!session?.user,
+      isLoading,
+    }),
+    [session?.user, isLoading]
+  );
 
-  const checkAuthStatus = async () => {
+  // Memoize functions to prevent unnecessary re-creations
+  const checkAuthStatus = useCallback(async () => {
     // This function is now handled automatically by authClient.useSession()
     // Keep for backward compatibility but it's essentially a no-op
     return Promise.resolve();
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await authClient.signOut({
         fetchOptions: {
@@ -56,21 +62,21 @@ export function useAuth() {
     } catch (error) {
       console.error('Logout failed:', error);
     }
-  };
+  }, [router]);
 
   // Note: Use useAuthNavigation hook for login/signup instead
   // These are kept for backward compatibility but are deprecated
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     console.warn('useAuth.login is deprecated, use useAuthNavigation.signIn instead');
     return { success: false, error: 'Use useAuthNavigation.signIn instead' };
-  };
+  }, []);
 
-  const signup = async (email: string, password: string, name?: string) => {
+  const signup = useCallback(async (email: string, password: string, name?: string) => {
     console.warn('useAuth.signup is deprecated, use useAuthNavigation.signUp instead');
     return { success: false, error: 'Use useAuthNavigation.signUp instead' };
-  };
+  }, []);
 
-  const signInWithProvider = async (provider: 'github' | 'google' | 'discord') => {
+  const signInWithProvider = useCallback(async (provider: 'github' | 'google' | 'discord') => {
     try {
       await authClient.signIn.social({
         provider,
@@ -86,9 +92,9 @@ export function useAuth() {
     } catch (error) {
       console.error(`${provider} signin failed:`, error);
     }
-  };
+  }, []);
 
-  const forgotPassword = async (email: string) => {
+  const forgotPassword = useCallback(async (email: string) => {
     try {
       await authClient.forgetPassword({
         email,
@@ -102,9 +108,9 @@ export function useAuth() {
         error: error instanceof Error ? error.message : 'Network error',
       };
     }
-  };
+  }, []);
 
-  const resetPassword = async (token: string, password: string) => {
+  const resetPassword = useCallback(async (token: string, password: string) => {
     try {
       await authClient.resetPassword({
         token,
@@ -118,9 +124,9 @@ export function useAuth() {
         error: error instanceof Error ? error.message : 'Network error',
       };
     }
-  };
+  }, []);
 
-  const updateProfile = async (data: { name?: string; image?: string }) => {
+  const updateProfile = useCallback(async (data: { name?: string; image?: string }) => {
     try {
       const response = await authClient.updateUser(data);
       // Session will be updated automatically by authClient.useSession()
@@ -132,17 +138,31 @@ export function useAuth() {
         error: error instanceof Error ? error.message : 'Network error',
       };
     }
-  };
+  }, []);
 
-  return {
-    ...authState,
-    login,
-    logout,
-    signup,
-    signInWithProvider,
-    forgotPassword,
-    resetPassword,
-    updateProfile,
-    checkAuthStatus,
-  };
+  // Memoize the return object to prevent unnecessary re-renders
+  return useMemo(
+    () => ({
+      ...authState,
+      login,
+      logout,
+      signup,
+      signInWithProvider,
+      forgotPassword,
+      resetPassword,
+      updateProfile,
+      checkAuthStatus,
+    }),
+    [
+      authState,
+      login,
+      logout,
+      signup,
+      signInWithProvider,
+      forgotPassword,
+      resetPassword,
+      updateProfile,
+      checkAuthStatus,
+    ]
+  );
 }
