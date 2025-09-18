@@ -109,10 +109,10 @@ export const source = mysqlTable(
       'chk_source_url_length',
       sql`CHAR_LENGTH(${table.url}) > 0 AND CHAR_LENGTH(${table.url}) <= 2048`
     ),
-    urlFormatCheck: check(
-      'chk_source_url_format',
-      sql`${table.url} REGEXP '^https?://[^\\s/$.?#].[^\\s]*$'`
-    ),
+    //urlFormatCheck: check(
+    //'chk_source_url_format',
+    // sql`${table.url} REGEXP '^https?://(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)'`
+    //),
   })
 );
 

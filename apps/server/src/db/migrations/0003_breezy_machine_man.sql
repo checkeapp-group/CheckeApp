@@ -1,0 +1,1 @@
+ALTER TABLE `source` DROP CONSTRAINT `chk_source_url_format`;

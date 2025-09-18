@@ -1,0 +1,2 @@
+ALTER TABLE `source` DROP CONSTRAINT `chk_source_url_format`;--> statement-breakpoint
+ALTER TABLE `source` ADD CONSTRAINT `chk_source_url_format` CHECK (`source`.`url` REGEXP '^https?://(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
