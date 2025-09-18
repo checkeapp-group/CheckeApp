@@ -18,6 +18,8 @@ type QuestionCardProps = {
   onCancel: (questionId: string) => void;
   onDelete: (questionId: string) => void;
   onTextChange: (questionId: string, text: string) => void;
+  dragAttributes?: any;
+  dragListeners?: any;
 };
 
 export function QuestionCard({
@@ -28,6 +30,8 @@ export function QuestionCard({
   onSave,
   onCancel,
   onDelete,
+  dragAttributes,
+  dragListeners,
 }: QuestionCardProps) {
   const { t } = useI18n();
   const [localText, setLocalText] = useState(question.questionText);
@@ -77,8 +81,12 @@ export function QuestionCard({
         !isTextValid && isEditing && 'border-destructive/50 ring-destructive/20'
       )}
     >
-      <div className="flex w-full items-start gap-3">
-        <div className="mt-1 flex-shrink-0 cursor-grab text-muted-foreground transition-colors hover:text-foreground">
+      <div className="flex w-full items-center gap-3">
+        <div
+          className="flex flex-shrink-0 cursor-grab items-center text-muted-foreground transition-colors hover:text-foreground"
+          {...dragAttributes}
+          {...dragListeners}
+        >
           <GripVertical className="h-5 w-5" />
         </div>
 

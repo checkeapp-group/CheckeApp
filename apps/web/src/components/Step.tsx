@@ -32,9 +32,9 @@ export default function Step({
         <Card
           className={cn(
             'relative overflow-hidden transition-all duration-300',
-            isOpen && !isCompleted && 'border-primary shadow-lg ring-2 ring-primary/20',
-            isCompleted && 'border-green-500/30 bg-green-500/5',
-            isDisabled && 'bg-muted/50 opacity-60'
+            isOpen && !isCompleted && 'border-primary/30',
+            isCompleted && 'border-green-500/20 bg-green-500/3',
+            isDisabled && 'bg-muted/30 opacity-50'
           )}
         >
           <Disclosure.Button

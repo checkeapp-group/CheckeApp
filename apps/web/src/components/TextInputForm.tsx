@@ -14,23 +14,35 @@ import { useAppRouter } from '@/lib/router';
 type TextInputFormProps = {
   isAuthenticated?: boolean;
   onSuccess?: (verificationId: string) => void;
+  text: string;
+  onTextChange: (newText: string) => void;
+  isLocked?: boolean;
 };
 
-const TextInputForm = ({ isAuthenticated: propIsAuthenticated, onSuccess }: TextInputFormProps) => {
+const TextInputForm = ({
+  isAuthenticated: propIsAuthenticated,
+  onSuccess,
+  text,
+  onTextChange,
+  isLocked = false,
+}: TextInputFormProps) => {
   const { t } = useI18n();
   const { isAuthenticated: hookIsAuthenticated, isLoading: authLoading } = useAuth();
   const { navigate } = useAppRouter();
+  const [isFocused, setIsFocused] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [text, setText] = useState('');
 
   const isAuthenticated = propIsAuthenticated ?? hookIsAuthenticated;
   const maxLength = 5000;
   const minLength = 50;
 
   const handleUnauthenticatedAction = useCallback(() => {
-    if (authLoading || isAuthenticated) return;
+    if (authLoading || isAuthenticated) {
+      return;
+    }
+
     setShowAuthModal(true);
   }, [authLoading, isAuthenticated]);
 
@@ -39,7 +51,7 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated, onSuccess }: Text
       handleUnauthenticatedAction();
       return;
     }
-    setText(e.target.value);
+    onTextChange(e.target.value);
   };
 
   const handleInteraction = () => {
@@ -49,7 +61,9 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated, onSuccess }: Text
   };
 
   const handleSubmit = async () => {
-    if (isLoading || !isAuthenticated || text.trim().length < minLength) return;
+    if (isLoading || !isAuthenticated || text.trim().length < minLength) {
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -62,9 +76,12 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated, onSuccess }: Text
 
       if (result.success) {
         toast.success('Verificación iniciada. Ahora revisa las preguntas.');
-        if (onSuccess) onSuccess(result.verification_id);
-        else navigate(`/verify/${result.verification_id}/edit`);
-        setText('');
+
+        if (onSuccess) {
+          onSuccess(result.verification_id);
+        } else {
+          navigate(`/verify/${result.verification_id}/edit`);
+        }
       } else {
         toast.error(result.message || 'Falló el inicio de la verificación.');
       }
@@ -77,13 +94,21 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated, onSuccess }: Text
 
   return (
     <>
-      <Card className="p-4 sm:p-6" onClick={handleInteraction}>
+      <Card
+        className={`p-4 sm:p-6 ${isFocused ? 'border-primary/50 bg-card/95 shadow-md' : ''}`}
+        onClick={handleInteraction}
+      >
         <TextareaAutosize
-          className="w-full resize-none border-0 bg-transparent text-lg placeholder:text-muted-foreground focus:outline-none focus:ring-0"
+          className="w-full resize-none border-0 bg-transparent text-lg placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:bg-muted/50"
+          disabled={isLoading || !isAuthenticated || isLocked}
           maxLength={maxLength}
           minRows={3}
+          onBlur={() => setIsFocused(false)}
           onChange={handleTextChange}
-          onFocus={handleInteraction}
+          onFocus={() => {
+            setIsFocused(true);
+            handleInteraction();
+          }}
           placeholder={
             authLoading
               ? t('common.loading')
@@ -100,7 +125,9 @@ const TextInputForm = ({ isAuthenticated: propIsAuthenticated, onSuccess }: Text
           </div>
           <Button
             disabled={
-              authLoading || (isAuthenticated && (text.trim().length < minLength || isLoading))
+              authLoading ||
+              (isAuthenticated && (text.trim().length < minLength || isLoading)) ||
+              isLocked
             }
             loading={isLoading}
             onClick={isAuthenticated ? handleSubmit : handleInteraction}

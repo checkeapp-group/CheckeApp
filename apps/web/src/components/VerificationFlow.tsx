@@ -16,6 +16,7 @@ export default function VerificationFlow() {
   const [activeStep, setActiveStep] = useState('step-1');
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [verificationId, setVerificationId] = useState<string | null>(null);
+  const [verificationText, setVerificationText] = useState('');
 
   const searchSourcesMutation = useMutation(
     orpc.confirmQuestionsAndSearchSources.mutationOptions({
@@ -71,7 +72,13 @@ export default function VerificationFlow() {
         stepNumber={1}
         title="Paso 1: Envía tu texto a verificar"
       >
-        <TextInputForm isAuthenticated={isAuthenticated} onSuccess={handleTextSubmitSuccess} />
+        <TextInputForm
+          isAuthenticated={isAuthenticated}
+          isLocked={completedSteps.includes('step-1') && activeStep !== 'step-1'}
+          onSuccess={handleTextSubmitSuccess}
+          onTextChange={setVerificationText}
+          text={verificationText}
+        />
       </Step>
 
       <Step
@@ -85,6 +92,7 @@ export default function VerificationFlow() {
         {verificationId && (
           <QuestionsList
             isContinuing={searchSourcesMutation.isPending}
+            isLocked={completedSteps.includes('step-2') && activeStep !== 'step-2'}
             onComplete={handleQuestionsConfirmed}
             verificationId={verificationId}
           />
@@ -100,7 +108,11 @@ export default function VerificationFlow() {
         title="Paso 3: Selecciona las fuentes"
       >
         {verificationId && (
-          <SourcesList onComplete={handleSourcesConfirmed} verificationId={verificationId} />
+          <SourcesList
+            isLocked={completedSteps.includes('step-3') && activeStep !== 'step-3'}
+            onComplete={handleSourcesConfirmed}
+            verificationId={verificationId}
+          />
         )}
       </Step>
     </div>
