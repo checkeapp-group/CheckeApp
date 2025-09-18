@@ -24,7 +24,7 @@ export async function createProcessLog(
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   apiResponse?: any
 ): Promise<string> {
-  // Validación para asegurar consistencia con el schema
+  // Aditional validation
   if (status === 'error' && !errorMessage) {
     throw new Error('Error message is required when status is "error"');
   }
@@ -112,7 +112,7 @@ export  async function logProcessError(
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   apiResponse?: any
 ): Promise<string> {
-  // Validación adicional por seguridad
+  // Aditional validation
   if (!errorMessage || errorMessage.trim().length === 0) {
     throw new Error('Error message cannot be empty');
   }
@@ -279,9 +279,7 @@ export async function cleanupOldProcessLogs(daysOld = 30): Promise<number> {
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
     const result = await db.delete(processLog).where(
-      // Note: You might need to adjust this query based on your Drizzle version
-      // This is a placeholder for the actual date comparison logic
-      eq(processLog.createdAt, cutoffDate) // Replace with proper date comparison
+      eq(processLog.createdAt, cutoffDate)
     );
 
     console.log(`🧹 Cleaned up old process logs older than ${daysOld} days`);
@@ -290,6 +288,21 @@ export async function cleanupOldProcessLogs(daysOld = 30): Promise<number> {
     console.error('❌ Error cleaning up old process logs:', error);
     throw new Error(
       `Failed to cleanup old logs: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
+  }
+}
+
+export async function makeSourcesReady(verificationId: string) {
+  try {
+    await db
+      .update(processLog)
+      .set({ status: 'sources_ready' })
+      .where(eq(processLog.verificationId, verificationId));
+    console.log(`Updated process logs to sources_ready for verification: ${verificationId}`);
+  } catch (error) {
+    console.error('Error updating process logs to sources_ready:', error);
+    throw new Error(
+      `Failed to update process logs: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
   }
 }

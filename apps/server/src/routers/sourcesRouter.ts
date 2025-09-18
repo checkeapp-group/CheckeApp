@@ -4,16 +4,27 @@ import { updateVerificationStatus } from '@/db/services/verifications/verificati
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { protectedProcedure } from '@/lib/orpc';
 
+const getSourcesInputSchema = z.object({
+  verificationId: z.string().uuid(),
+  filters: z
+    .object({
+      domain: z.string().optional(),
+      sortBy: z.enum(['date_desc', 'date_asc', 'relevance_desc']).optional(),
+    })
+    .optional(),
+  searchQuery: z.string().optional(),
+});
+
 export const sourcesRouter = {
   getSources: protectedProcedure
-    .input(z.object({ verificationId: z.string().uuid() }))
+    .input(getSourcesInputSchema)
     .handler(async ({ input, context }) => {
-      const { verificationId } = input;
+      const { verificationId, filters, searchQuery } = input;
       const userId = context.session.user.id;
 
       await validateVerificationAccess(verificationId, userId);
 
-      const sources = await getSources(verificationId);
+      const sources = await getSources(verificationId, filters, searchQuery);
       return sources;
     }),
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { orpc } from '../utils/orpc';
 
@@ -12,9 +12,13 @@ type UseSourcesEditorProps = {
 export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
   const queryClient = useQueryClient();
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const [filters, setFilters] = useState<{ domain?: string; sortBy?: string }>({});
+
   const sourcesQuery = useQuery(
     orpc.getSources.queryOptions({
-      input: { verificationId },
+      input: { verificationId, filters, searchQuery },
       enabled: !!verificationId,
     })
   );
@@ -39,6 +43,22 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
     })
   );
 
+  const batchUpdateSelectionMutation = useMutation({
+    mutationFn: async (isSelected: boolean) => {
+      const promises = sources.map((s) =>
+        updateSelectionMutation.mutateAsync({ verificationId, sourceId: s.id, isSelected })
+      );
+      await Promise.all(promises);
+    },
+    onSuccess: () => {
+      toast.success('Selección masiva actualizada.');
+      invalidateSources();
+    },
+    onError: (error: any) => {
+      toast.error(`Error en la selección masiva: ${error.message}`);
+    },
+  });
+
   const sources = useMemo(() => sourcesQuery.data || [], [sourcesQuery.data]);
   const selectedSourcesCount = useMemo(() => sources.filter((s) => s.isSelected).length, [sources]);
 
@@ -53,5 +73,12 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
     selectedSourcesCount,
     toggleSourceSelection,
     canContinue: selectedSourcesCount > 0,
+
+    searchQuery,
+    setSearchQuery,
+    filters,
+    setFilters,
+    selectAll: () => batchUpdateSelectionMutation.mutate(true),
+    deselectAll: () => batchUpdateSelectionMutation.mutate(false),
   };
 }
