@@ -1,34 +1,27 @@
+import { ORPCError } from '@orpc/server';
 import { z } from 'zod';
+import { db } from '@/db';
+import { generateAndSaveFinalAnalysis } from '@/db/services/finalResult/finalsResultService';
 import { getSources, updateSourceSelection } from '@/db/services/sources/sourcesService';
-import { updateVerificationStatus } from '@/db/services/verifications/verificationService';
+import { getVerificationById } from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { protectedProcedure } from '@/lib/orpc';
 
-const getSourcesInputSchema = z.object({
-  verificationId: z.string().uuid(),
-  filters: z
-    .object({
-      domain: z.string().optional(),
-      sortBy: z.enum(['date_desc', 'date_asc', 'relevance_desc']).optional(),
-    })
-    .optional(),
-  searchQuery: z.string().optional(),
-});
-
 export const sourcesRouter = {
   getSources: protectedProcedure
-    .input(getSourcesInputSchema)
+    .input(
+      z.object({
+        verificationId: z.string().uuid(),
+        filters: z.any().optional(),
+        searchQuery: z.string().optional(),
+      })
+    )
     .handler(async ({ input, context }) => {
       const { verificationId, filters, searchQuery } = input;
-      const userId = context.session.user.id;
-
-      await validateVerificationAccess(verificationId, userId);
-
-      const sources = await getSources(verificationId, filters, searchQuery);
-      return sources;
+      await validateVerificationAccess(verificationId, context.session.user.id);
+      return getSources(verificationId, filters, searchQuery);
     }),
 
-  // Process to update the selection status of a source
   updateSourceSelection: protectedProcedure
     .input(
       z.object({
@@ -39,26 +32,39 @@ export const sourcesRouter = {
     )
     .handler(async ({ input, context }) => {
       const { verificationId, sourceId, isSelected } = input;
-      const userId = context.session.user.id;
-
-      await validateVerificationAccess(verificationId, userId);
-
+      await validateVerificationAccess(verificationId, context.session.user.id);
       await updateSourceSelection(sourceId, isSelected);
-
       return { success: true, sourceId, isSelected };
     }),
 
-  // Process to continue to the next step (analysis generation)
   continueToAnalysis: protectedProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
-      const userId = context.session.user.id;
+      await validateVerificationAccess(verificationId, context.session.user.id);
+      generateAndSaveFinalAnalysis(verificationId); // Inicia en segundo plano
+      return { success: true, message: 'Proceso de análisis iniciado.', nextStep: 'finalResult' };
+    }),
 
-      await validateVerificationAccess(verificationId, userId);
+  getVerificationStatus: protectedProcedure
+    .input(z.object({ verificationId: z.string().uuid() }))
+    .handler(async ({ input, context }) => {
+      const { verificationId } = input;
+      await validateVerificationAccess(verificationId, context.session.user.id);
+      const verification = await getVerificationById(verificationId);
+      if (!verification) throw new ORPCError({ code: 'NOT_FOUND' });
+      return { status: verification.status };
+    }),
 
-      await updateVerificationStatus(verificationId, 'generating_summary');
-
-      return { success: true, nextStep: 'analysis' };
+  getFinalResult: protectedProcedure
+    .input(z.object({ verificationId: z.string().uuid() }))
+    .handler(async ({ input, context }) => {
+      const { verificationId } = input;
+      await validateVerificationAccess(verificationId, context.session.user.id);
+      const result = await db.query.finalResult.findFirst({
+        where: (fr, { eq }) => eq(fr.verificationId, verificationId),
+      });
+      if (!result) throw new ORPCError({ code: 'NOT_FOUND' });
+      return result;
     }),
 };

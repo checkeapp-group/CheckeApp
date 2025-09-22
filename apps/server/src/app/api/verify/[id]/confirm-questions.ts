@@ -1,9 +1,14 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { saveCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
+import {
+  getCriticalQuestions,
+  sendCriticalQuestions,
+} from '@/db/services/criticalQuestions/criticalQuestionService';
+import { makeSourcesReady } from '@/db/services/processLogs/processLogsService';
 import { updateVerificationStatus } from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { auth } from '@/lib/auth';
+import { saveSourcesFromAPI } from '@/db/services/sources/sourcesService';
 
 const confirmQuestionsSchema = z.object({
   questions: z
@@ -57,24 +62,19 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       );
     }
 
-    const { questions } = validationResult.data;
 
     try {
-      // Save questions to critical_questions table
-      await saveCriticalQuestions(verificationId, questions);
+      await validateVerificationAccess(verificationId, userId);
 
-      // Update verification status to sources_ready
+      const criticalQuestions = await getCriticalQuestions(verificationId);
+
+      const sourcesResponse = await sendCriticalQuestions(verificationId, criticalQuestions);
+
       await updateVerificationStatus(verificationId, 'sources_ready');
 
-      return NextResponse.json(
-        {
-          success: true,
-          message: 'Questions confirmed and saved successfully',
-          questions_count: questions.length,
-          next_step: 'edit',
-        },
-        { status: 200 }
-      );
+      await makeSourcesReady(verificationId);
+
+      await saveSourcesFromAPI(verificationId, sourcesResponse.sources);
     } catch (error) {
       console.error('Error saving confirmed questions:', error);
 

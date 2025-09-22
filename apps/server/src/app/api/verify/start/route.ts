@@ -1,10 +1,13 @@
-// apps/server/src/app/api/verify/start/route.ts
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { saveCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
+import {
+  createVerificationRecord,
+  updateVerificationStatus,
+} from '@/db/services/verifications/verificationService';
 import { auth } from '@/lib/auth';
-import { createVerificationRecord } from '@/db/services/verifications/verificationService';
+import { callExternalApiWithLogging, generateQuestions } from '@/lib/externalApiClient';
 
-// Validation schema for request body
 const startVerificationSchema = z.object({
   text: z
     .string()
@@ -15,7 +18,6 @@ const startVerificationSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // Validate authentication token
     const session = await auth.api.getSession({
       headers: request.headers,
     });
@@ -32,7 +34,6 @@ export async function POST(request: NextRequest) {
 
     const userId = session.user.id;
 
-    // Validate and parse request body
     const body = await request.json();
     const validationResult = startVerificationSchema.safeParse(body);
 
@@ -49,28 +50,73 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { text } = validationResult.data;
+    const { text, confirmedQuestions } = validationResult.data;
 
-    // Crear registro de verificación con status "processing_questions"
     const verificationId = await createVerificationRecord(userId, text);
 
-    // TODO: Próximos pasos...
-    // - Enviar texto a endpoint de Iker
-    // - Guardar preguntas en critical_questions
-    // - Registrar logs del proceso
+    try {
+      if (confirmedQuestions && confirmedQuestions.length > 0) {
+        await saveCriticalQuestions(verificationId, confirmedQuestions);
+        await updateVerificationStatus(verificationId, 'questions_saved');
 
-    return NextResponse.json(
-      {
-        success: true,
-        verification_id: verificationId,
-        status: 'processing_questions',
-        message: 'Verification record created successfully',
-      },
-      { status: 201 }
-    );
+        return NextResponse.json(
+          {
+            success: true,
+            verification_id: verificationId,
+            status: 'questions_saved',
+            message: 'Verification created with questions',
+            questions_count: confirmedQuestions.length,
+          },
+          { status: 201 }
+        );
+      }
+
+      const questionsResult = await callExternalApiWithLogging(
+        verificationId,
+        'generate_questions',
+        () =>
+          generateQuestions({
+            verification_id: verificationId,
+            original_text: text,
+            language: 'es',
+            max_questions: 5,
+          })
+      );
+
+      // Save generated questions to database
+      if (questionsResult.questions && questionsResult.questions.length > 0) {
+        await saveCriticalQuestions(verificationId, questionsResult.questions);
+        await updateVerificationStatus(verificationId, 'processing_questions');
+      }
+
+      return NextResponse.json(
+        {
+          success: true,
+          verification_id: verificationId,
+          status: 'processing_questions',
+          message: 'Questions generated and verification created successfully',
+          questions_count: questionsResult.questions?.length || 0,
+        },
+        { status: 201 }
+      );
+    } catch (apiError) {
+      // If external API fails, still create the verification but mark it as error
+      console.error('External API error during question generation:', apiError);
+      await updateVerificationStatus(verificationId, 'error');
+
+      return NextResponse.json(
+        {
+          success: false,
+          verification_id: verificationId,
+          error: 'Question generation failed',
+          message: apiError instanceof Error ? apiError.message : 'Failed to generate questions',
+          status: 'error',
+        },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error('Error in /api/verify/start:', error);
-
     return NextResponse.json(
       {
         error: 'Error interno del servidor',
