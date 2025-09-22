@@ -8,11 +8,13 @@ import SourcesList from '@/components/SourcesList';
 import Step from '@/components/Step';
 import TextInputForm from '@/components/TextInputForm';
 import { useAuth } from '@/hooks/use-auth';
+import { useI18n } from '@/hooks/use-i18n';
 import { useAppRouter } from '@/lib/router';
 import { orpc } from '@/utils/orpc';
 
 export default function VerificationFlow() {
   const { isAuthenticated } = useAuth();
+  const { t } = useI18n();
 
   const [activeStep, setActiveStep] = useState('step-1');
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
@@ -23,12 +25,12 @@ export default function VerificationFlow() {
   const searchSourcesMutation = useMutation(
     orpc.confirmQuestionsAndSearchSources.mutationOptions({
       onSuccess: (result) => {
-        toast.success(`¡Éxito! Se encontraron ${result.sources_count || 0} fuentes.`);
+        toast.success(t('verification.sources_found', { count: result.sources_count || 0 }));
         setCompletedSteps((prev) => [...prev, 'step-2']);
         setActiveStep('step-3');
       },
       onError: (error) => {
-        toast.error(error.message || 'Ocurrió un error al buscar fuentes.');
+        toast.error(error.message || t('verification.search_sources_error'));
       },
     })
   );
@@ -36,7 +38,7 @@ export default function VerificationFlow() {
   const continueToAnalysisMutation = useMutation(
     orpc.continueToAnalysis.mutationOptions({
       onSuccess: () => {
-        toast.success('¡Listo para el análisis final!');
+        toast.success(t('verification.ready_for_analysis'));
         setCompletedSteps((prev) => [...prev, 'step-3']);
         setActiveStep('step-4');
 
@@ -45,7 +47,7 @@ export default function VerificationFlow() {
         }
       },
       onError: (error) => {
-        toast.error(error.message || 'Error al continuar');
+        toast.error(error.message || t('verification.continue_error'));
       },
     })
   );
@@ -71,12 +73,12 @@ export default function VerificationFlow() {
   return (
     <div className="w-full space-y-4">
       <Step
-        description="Ingresa el texto que deseas verificar para comenzar el proceso"
+        description={t('verification.step1.description')}
         isCompleted={completedSteps.includes('step-1')}
         isDisabled={false}
         isOpen={activeStep === 'step-1'}
         stepNumber={1}
-        title="Paso 1: Envía tu texto a verificar"
+        title={t('verification.step1.title')}
       >
         <TextInputForm
           isAuthenticated={isAuthenticated}
@@ -88,12 +90,12 @@ export default function VerificationFlow() {
       </Step>
 
       <Step
-        description="Confirma o modifica las preguntas generadas automáticamente"
+        description={t('verification.step2.description')}
         isCompleted={completedSteps.includes('step-2')}
         isDisabled={!completedSteps.includes('step-1')}
         isOpen={activeStep === 'step-2'}
         stepNumber={2}
-        title="Paso 2: Revisa y edita las preguntas"
+        title={t('verification.step2.title')}
       >
         {verificationId && (
           <QuestionsList
@@ -106,12 +108,12 @@ export default function VerificationFlow() {
       </Step>
 
       <Step
-        description="Elige las fuentes más confiables para tu verificación"
+        description={t('verification.step3.description')}
         isCompleted={completedSteps.includes('step-3')}
         isDisabled={!completedSteps.includes('step-2')}
         isOpen={activeStep === 'step-3'}
         stepNumber={3}
-        title="Paso 3: Selecciona las fuentes"
+        title={t('verification.step3.title')}
       >
         {verificationId && (
           <SourcesList

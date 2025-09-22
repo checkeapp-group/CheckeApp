@@ -29,7 +29,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
             onClose();
           },
           onError: (error) => {
-            const errorMessage = error?.error?.message || 'Invalid email or password';
+            const errorMessage = error?.error?.message || t('auth.signIn.error');
             toast.error(errorMessage);
           },
         }
@@ -37,8 +37,8 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
     },
     validators: {
       onSubmit: z.object({
-        email: z.string().email('Invalid email address'),
-        password: z.string().min(8, 'Password must be at least 8 characters'),
+        email: z.string().email(t('auth.validation.email.invalid')),
+        password: z.string().min(8, t('auth.validation.password.min')),
       }),
     },
   });

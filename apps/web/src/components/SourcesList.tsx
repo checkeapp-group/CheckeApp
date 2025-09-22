@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UiSelect } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useI18n } from '@/hooks/use-i18n';
 import { useSourcesEditor } from '@/hooks/use-sources-editor';
 
 type SourcesListProps = {
@@ -18,6 +19,7 @@ export default function SourcesList({
   onComplete,
   isContinuing,
 }: SourcesListProps) {
+  const { t } = useI18n();
   const {
     sources,
     isLoading,
@@ -44,7 +46,7 @@ export default function SourcesList({
   }
 
   if (error) {
-    return <p className="text-destructive">Error al cargar las fuentes: {error.message}</p>;
+    return <p className="text-destructive">{t('sources.error_loading')}: {error.message}</p>;
   }
 
   const domains = [...new Set(sources.map((s) => s.domain).filter(Boolean))];
@@ -54,36 +56,36 @@ export default function SourcesList({
       <div className="grid grid-cols-1 gap-4 rounded-lg border bg-muted/50 p-4 md:grid-cols-3">
         <Input
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Buscar en título y resumen..."
+          placeholder={t('sources.search_placeholder')}
           value={searchQuery}
         />
         <UiSelect
           onChange={(domain) => setFilters((prev) => ({ ...prev, domain }))}
           options={domains.map((d) => ({ value: d!, label: d! }))}
-          placeholder="Filtrar por dominio"
+          placeholder={t('sources.filter_by_domain')}
           value={filters.domain}
         />
         <UiSelect
           onChange={(sortBy) => setFilters((prev) => ({ ...prev, sortBy }))}
           options={[
-            { value: 'date_desc', label: 'Más recientes primero' },
-            { value: 'date_asc', label: 'Más antiguos primero' },
+            { value: 'date_desc', label: t('sources.sort_newest_first') },
+            { value: 'date_asc', label: t('sources.sort_oldest_first') },
           ]}
-          placeholder="Ordenar por..."
+          placeholder={t('sources.sort_by')}
           value={filters.sortBy}
         />
       </div>
 
       <div className="flex items-center justify-between">
-        <h4 className="font-semibold">Fuentes Encontradas ({sources.length})</h4>
+        <h4 className="font-semibold">{t('sources.found_title', { count: sources.length })}</h4>
         <div className="flex items-center gap-4">
           <Button onClick={selectAll} size="sm" variant="link">
-            Seleccionar todas
+            {t('sources.select_all')}
           </Button>
           <Button onClick={deselectAll} size="sm" variant="link">
-            Deseleccionar todas
+            {t('sources.deselect_all')}
           </Button>
-          <p className="font-medium text-sm">{selectedSourcesCount} seleccionada(s)</p>
+          <p className="font-medium text-sm">{t('sources.selected_count', { count: selectedSourcesCount })}</p>
         </div>
       </div>
       <div className="space-y-4">
@@ -98,7 +100,7 @@ export default function SourcesList({
 
       <div className="flex justify-end border-t pt-4">
         <Button disabled={!canContinue || isContinuing} loading={isContinuing} onClick={onComplete}>
-          {isContinuing ? 'Iniciando...' : 'Continuar con el Análisis'}
+          {isContinuing ? t('sources.starting') : t('sources.continue_analysis')}
         </Button>
       </div>
     </div>

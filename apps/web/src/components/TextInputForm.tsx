@@ -75,7 +75,7 @@ const TextInputForm = ({
       const result = await response.json();
 
       if (result.success) {
-        toast.success('Verificación iniciada. Ahora revisa las preguntas.');
+        toast.success(t('textInput.verification_started_success'));
 
         if (onSuccess) {
           onSuccess(result.verification_id);
@@ -83,10 +83,10 @@ const TextInputForm = ({
           navigate(`/verify/${result.verification_id}/edit`);
         }
       } else {
-        toast.error(result.message || 'Falló el inicio de la verificación.');
+        toast.error(result.message || t('textInput.verification_failed'));
       }
     } catch (error) {
-      toast.error('Error de red. Por favor, inténtalo de nuevo.');
+      toast.error(t('textInput.network_error'));
     } finally {
       setIsLoading(false);
     }

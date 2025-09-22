@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { source } from '@/../server/src/db/schema/schema';
 import { Card } from '@/components/ui/Card';
+import { useI18n } from '@/hooks/use-i18n';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
@@ -14,6 +15,7 @@ type SourceCardProps = {
 
 export default function SourceCard({ source, onSelectionChange }: SourceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useI18n();
 
   const summary = source.summary || '';
   const isTruncated = summary.length > 200;
@@ -51,7 +53,7 @@ export default function SourceCard({ source, onSelectionChange }: SourceCardProp
 
           {source.scrapingDate && (
             <p className="mt-1 text-muted-foreground text-xs">
-              Obtenido: {new Date(source.scrapingDate).toLocaleDateString()}
+              {t('sources.scraped')}: {new Date(source.scrapingDate).toLocaleDateString()}
             </p>
           )}
 
@@ -67,7 +69,7 @@ export default function SourceCard({ source, onSelectionChange }: SourceCardProp
               size="sm"
               variant="link"
             >
-              {isExpanded ? 'Ver menos' : 'Ver completo'}
+              {isExpanded ? t('sources.showLess') : t('sources.showMore')}
             </Button>
           )}
         </div>

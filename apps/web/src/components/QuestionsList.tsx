@@ -142,10 +142,8 @@ export default function QuestionsList({
           <div className="flex items-center gap-3">
             <CheckCircle2 className="h-5 w-5 text-green-600" />
             <div className="flex-1">
-              <p className="font-medium text-green-900">Preguntas confirmadas</p>
-              <p className="text-green-700 text-sm">
-                Este paso ha sido completado. Las preguntas han sido guardadas y confirmadas.
-              </p>
+              <p className="font-medium text-green-900">{t('questions.confirmed')}</p>
+              <p className="text-green-700 text-sm">{t('questions.confirmed_description')}</p>
             </div>
             <Lock className="h-4 w-4 text-green-600" />
           </div>
@@ -224,7 +222,7 @@ export default function QuestionsList({
             onClick={onComplete}
             size="lg"
           >
-            Confirmar Preguntas y Continuar
+            {t('questions.confirm_and_continue')}
           </Button>
         </div>
       )}
@@ -232,7 +230,7 @@ export default function QuestionsList({
         <div className="flex justify-center border-border border-t pt-6">
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <span>Las preguntas han sido confirmadas y guardadas</span>
+            <span>{t('questions.confirmed_and_saved')}</span>
           </div>
         </div>
       )}
