@@ -10,9 +10,14 @@ import { useSourcesEditor } from '@/hooks/use-sources-editor';
 type SourcesListProps = {
   verificationId: string;
   onComplete: () => void;
+  isContinuing?: boolean;
 };
 
-export default function SourcesList({ verificationId, onComplete }: SourcesListProps) {
+export default function SourcesList({
+  verificationId,
+  onComplete,
+  isContinuing,
+}: SourcesListProps) {
   const {
     sources,
     isLoading,
@@ -92,8 +97,8 @@ export default function SourcesList({ verificationId, onComplete }: SourcesListP
       </div>
 
       <div className="flex justify-end border-t pt-4">
-        <Button disabled={!canContinue} onClick={onComplete}>
-          Continuar con el Análisis
+        <Button disabled={!canContinue || isContinuing} loading={isContinuing} onClick={onComplete}>
+          {isContinuing ? 'Iniciando...' : 'Continuar con el Análisis'}
         </Button>
       </div>
     </div>

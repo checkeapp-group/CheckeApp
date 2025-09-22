@@ -47,7 +47,7 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
       },
       onError: (error: any) => {
         toast.error(`Error al actualizar: ${error.message}`);
-        invalidateAndRefetch(); // Revertir a los datos del servidor
+        invalidateAndRefetch();
       },
     })
   );

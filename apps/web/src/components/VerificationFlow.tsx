@@ -8,6 +8,7 @@ import SourcesList from '@/components/SourcesList';
 import Step from '@/components/Step';
 import TextInputForm from '@/components/TextInputForm';
 import { useAuth } from '@/hooks/use-auth';
+import { useAppRouter } from '@/lib/router';
 import { orpc } from '@/utils/orpc';
 
 export default function VerificationFlow() {
@@ -17,6 +18,7 @@ export default function VerificationFlow() {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [verificationId, setVerificationId] = useState<string | null>(null);
   const [verificationText, setVerificationText] = useState('');
+  const { navigate } = useAppRouter();
 
   const searchSourcesMutation = useMutation(
     orpc.confirmQuestionsAndSearchSources.mutationOptions({
@@ -37,6 +39,10 @@ export default function VerificationFlow() {
         toast.success('¡Listo para el análisis final!');
         setCompletedSteps((prev) => [...prev, 'step-3']);
         setActiveStep('step-4');
+
+        if (verificationId) {
+          navigate(`/verify/${verificationId}/finalResult`);
+        }
       },
       onError: (error) => {
         toast.error(error.message || 'Error al continuar');
@@ -109,6 +115,7 @@ export default function VerificationFlow() {
       >
         {verificationId && (
           <SourcesList
+            isContinuing={continueToAnalysisMutation.isPending}
             isLocked={completedSteps.includes('step-3') && activeStep !== 'step-3'}
             onComplete={handleSourcesConfirmed}
             verificationId={verificationId}
