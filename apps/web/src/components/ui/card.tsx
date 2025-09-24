@@ -1,5 +1,5 @@
-// biome-ignore lint/performance/noNamespaceImport: <explanation>
-import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -8,7 +8,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? React.Fragment : 'div';
+    const Comp = asChild ? Slot : 'div';
 
     return (
       <Comp

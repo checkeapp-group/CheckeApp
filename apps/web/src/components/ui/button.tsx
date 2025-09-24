@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Loader2 } from 'lucide-react';
-import * as React from 'react';
+import React from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
@@ -43,15 +43,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return (
         <Slot
           className={cn(buttonVariants({ variant, size, className }))}
+          disabled={loading || props.disabled}
           ref={ref}
           {...props}
-          disabled={loading || props.disabled}
         >
-          {/** biome-ignore lint/complexity/noUselessFragments: <explanation> */}
-          <>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {children}
-          </>
+          {React.cloneElement(React.Children.only(children) as React.ReactElement, {
+            children: (
+              <>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {(children as React.ReactElement).props.children}
+              </>
+            ),
+          })}
         </Slot>
       );
     }

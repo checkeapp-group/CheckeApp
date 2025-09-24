@@ -75,6 +75,8 @@ const TextInputForm = ({
       const result = await response.json();
 
       if (result.success) {
+        sessionStorage.setItem(`verification_text_${result.verification_id}`, text.trim());
+
         toast.success(t('textInput.verification_started_success'));
 
         if (onSuccess) {

@@ -6,18 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/Card';
 import { Textarea } from '@/components/ui/textarea';
 import { useI18n } from '@/hooks/use-i18n';
-import type { Question } from '@/hooks/use-questions-editor';
 import { cn } from '@/lib/utils';
+import type { Question } from '@/types/questions';
 
 type QuestionCardProps = {
   question: Question;
   isEditing: boolean;
   isSaving: boolean;
+  isLocked: boolean;
   onEdit: (questionId: string) => void;
   onSave: (questionId: string, text: string) => void;
   onCancel: (questionId: string) => void;
   onDelete: (questionId: string) => void;
-  onTextChange: (questionId: string, text: string) => void;
   dragAttributes?: any;
   dragListeners?: any;
 };
@@ -26,6 +26,7 @@ export function QuestionCard({
   question,
   isEditing,
   isSaving,
+  isLocked,
   onEdit,
   onSave,
   onCancel,
@@ -42,14 +43,14 @@ export function QuestionCard({
   }, [question.questionText]);
 
   useEffect(() => {
-    if (isEditing && textareaRef.current) {
+    if (isEditing && !isLocked && textareaRef.current) {
       textareaRef.current.focus();
       textareaRef.current.select();
     }
-  }, [isEditing]);
+  }, [isEditing, isLocked]);
 
   const handleSave = () => {
-    if (isTextValid && hasChanges) {
+    if (isTextValid && hasChanges && !isLocked) {
       onSave(question.id, localText);
     }
   };
@@ -60,6 +61,9 @@ export function QuestionCard({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isLocked) {
+      return;
+    }
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       handleSave();
@@ -77,13 +81,16 @@ export function QuestionCard({
     <Card
       className={cn(
         'p-4 transition-all duration-300',
-        isEditing && 'border-primary/50 ring-2 ring-primary/20',
-        !isTextValid && isEditing && 'border-destructive/50 ring-destructive/20'
+        isEditing && !isLocked && 'border-primary/50 ring-2 ring-primary/20',
+        !isTextValid && isEditing && !isLocked && 'border-destructive/50 ring-destructive/20'
       )}
     >
       <div className="flex w-full items-center gap-3">
         <div
-          className="flex flex-shrink-0 cursor-grab items-center text-muted-foreground transition-colors hover:text-foreground"
+          className={cn(
+            'flex flex-shrink-0 items-center text-muted-foreground transition-colors',
+            !isLocked && 'cursor-grab hover:text-foreground'
+          )}
           {...dragAttributes}
           {...dragListeners}
         >
@@ -91,7 +98,7 @@ export function QuestionCard({
         </div>
 
         <div className="min-w-0 flex-1">
-          {isEditing ? (
+          {isEditing && !isLocked ? (
             <div className="space-y-3">
               <Textarea
                 className="min-h-[80px] text-base"
@@ -142,19 +149,21 @@ export function QuestionCard({
               <p className="flex-1 font-medium text-base text-foreground">
                 {question.questionText}
               </p>
-              <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                <Button onClick={() => onEdit(question.id)} size="icon" variant="ghost">
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  onClick={() => onDelete(question.id)}
-                  size="icon"
-                  variant="ghost"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+              {!isLocked && (
+                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <Button onClick={() => onEdit(question.id)} size="icon" variant="ghost">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => onDelete(question.id)}
+                    size="icon"
+                    variant="ghost"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>
