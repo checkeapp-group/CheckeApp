@@ -52,8 +52,11 @@ export async function getSources(
 
     let orderBy = [desc(source.createdAt)];
     if (filters?.sortBy) {
-      if (filters.sortBy === 'date_desc') orderBy = [desc(source.createdAt)];
-      if (filters.sortBy === 'date_asc') orderBy = [asc(source.createdAt)];
+      if (filters.sortBy === 'date_desc'){
+        orderBy = [desc(source.createdAt)];
+      } else if (filters.sortBy === 'date_asc') {
+        orderBy = [asc(source.createdAt)];
+      }
     }
 
     const result = await db
@@ -75,5 +78,49 @@ export async function updateSourceSelection(sourceId: string, isSelected: boolea
   } catch (error) {
     console.error('Error updating source selection:', error);
     throw new Error('Failed to update source selection');
+  }
+}
+
+export async function createSource(data: {
+  verificationId: string;
+  url: string;
+  title?: string | null;
+  summary?: string | null;
+  domain?: string | null;
+  isSelected?: boolean;
+}): Promise<Source> {
+  try {
+    const newId = uuidv4();
+
+    const newSourceRecord: NewSource = {
+      id: newId,
+      verificationId: data.verificationId,
+      url: data.url,
+      title: data.title || null,
+      summary: data.summary || null,
+      domain: data.domain || null,
+      isSelected: data.isSelected ?? false,
+      scrapingDate: new Date(),
+    };
+
+    await db.insert(source).values(newSourceRecord);
+
+    const result = await db.select().from(source).where(eq(source.id, newId)).limit(1);
+
+    if (!result[0]) {
+      throw new Error('No se pudo recuperar la fuente después de su creación.');
+    }
+
+    console.log(`[sourcesService] Fuente creada exitosamente con ID: ${newId}`);
+
+    return result[0];
+  } catch (error) {
+    console.error('[sourcesService] Error al crear la fuente:', error);
+
+    if (error instanceof Error && error.message.includes('foreign key constraint fails')) {
+      throw new Error(`La verificación con ID "${data.verificationId}" no existe.`);
+    }
+
+    throw new Error('No se pudo añadir la nueva fuente a la base de datos.');
   }
 }

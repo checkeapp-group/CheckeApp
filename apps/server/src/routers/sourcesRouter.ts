@@ -1,13 +1,43 @@
+/** biome-ignore-all lint/style/useFilenamingConvention: <Log the error for debugging purposes> */
 import { ORPCError } from '@orpc/server';
 import { z } from 'zod';
 import { db } from '@/db';
 import { generateAndSaveFinalAnalysis } from '@/db/services/finalResult/finalsResultService';
-import { getSources, updateSourceSelection } from '@/db/services/sources/sourcesService';
+import { extractArticleData } from '@/db/services/scraping/articleExtractorService';
+import {
+  getSources,
+  updateSourceSelection,
+} from '@/db/services/sources/sourcesService';
 import { getVerificationById } from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { protectedProcedure } from '@/lib/orpc';
 
 export const sourcesRouter = {
+  getSourcePreview: protectedProcedure
+    .input(
+      z.object({
+        url: z.string().url('Please provide a valid URL.'),
+      })
+    )
+    .handler(async ({ input }) => {
+      const { url } = input;
+      try {
+        const metadata = await extractArticleData(url);
+
+        return {
+          url,
+          title: metadata.title,
+          summary: metadata.description, 
+          domain: metadata.source || new URL(url).hostname,
+          image: metadata.image,
+        };
+      } catch (error) {
+        // biome-ignore lint/suspicious/noConsole: <Log the error for debugging purposes>
+        console.error(`[getSourcePreview] Failed to extract data for ${url}:`, error);
+        throw new ORPCError('INTERNAL_SERVER_ERROR');
+      }
+    }),
+
   getSources: protectedProcedure
     .input(
       z.object({
@@ -42,7 +72,7 @@ export const sourcesRouter = {
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
       await validateVerificationAccess(verificationId, context.session.user.id);
-      generateAndSaveFinalAnalysis(verificationId); // Inicia en segundo plano
+      generateAndSaveFinalAnalysis(verificationId);
       return { success: true, message: 'Proceso de análisis iniciado.', nextStep: 'finalResult' };
     }),
 
@@ -52,7 +82,9 @@ export const sourcesRouter = {
       const { verificationId } = input;
       await validateVerificationAccess(verificationId, context.session.user.id);
       const verification = await getVerificationById(verificationId);
-      if (!verification) throw new ORPCError({ code: 'NOT_FOUND' });
+      if (!verification) {
+        throw new ORPCError('BAD_REQUEST' );
+      }
       return { status: verification.status };
     }),
 
@@ -64,7 +96,9 @@ export const sourcesRouter = {
       const result = await db.query.finalResult.findFirst({
         where: (fr, { eq }) => eq(fr.verificationId, verificationId),
       });
-      if (!result) throw new ORPCError({ code: 'NOT_FOUND' });
+      if (!result) {
+        throw new ORPCError('BAD_REQUEST');
+      }
       return result;
     }),
 };

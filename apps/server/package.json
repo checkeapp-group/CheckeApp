@@ -16,6 +16,7 @@
     "db:down": "docker compose down"
   },
   "dependencies": {
+    "@extractus/article-extractor": "^8.0.20",
     "@orpc/client": "^1.8.4",
     "@orpc/server": "^1.8.4",
     "bcrypt": "^6.0.0",

@@ -1,17 +1,19 @@
 import { drizzle } from 'drizzle-orm/mysql2';
 import mysql from 'mysql2/promise';
+import * as authSchema from './schema/auth';
+import * as factCheckerSchema from './schema/schema';
 
-const port = 3306;
 const pool = mysql.createPool({
   host: process.env.DB_HOST ?? 'localhost',
-  port: Number(process.env.DB_PORT) || port,
-  user: process.env.DB_USER ?? 'root',
+  port: Number(process.env.DB_PORT) || 3306,
+  user: process.env.DB_USER ?? 'user',
   password: process.env.DB_PASSWORD ?? 'password',
-  database: process.env.DB_NAME ?? 'factchecker_db',
+  database: process.env.DB_NAME ?? 'FactCheckerProject',
 });
 
-export { createVerificationRecord } from '@/db/services/verifications/verificationService';
-export { updateVerificationStatus } from '@/db/services/verifications/verificationService';
+const combinedSchema = {
+  ...authSchema,
+  ...factCheckerSchema,
+};
 
-// Cliente Drizzle
-export const db = drizzle(pool);
+export const db = drizzle(pool, { schema: combinedSchema, mode: 'default' });

@@ -2,16 +2,14 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { verification } from '@/db/schema/schema';
 
-export interface VerificationPermissionCheck {
+export type VerificationPermissionCheck = {
   exists: boolean;
   isOwner: boolean;
   status: string | null;
   canEdit: boolean;
-}
+  canView: boolean;
+};
 
-/**
- * Check user permissions for a verification
- */
 export async function checkVerificationPermissions(
   verificationId: string,
   userId: string
@@ -32,20 +30,21 @@ export async function checkVerificationPermissions(
         isOwner: false,
         status: null,
         canEdit: false,
+        canView: false,
       };
     }
 
     const record = verificationRecord[0];
     const isOwner = record.userId === userId;
-
-    // Can edit ONLY when status is 'processing_questions' AND user owns it
     const canEdit = isOwner && record.status === 'processing_questions';
+    const canView = canEdit || (isOwner && record.status === 'sources_ready');
 
     return {
       exists: true,
       isOwner,
       status: record.status,
       canEdit,
+      canView,
     };
   } catch (error) {
     console.error('Error checking verification permissions:', error);
@@ -59,10 +58,10 @@ export async function checkVerificationPermissions(
 export async function validateVerificationAccess(
   verificationId: string,
   userId: string,
-  requireEditPermissions = false
+  require: 'view' | 'edit' = 'view'
 ): Promise<void> {
   console.log(
-    `[Permissions] Validando acceso para userId: ${userId} en verificationId: ${verificationId}. Requiere edición: ${requireEditPermissions}`
+    `[Permissions] Validando acceso para userId: ${userId} en verificationId: ${verificationId}. Requiere: ${require}`
   );
 
   const permissions = await checkVerificationPermissions(verificationId, userId);
@@ -78,17 +77,22 @@ export async function validateVerificationAccess(
     throw new Error('No tienes permisos para acceder a esta verificación');
   }
 
-  if (requireEditPermissions && !permissions.canEdit) {
+  if (require === 'edit' && !permissions.canEdit) {
     console.error(
       `[Permissions] Fallo: Se requieren permisos de edición, pero no se tienen. Estado actual: ${permissions.status}`
     );
-    if (permissions.status !== 'processing_questions') {
-      throw new Error(
-        `La verificación no está en estado editable. Estado actual: ${permissions.status}`
-      );
-    }
-    // Este caso es redundante si el anterior se cumple, pero lo dejamos por claridad
-    throw new Error('No tienes permisos para editar esta verificación');
+    throw new Error(
+      `La verificación no está en estado editable. Estado actual: ${permissions.status}`
+    );
+  }
+
+  if (require === 'view' && !permissions.canView) {
+    console.error(
+      `[Permissions] Fallo: Se requieren permisos de visualización, pero no se tienen. Estado actual: ${permissions.status}`
+    );
+    throw new Error(
+      `No tienes permisos para ver esta verificación en su estado actual: ${permissions.status}`
+    );
   }
 
   console.log('[Permissions] Validación de acceso exitosa.');

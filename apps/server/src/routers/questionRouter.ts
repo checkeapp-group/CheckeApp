@@ -1,4 +1,7 @@
 /** biome-ignore-all lint/style/useFilenamingConvention: <explanation> */
+
+import { ORPCError } from '@orpc/server';
+import z from 'zod';
 import { getCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
 import {
   createNewQuestion,
@@ -29,7 +32,7 @@ export const questionsRouter = {
     .input(getQuestionsSchema)
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id, true);
+      await validateVerificationAccess(verificationId, context.session.user.id, 'view');
       return getCriticalQuestions(verificationId);
     }),
 
@@ -37,7 +40,7 @@ export const questionsRouter = {
     .input(updateQuestionSchema)
     .handler(async ({ input, context }) => {
       const { questionId, verificationId, questionText } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id, true);
+      await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
       await updateQuestionWithValidation(questionId, verificationId, { questionText });
       return { success: true, message: 'Pregunta actualizada correctamente' };
     }),
@@ -46,14 +49,14 @@ export const questionsRouter = {
     .input(deleteQuestionSchema)
     .handler(async ({ input, context }) => {
       const { questionId, verificationId } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id, true);
+      await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
       await deleteQuestionWithValidation(questionId, verificationId);
       return { success: true, message: 'Pregunta eliminada correctamente' };
     }),
 
   addQuestion: protectedProcedure.input(addQuestionSchema).handler(async ({ input, context }) => {
     const { verificationId, questionText } = input;
-    await validateVerificationAccess(verificationId, context.session.user.id, true);
+    await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
     const newQuestion = await createNewQuestion({ verificationId, questionText });
     return { success: true, message: 'Pregunta añadida correctamente', question: newQuestion };
   }),
@@ -62,7 +65,7 @@ export const questionsRouter = {
     .input(reorderQuestionsSchema)
     .handler(async ({ input, context }) => {
       const { verificationId, questions } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id, true);
+      await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
       await reorderVerificationQuestions(verificationId, questions);
       return { success: true, message: 'Preguntas reordenadas correctamente' };
     }),
@@ -71,12 +74,19 @@ export const questionsRouter = {
     .input(continueVerificationSchema)
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
+
+      await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
+
       const { canContinue, message } = await validateVerificationReadyToContinue(verificationId);
-      if (!canContinue) throw new Error(message);
+      if (!canContinue) {
+        throw new Error(message);
+      }
 
       const finalQuestions = await getCriticalQuestions(verificationId);
       const verification = await getVerificationById(verificationId);
-      if (!verification) throw new Error('Verificación no encontrada.');
+      if (!verification) {
+        throw new ORPCError('BAD_REQUEST');
+      }
 
       const sourcesResult = await callExternalApiWithLogging(verificationId, 'search_sources', () =>
         searchSources({
@@ -101,5 +111,17 @@ export const questionsRouter = {
         nextStep: 'sources',
         sources_count: sourcesResult.sources?.length || 0,
       };
+    }),
+
+  getVerificationDetails: protectedProcedure
+    .input(z.object({ verificationId: z.string().uuid() }))
+    .handler(async ({ input, context }) => {
+      const { verificationId } = input;
+      await validateVerificationAccess(verificationId, context.session.user.id, 'view');
+      const verification = await getVerificationById(verificationId);
+      if (!verification) {
+        throw new ORPCError('NOT_FOUND');
+      }
+      return verification;
     }),
 };
