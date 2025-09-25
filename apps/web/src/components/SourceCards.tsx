@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { source } from '@/../server/src/db/schema/schema';
+import type { Source } from '@/../server/src/db/schema/schema';
 import { Card } from '@/components/ui/Card';
 import { useI18n } from '@/hooks/use-i18n';
 import { cn } from '@/lib/utils';
@@ -9,7 +9,7 @@ import { Button } from './ui/button';
 import { Checkbox } from './ui/checkbox';
 
 type SourceCardProps = {
-  source: source;
+  source: Source;
   onSelectionChange: (isSelected: boolean) => void;
 };
 
