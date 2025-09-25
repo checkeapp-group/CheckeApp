@@ -32,5 +32,17 @@
       "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json", "**/*.css"
     ]
   },
-  "extends": ["ultracite"]
+ "extends": ["ultracite"],
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "noConsole": "off",
+        "useAwait": "off"
+      },
+      "style": {
+        "noMagicNumbers": "off",
+        "noNestedTernary": "off"
+      }
+    }
+  }
 }

@@ -1,0 +1,2 @@
+ALTER TABLE `final_results` ADD `metadata` json;--> statement-breakpoint
+ALTER TABLE `final_results` ADD CONSTRAINT `chk_final_results_metadata_json` CHECK (`final_results`.`metadata` IS NULL OR JSON_VALID(`final_results`.`metadata`));
