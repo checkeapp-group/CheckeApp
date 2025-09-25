@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
 import { criticalQuestion, type NewCriticalQuestion } from '@/db/schema/schema';
@@ -122,6 +122,7 @@ export async function reorderVerificationQuestions(
   try {
     const existingQuestions = await getCriticalQuestions(verificationId);
     const existingIds = new Set(existingQuestions.map((q) => q.id));
+    const questionIdsToUpdate = questionsOrder.map((item) => item.id);
 
     for (const item of questionsOrder) {
       if (!existingIds.has(item.id)) {
@@ -130,6 +131,14 @@ export async function reorderVerificationQuestions(
     }
 
     await db.transaction(async (tx) => {
+      const offset = existingQuestions.length + 100;
+      if (questionIdsToUpdate.length > 0) {
+        await tx
+          .update(criticalQuestion)
+          .set({ orderIndex: sql`order_index + ${offset}` })
+          .where(inArray(criticalQuestion.id, questionIdsToUpdate));
+      }
+
       for (const item of questionsOrder) {
         await tx
           .update(criticalQuestion)

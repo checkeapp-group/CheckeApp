@@ -110,7 +110,10 @@ export async function getCriticalQuestions(verificationId: string) {
 
     return questions;
   } catch (error) {
-    console.error('Error retrieving critical questions:', error);
+    console.error(
+      `[DB_ERROR] Failed to retrieve critical questions for verificationId: ${verificationId}`,
+      error
+    );
     throw new Error(
       `Failed to retrieve critical questions: ${error instanceof Error ? error.message : 'Unknown error'}`
     );

@@ -10,6 +10,11 @@ type FinalApiResponse = {
   answer: string;
   metadata: {
     categories: string[];
+    title?: string;
+    label?: string;
+    main_claim?: string;
+    language?: string;
+    location?: string;
   };
   sources: Record<string, { url: string; source: string; favicon: string }>;
   related_questions: Record<string, string>;
@@ -84,6 +89,7 @@ async function _saveFinalAnalysis(
       labelsJson: apiResponse.metadata.categories,
       citationsJson: apiResponse.sources,
       answersJson: apiResponse.related_questions,
+      metadata: apiResponse.metadata,
     };
 
     await db.insert(finalResult).values(newFinalResult);

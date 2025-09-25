@@ -36,8 +36,10 @@ export async function checkVerificationPermissions(
 
     const record = verificationRecord[0];
     const isOwner = record.userId === userId;
-    const canEdit = isOwner && record.status === 'processing_questions';
-    const canView = canEdit || (isOwner && record.status === 'sources_ready');
+    const canEdit =
+      isOwner && (record.status === 'processing_questions' || record.status === 'sources_ready');
+    const canView =
+      canEdit || (isOwner && ['generating_summary', 'completed', 'error'].includes(record.status));
 
     return {
       exists: true,
