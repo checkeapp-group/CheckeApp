@@ -128,6 +128,7 @@ export const finalResult = mysqlTable(
     labelsJson: json('labels_json'),
     citationsJson: json('citations_json'),
     answersJson: json('answers_json'),
+    metadata: json('metadata'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => ({
@@ -148,6 +149,10 @@ export const finalResult = mysqlTable(
     answersJsonValidCheck: check(
       'chk_final_results_answers_json',
       sql`${table.answersJson} IS NULL OR JSON_VALID(${table.answersJson})`
+    ),
+    metadataJsonValidCheck: check(
+      'chk_final_results_metadata_json',
+      sql`${table.metadata} IS NULL OR JSON_VALID(${table.metadata})`
     ),
   })
 );
