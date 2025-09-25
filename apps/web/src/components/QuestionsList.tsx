@@ -24,7 +24,8 @@ import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/hooks/use-i18n';
-import { type Question, useQuestionsEditor } from '@/hooks/use-questions-editor';
+import { useQuestionsEditor } from '@/hooks/use-questions-editor';
+import type { Question } from '@/types/questions';
 import { QuestionCard } from './QuestionCard';
 
 type QuestionsListProps = {
@@ -36,15 +37,11 @@ type QuestionsListProps = {
 
 function SortableQuestionItem({
   question,
-  isLocked,
   ...props
-}: { question: Question; isLocked: boolean } & Omit<
-  React.ComponentProps<typeof QuestionCard>,
-  'question' | 'isLocked'
->) {
+}: { question: Question } & Omit<React.ComponentProps<typeof QuestionCard>, 'question'>) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: question.id,
-    disabled: isLocked,
+    disabled: props.isLocked,
   });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -53,9 +50,8 @@ function SortableQuestionItem({
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style}>
       <QuestionCard
-        isLocked={isLocked}
         question={question}
         {...props}
         dragAttributes={attributes}
@@ -113,10 +109,16 @@ export default function QuestionsList({
     }
   };
 
+  const handleConfirm = () => {
+    if (onComplete) {
+      onComplete();
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
+        {[...new Array(3)].map((_, i) => (
           <Skeleton className="h-24 w-full" key={i} />
         ))}
       </div>
@@ -128,7 +130,7 @@ export default function QuestionsList({
       <Card className="border-destructive/30 bg-destructive/5 p-8 text-center">
         <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
         <p className="mb-4 font-semibold text-destructive">{error.message}</p>
-        <Button onClick={() => refetch()} outline variant="destructive">
+        <Button onClick={() => refetch()} variant="destructive">
           <RefreshCw className="mr-2 h-4 w-4" /> {t('common.retry')}
         </Button>
       </Card>
@@ -163,18 +165,13 @@ export default function QuestionsList({
                 isLocked={isLocked}
                 isSaving={false}
                 key={question.id}
-                onCancel={() => !isLocked && setEditingId(null)}
-                onDelete={isLocked ? () => {} : deleteQuestion}
-                onEdit={isLocked ? () => {} : setEditingId}
-                onSave={
-                  isLocked
-                    ? () => {}
-                    : (id, text) => {
-                        updateQuestion(id, text);
-                        setEditingId(null);
-                      }
-                }
-                onTextChange={() => {}}
+                onCancel={() => setEditingId(null)}
+                onDelete={deleteQuestion}
+                onEdit={setEditingId}
+                onSave={(id, text) => {
+                  updateQuestion(id, text);
+                  setEditingId(null);
+                }}
                 question={question}
               />
             ))}
@@ -182,7 +179,6 @@ export default function QuestionsList({
         </SortableContext>
       </DndContext>
 
-      {/* Formulario para añadir nueva pregunta */}
       {!isLocked &&
         (showAddForm ? (
           <Card className="border-primary/50 bg-primary/5 p-4">
@@ -219,7 +215,7 @@ export default function QuestionsList({
           <Button
             disabled={!canContinue || isContinuing}
             loading={isContinuing}
-            onClick={onComplete}
+            onClick={handleConfirm}
             size="lg"
           >
             {t('questions.confirm_and_continue')}

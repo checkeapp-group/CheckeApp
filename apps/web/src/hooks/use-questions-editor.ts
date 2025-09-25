@@ -1,23 +1,10 @@
 'use client';
 
-import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { toast } from 'sonner';
-import { client } from '@/utils/orpc';
-
-export const orpc = createTanstackQueryUtils(client);
-
-export type Question = {
-  id: string;
-  verificationId: string;
-  questionText: string;
-  originalQuestion: string;
-  isEdited: boolean;
-  orderIndex: number;
-  createdAt: Date;
-  isActive?: boolean;
-};
+import type { Question } from '@/types/questions';
+import { orpc } from '@/utils/orpc';
 
 type UseQuestionsEditorProps = {
   verificationId: string;
@@ -129,14 +116,16 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
     questions,
     isLoading: questionsQuery.isLoading,
     error: questionsQuery.error,
-
     updateQuestion,
     deleteQuestion,
     addQuestion,
     reorderQuestions,
-
     canContinue,
-
     refetch: questionsQuery.refetch,
+    pendingChanges:
+      updateQuestionMutation.isPending ||
+      deleteQuestionMutation.isPending ||
+      addQuestionMutation.isPending ||
+      reorderQuestionsMutation.isPending,
   };
 }

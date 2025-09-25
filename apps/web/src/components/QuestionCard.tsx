@@ -76,7 +76,6 @@ export function QuestionCard({
   const isTextValid = localText.trim().length >= 5 && localText.length <= 200;
   const charCount = localText.length;
   const hasChanges = localText.trim() !== question.questionText.trim();
-
   return (
     <Card
       className={cn(
@@ -150,11 +149,17 @@ export function QuestionCard({
                 {question.questionText}
               </p>
               {!isLocked && (
-                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                  <Button onClick={() => onEdit(question.id)} size="icon" variant="ghost">
+                <div className="flex items-center gap-1">
+                  <Button
+                    aria-label="Edit question"
+                    onClick={() => onEdit(question.id)}
+                    size="icon"
+                    variant="ghost"
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
                   <Button
+                    aria-label="Delete question"
                     className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => onDelete(question.id)}
                     size="icon"
