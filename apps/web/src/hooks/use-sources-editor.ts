@@ -59,6 +59,13 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
     },
   });
 
+  const previewSourceMutation = useMutation({
+    mutationFn: (url: string) => orpc.getSourcePreview.mutationKey({ url }),
+    onError: (error: any) => {
+      toast.error(`Error al obtener vista previa: ${error.message}`);
+    },
+  });
+
   const sources = useMemo(() => sourcesQuery.data || [], [sourcesQuery.data]);
   const selectedSourcesCount = useMemo(() => sources.filter((s) => s.isSelected).length, [sources]);
 

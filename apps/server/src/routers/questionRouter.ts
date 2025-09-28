@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/style/useFilenamingConvention: <explanation> */
-
 import { ORPCError } from '@orpc/server';
 import z from 'zod';
 import { getCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';

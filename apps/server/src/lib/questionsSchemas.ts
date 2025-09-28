@@ -50,7 +50,6 @@ export const continueVerificationSchema = z.object({
   verificationId: z.string().uuid('ID de verificación inválido'),
 });
 
-// Tipos TypeScript derivados
 export type GetQuestionsInput = z.infer<typeof getQuestionsSchema>;
 export type UpdateQuestionInput = z.infer<typeof updateQuestionSchema>;
 export type DeleteQuestionInput = z.infer<typeof deleteQuestionSchema>;

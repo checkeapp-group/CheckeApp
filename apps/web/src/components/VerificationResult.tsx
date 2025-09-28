@@ -1,8 +1,12 @@
 'use client';
 
 import type { RouterClient } from '@orpc/server';
-import { FileText, MessageSquareQuote, Search } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { FileText, MessageSquareQuote, Search, Share2 } from 'lucide-react';
 import type { appRouter } from 'server/src/routers';
+import { toast } from 'sonner';
+import { orpc } from '@/utils/orpc';
+import { Button } from './ui/button';
 import { Card } from './ui/Card';
 
 type VerificationResultData = RouterClient<
@@ -56,11 +60,38 @@ const ContentWithCitations = ({
 };
 
 export default function VerificationResult({ data }: VerificationResultProps) {
+  const createShareLinkMutation = useMutation({
+    mutationFn: () => {
+      if (!data?.id) {
+        throw new Error('Verification ID is missing.');
+      }
+      return orpc.createShareLink.call({ verificationId: data.id });
+    },
+    onSuccess: (result) => {
+      const shareUrl = `${window.location.origin}/share/${result.shareToken}`;
+      
+      toast.success('Share link created!', {
+        description: 'Anyone with this link can view the result.',
+        action: {
+          label: 'Copy Link',
+          onClick: () => {
+            navigator.clipboard.writeText(shareUrl);
+            toast.info('Link copied to clipboard!');
+          },
+        },
+        duration: 10000,
+      });
+    },
+    onError: (error) => {
+      toast.error(`Failed to create share link: ${error.message}`);
+    },
+  });
+
   if (!data?.finalResult) {
     return <p>No result data available.</p>;
   }
 
-  const { originalText, user, source = [], finalResult } = data;
+  const { user, source = [], finalResult } = data;
   const { finalText, labelsJson, citationsJson, answersJson, createdAt, metadata } = finalResult;
   const labels: string[] =
     typeof labelsJson === 'string' ? JSON.parse(labelsJson) : labelsJson || [];
@@ -68,14 +99,13 @@ export default function VerificationResult({ data }: VerificationResultProps) {
     typeof citationsJson === 'string' ? JSON.parse(citationsJson) : citationsJson || {};
   const answers: Record<string, string> =
     typeof answersJson === 'string' ? JSON.parse(answersJson) : answersJson || {};
-  const { label, main_claim } = metadata ?? {};
-  console.log(source);
+  const { label, main_claim, title } = metadata ?? {};
 
   return (
     <div className="mx-auto max-w-6xl bg-background p-4 font-sans text-foreground sm:p-6 lg:p-8">
       <div className="mb-6">
         <h1 className="mb-2 hyphens-auto break-words font-bold text-2xl text-foreground leading-tight sm:text-3xl lg:text-4xl">
-          {originalText}
+          {title}
         </h1>
         <p
           className={`whitespace-pre-wrap rounded-md px-3 py-2 font-semibold text-lg leading-6 transition-colors duration-200 ${
@@ -84,8 +114,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
               : label === 'False' || label === 'false' || label === 'Fake'
                 ? 'border border-red-200 bg-red-100 text-red-800'
                 : 'border border-orange-200 bg-orange-100 text-orange-800'
-          }
-    `}
+          }`}
         >
           {main_claim}
         </p>
@@ -128,26 +157,37 @@ export default function VerificationResult({ data }: VerificationResultProps) {
         {/* Sidebar Column */}
         <div className="space-y-8">
           <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                <span className="font-bold text-muted-foreground text-xl">
-                  {user?.name?.charAt(0).toUpperCase() || 'A'}
-                </span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                  <span className="font-bold text-muted-foreground text-xl">
+                    {user?.name?.charAt(0).toUpperCase() || 'A'}
+                  </span>
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">{user?.name || 'Anonymous'}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {new Date(createdAt).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-foreground">{user?.name || 'Anonymous'}</p>
-                <p className="text-muted-foreground text-sm">
-                  {new Date(createdAt).toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </p>
-              </div>
+              <Button
+                aria-label="Share result"
+                disabled={createShareLinkMutation.isPending}
+                onClick={() => createShareLinkMutation.mutate()}
+                size="icon"
+                variant="ghost"
+              >
+                <Share2 className="h-5 w-5" />
+              </Button>
             </div>
           </Card>
 
-          {/* Sección de Fuentes */}
+          {/* Source Section */}
           <section>
             <SectionHeader icon={FileText} title="Fuentes" />
             <div className="flex flex-col gap-2">
@@ -183,6 +223,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
             </div>
           </section>
 
+          {/* Detailed Answers Section */}
           <section>
             <SectionHeader icon={Search} title="Respuestas Detalladas" />
             <div className="space-y-3">

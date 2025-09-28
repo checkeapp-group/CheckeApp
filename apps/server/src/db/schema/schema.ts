@@ -42,6 +42,7 @@ export const verification = mysqlTable(
     ])
       .notNull()
       .default('draft'),
+    shareToken: varchar('share_token', { length: 36 }).unique(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
   },
@@ -50,6 +51,7 @@ export const verification = mysqlTable(
     statusIdx: index('idx_verification_status').on(table.status),
     createdAtIdx: index('idx_verification_created_at').on(table.createdAt),
     userStatusIdx: index('idx_verification_user_status').on(table.userId, table.status),
+    shareTokenIdx: index('idx_verification_share_token').on(table.shareToken),
     originalTextLengthCheck: check(
       'chk_verification_original_text_length',
       sql`CHAR_LENGTH(${table.originalText}) >= 10 AND CHAR_LENGTH(${table.originalText}) <= 5000`

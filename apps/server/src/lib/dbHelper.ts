@@ -1,16 +1,14 @@
-import mysql12 from 'mysql2/promise';
-import { drizzle } from 'drizzle-orm/mysql2';
-import { MySql2Database } from 'drizzle-orm/mysql2';
-import * as schema from '@/db/schema/schema';
 import dotenv from 'dotenv';
+import { drizzle, type MySql2Database } from 'drizzle-orm/mysql2';
+import mysql12 from 'mysql2/promise';
+import type * as schema from '@/db/schema/schema';
 
 dotenv.config();
 
 let pool: mysql12.Pool;
 type DrizzleDB = MySql2Database<typeof schema>;
 
-// biome-ignore lint/nursery/useConsistentTypeDefinitions: <explanation>
-interface DBConfig {
+type DBConfig = {
   host: string;
   user: string;
   password: string;
@@ -76,7 +74,6 @@ export async function executeQuery<T>(queryFn: (db: DrizzleDB) => Promise<T>): P
     const database = getDB();
     return await queryFn(database);
   } catch (error) {
-    // Handle specific MySQL errors
     if (error instanceof Error) {
       if (error.message.includes('Connection lost')) {
         db = initDB();

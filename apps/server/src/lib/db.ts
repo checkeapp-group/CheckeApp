@@ -1,6 +1,6 @@
-import mysql2 from 'mysql2';
-import { drizzle } from 'drizzle-orm/mysql2';
 import dotenv from 'dotenv';
+import { drizzle } from 'drizzle-orm/mysql2';
+import mysql2 from 'mysql2';
 
 dotenv.config();
 

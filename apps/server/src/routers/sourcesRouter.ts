@@ -1,13 +1,11 @@
-/** biome-ignore-all lint/style/useFilenamingConvention: <Log the error for debugging purposes> */
 import { ORPCError } from '@orpc/server';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '@/db';
+import { source, verification } from '@/db/schema/schema';
 import { generateAndSaveFinalAnalysis } from '@/db/services/finalResult/finalsResultService';
 import { extractArticleData } from '@/db/services/scraping/articleExtractorService';
-import {
-  getSources,
-  updateSourceSelection,
-} from '@/db/services/sources/sourcesService';
+import { getSources, updateSourceSelection } from '@/db/services/sources/sourcesService';
 import { getVerificationById } from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { protectedProcedure } from '@/lib/orpc';
@@ -27,12 +25,11 @@ export const sourcesRouter = {
         return {
           url,
           title: metadata.title,
-          summary: metadata.description, 
+          summary: metadata.description,
           domain: metadata.source || new URL(url).hostname,
           image: metadata.image,
         };
       } catch (error) {
-        // biome-ignore lint/suspicious/noConsole: <Log the error for debugging purposes>
         console.error(`[getSourcePreview] Failed to extract data for ${url}:`, error);
         throw new ORPCError('INTERNAL_SERVER_ERROR');
       }
@@ -83,22 +80,45 @@ export const sourcesRouter = {
       await validateVerificationAccess(verificationId, context.session.user.id);
       const verification = await getVerificationById(verificationId);
       if (!verification) {
-        throw new ORPCError('BAD_REQUEST' );
+        throw new ORPCError('BAD_REQUEST');
       }
       return { status: verification.status };
     }),
 
-  getFinalResult: protectedProcedure
+  getVerificationResultData: protectedProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id);
-      const result = await db.query.finalResult.findFirst({
-        where: (fr, { eq }) => eq(fr.verificationId, verificationId),
+      await validateVerificationAccess(verificationId, context.session.user.id, 'view');
+
+      // Fetch all related data using Drizzle's relational queries.
+      const result = await db.query.verification.findFirst({
+        where: eq(verification.id, verificationId),
+        with: {
+          user: {
+            columns: {
+              name: true,
+            },
+          },
+          criticalQuestion: {
+            orderBy: (questions, { asc }) => [asc(questions.orderIndex)],
+          },
+          source: {
+            where: eq(source.isSelected, true),
+          },
+          finalResult: true,
+        },
       });
-      if (!result) {
-        throw new ORPCError('BAD_REQUEST');
+
+      if (!(result && result.finalResult)) {
+        throw new ORPCError('NOT_FOUND', {
+          message: 'Verification result not found. The analysis may not be complete yet.',
+        });
       }
+
+      console.log(
+        `[getVerificationResultData] Successfully fetched completed result for ${verificationId} from DB.`
+      );
       return result;
     }),
 };
