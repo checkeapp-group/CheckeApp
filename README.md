@@ -62,8 +62,7 @@ This project is built with a modern, type-safe technology stack. For technical d
 - [Database Architecture](./docs/DATABASE.md)
 - [Frontend (Web)](./docs/WEB.md)
 - [Backend (Server)](./docs/SERVER.md)
-- [Deployment](./docs/DEPLOYMENT.md)
-- [Validation Flow](./docs/VALIDATION.md)
+- [Verification](./docs/VERIFICATION.md)
 
 ---
 
