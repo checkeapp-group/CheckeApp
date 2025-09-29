@@ -180,8 +180,14 @@ erDiagram
 - **Status Flow**:
 
   ```mermaid
-  draft → processing_questions → sources_ready →
-  generating_summary → completed | error
+  stateDiagram-v2
+  [*] --> draft
+  draft --> processing_questions
+  processing_questions --> sources_ready
+  sources_ready --> generating_summary
+  generating_summary --> completed
+  generating_summary --> error
+
   ```
 
 - **Constraints**: Text length (10-5000 characters)
