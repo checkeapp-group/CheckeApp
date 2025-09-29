@@ -113,9 +113,10 @@ export function useAuthNavigation() {
     signUp,
     signIn,
     signOut,
-    // Métodos de navegación directa
-    goToSignIn: () => navigate(ROUTES.LOGIN + '?mode=signin'),
-    goToSignUp: () => navigate(ROUTES.LOGIN + '?mode=signup'),
+
+    goToSignIn: () => navigate('/login'),
+    goToSignUp: () => navigate('/register'),
+    goToRecoverPassword: () => navigate('/recover-password'),
     goToDashboard: () => navigateToRoute('DASHBOARD'),
     goHome: () => navigateToRoute('HOME'),
   };

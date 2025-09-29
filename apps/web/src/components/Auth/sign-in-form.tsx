@@ -1,3 +1,5 @@
+'use client';
+
 import { Field, Fieldset, Input, Label } from '@headlessui/react';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner';
@@ -5,15 +7,20 @@ import { z } from 'zod';
 import Loader from '@/components/loader';
 import { Button } from '@/components/ui/button';
 import { useAuthNavigation } from '@/hooks/use-auth-navigation';
-import { authClient } from '@/lib/auth-client';
 import { useI18n } from '@/hooks/use-i18n';
+import { authClient } from '@/lib/auth-client';
 
 type SignInFormProps = {
   onSwitchToSignUp: () => void;
+  onSwitchToForgotPassword: () => void;
   onClose: () => void;
 };
 
-export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProps) {
+export default function SignInForm({
+  onSwitchToSignUp,
+  onSwitchToForgotPassword,
+  onClose,
+}: SignInFormProps) {
   const { signIn } = useAuthNavigation();
   const { isPending } = authClient.useSession();
   const { t } = useI18n();
@@ -98,6 +105,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
           className="mt-8 space-y-6"
           onSubmit={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             form.handleSubmit();
           }}
         >
@@ -136,7 +144,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
                     >
                       {field.state.meta.errors.map((error, i) => (
                         <p className="flex items-center text-destructive text-sm" key={i}>
-                          {error.message}
+                          {error}
                         </p>
                       ))}
                     </div>
@@ -179,7 +187,7 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
                     >
                       {field.state.meta.errors.map((error, i) => (
                         <p className="flex items-center text-destructive text-sm" key={i}>
-                          {error.message}
+                          {error}
                         </p>
                       ))}
                     </div>
@@ -205,6 +213,9 @@ export default function SignInForm({ onSwitchToSignUp, onClose }: SignInFormProp
         <div className="mt-6 text-center">
           <Button className="font-semibold text-sm" onClick={onSwitchToSignUp} variant="link">
             {t('auth.signUp.cta')}
+          </Button>
+          <Button className="mt-2 text-xs" onClick={onSwitchToForgotPassword} variant="link">
+            ¿Olvidaste tu contraseña?
           </Button>
         </div>
       </div>
