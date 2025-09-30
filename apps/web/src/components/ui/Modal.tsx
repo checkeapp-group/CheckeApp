@@ -1,11 +1,10 @@
-/** biome-ignore-all lint/style/useFilenamingConvention: <explanation> */
 'use client';
 
 import { Dialog, Transition } from '@headlessui/react';
 import { X } from 'lucide-react';
 import { Fragment } from 'react';
 import { Button } from './button';
-import { Card } from './Card';
+import { Card } from './card';
 
 type ModalProps = {
   isOpen: boolean;
@@ -42,7 +41,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel asChild>
-                <Card className="w-full max-w-md transform overflow-hidden p-6 text-left align-middle shadow-xl transition-all">
+                <Card className="liquid-glass w-full max-w-md transform overflow-hidden p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title as="h3" className="font-bold text-foreground text-lg leading-6">
                     {title}
                   </Dialog.Title>

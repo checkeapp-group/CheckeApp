@@ -3,7 +3,7 @@
 import { Disclosure, Transition } from '@headlessui/react';
 import { CheckCircleIcon, ChevronUpIcon, LockIcon } from 'lucide-react';
 import type React from 'react';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 type StepProps = {

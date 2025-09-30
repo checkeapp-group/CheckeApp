@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,33 +9,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import { Button } from './ui/button';
-import Link from 'next/link';
-import { Skeleton } from './ui/skeleton';
+import { useI18n } from '@/hooks/use-i18n';
 import { authClient } from '@/lib/auth-client';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { Button } from './ui/button';
+import { Skeleton } from './ui/skeleton';
 
 export default function UserMenu() {
   const router = useRouter();
+  const { t } = useI18n();
   const { data: session, isPending } = authClient.useSession();
 
   if (!session?.user) {
     return null;
   }
-  
+
   const handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
           router.push('/login');
-          toast.success('You have been logged out successfully.');
+          toast.success(t('userMenu.loggedOutSuccess'));
         },
       },
     });
   };
-  
+
   if (isPending) {
     return <Skeleton className="h-9 w-24" />;
   }
@@ -40,7 +41,7 @@ export default function UserMenu() {
   if (!session) {
     return (
       <Button asChild variant="outline">
-        <Link href="/login">Sign In</Link>
+        <Link href="/login">{t('auth.signIn')}</Link>
       </Button>
     );
   }
@@ -51,16 +52,12 @@ export default function UserMenu() {
         <Button variant="outline">{session.user.name}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-card">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('userMenu.myAccount')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Button
-            className="w-full"
-            onClick={handleLogout}
-            variant="destructive"
-          >
-            Sign Out
+          <Button className="w-full" onClick={handleLogout} variant="destructive">
+            {t('auth.signOut')}
           </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>

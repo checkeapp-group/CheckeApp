@@ -6,10 +6,10 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { toast } from 'sonner';
 import AuthModal from '@/components/Auth/auth-modal';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/hooks/use-auth';
 import { useI18n } from '@/hooks/use-i18n';
 import { useAppRouter } from '@/lib/router';
+import { Card } from './ui/card';
 
 type TextInputFormProps = {
   isAuthenticated?: boolean;
