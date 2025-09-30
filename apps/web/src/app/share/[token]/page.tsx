@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import Loader from '@/components/loader';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import VerificationResult from '@/components/VerificationResult';
 import { orpc } from '@/utils/orpc';
 
@@ -16,7 +16,7 @@ export default function SharePage() {
     queryFn: () => {
       if (!shareToken || typeof shareToken !== 'string') return null;
       return orpc.getSharedResult.call({
-        shareToken: shareToken,
+        shareToken,
       });
     },
     enabled: !!shareToken,

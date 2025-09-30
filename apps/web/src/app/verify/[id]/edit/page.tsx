@@ -3,18 +3,18 @@
 import { AlertCircle } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import type { Verification } from '@/../../server/src/db/schema/schema';
 import Loader from '@/components/loader';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import VerificationFlow from '@/components/VerificationFlow';
+import { useAppRouter } from '@/lib/router';
 import { orpc } from '@/utils/orpc';
 
-type VerificationData = {
-  id: string;
-  originalText: string;
-};
+type VerificationData = Verification;
 
 export default function VerificationEditPage() {
   const { id: verificationId } = useParams();
+   const { navigate } = useAppRouter();
 
   const [verification, setVerification] = useState<VerificationData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,19 +34,17 @@ export default function VerificationEditPage() {
     const fetchVerification = async () => {
       try {
         setIsLoading(true);
-        const storedText = sessionStorage.getItem(`verification_text_${currentVerificationId}`);
+        const result = await orpc.getVerificationDetails.call({
+          verificationId: currentVerificationId,
+        });
+        const isEditable =
+          result.status === 'processing_questions' || result.status === 'sources_ready';
 
-        if (storedText) {
-          setVerification({
-            id: currentVerificationId,
-            originalText: storedText,
-          });
-        } else {
-          const result = await orpc.getVerificationDetails.call({
-            verificationId: currentVerificationId,
-          });
-          setVerification({ ...result, originalText: result.originalText });
+        if (!isEditable) {
+          navigate(`/verify/${currentVerificationId}/finalResult`);
+          return;
         }
+        setVerification(result);
       } catch (err) {
         setError(err as Error);
       } finally {
@@ -55,7 +53,7 @@ export default function VerificationEditPage() {
     };
 
     fetchVerification();
-  }, [verificationId]);
+  }, [verificationId, navigate]);
 
   if (isLoading) {
     return <Loader />;
@@ -75,12 +73,7 @@ export default function VerificationEditPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      {verification && (
-        <VerificationFlow
-          initialText={verification.originalText}
-          verificationId={verification.id}
-        />
-      )}
+      {verification ? <VerificationFlow verification={verification} /> : <Loader />}
     </div>
   );
 }

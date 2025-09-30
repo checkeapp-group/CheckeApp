@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import Loader from '@/components/loader';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import VerificationResult from '@/components/VerificationResult';
 import { useI18n } from '@/hooks/use-i18n';
 import { orpc } from '@/utils/orpc';

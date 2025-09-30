@@ -5,9 +5,10 @@ import { useMutation } from '@tanstack/react-query';
 import { FileText, MessageSquareQuote, Search, Share2 } from 'lucide-react';
 import type { appRouter } from 'server/src/routers';
 import { toast } from 'sonner';
+import { useI18n } from '@/hooks/use-i18n';
 import { orpc } from '@/utils/orpc';
 import { Button } from './ui/button';
-import { Card } from './ui/Card';
+import { Card } from './ui/card';
 
 type VerificationResultData = RouterClient<
   typeof appRouter
@@ -60,6 +61,7 @@ const ContentWithCitations = ({
 };
 
 export default function VerificationResult({ data }: VerificationResultProps) {
+  const { t } = useI18n();
   const createShareLinkMutation = useMutation({
     mutationFn: () => {
       if (!data?.id) {
@@ -69,17 +71,17 @@ export default function VerificationResult({ data }: VerificationResultProps) {
     },
     onSuccess: (result) => {
       const shareUrl = `${window.location.origin}/share/${result.shareToken}`;
-      
-      toast.success('Share link created!', {
-        description: 'Anyone with this link can view the result.',
+
+      toast.success(t('result.shareLink.created'), {
+        description: t('result.shareLink.description'),
         action: {
-          label: 'Copy Link',
+          label: t('result.shareLink.copyLink'),
           onClick: () => {
             navigator.clipboard.writeText(shareUrl);
-            toast.info('Link copied to clipboard!');
+            toast.info(t('result.shareLink.copied'));
           },
         },
-        duration: 10000,
+        duration: 10_000,
       });
     },
     onError: (error) => {
@@ -88,7 +90,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
   });
 
   if (!data?.finalResult) {
-    return <p>No result data available.</p>;
+    return <p>{t('result.noData')}</p>;
   }
 
   const { user, source = [], finalResult } = data;
@@ -124,13 +126,13 @@ export default function VerificationResult({ data }: VerificationResultProps) {
         {/* Main Content Column */}
         <div className="space-y-8 lg:col-span-2">
           <img
-            alt="Verification visual summary"
+            alt={t('result.visualSummary.alt')}
             className="h-auto w-full rounded-lg object-cover shadow-lg"
             src="https://placehold.co/800x400"
           />
 
           <section>
-            <SectionHeader icon={MessageSquareQuote} title="Respuesta" />
+            <SectionHeader icon={MessageSquareQuote} title={t('result.response.title')} />
             <div className="prose prose-lg max-w-none whitespace-pre-wrap text-muted-foreground leading-relaxed">
               <ContentWithCitations citations={citations} text={finalText} />
             </div>
@@ -165,7 +167,9 @@ export default function VerificationResult({ data }: VerificationResultProps) {
                   </span>
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground">{user?.name || 'Anonymous'}</p>
+                  <p className="font-semibold text-foreground">
+                    {user?.name || t('result.anonymous')}
+                  </p>
                   <p className="text-muted-foreground text-sm">
                     {new Date(createdAt).toLocaleDateString('es-ES', {
                       year: 'numeric',
@@ -176,7 +180,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
                 </div>
               </div>
               <Button
-                aria-label="Share result"
+                aria-label={t('result.share.ariaLabel')}
                 disabled={createShareLinkMutation.isPending}
                 onClick={() => createShareLinkMutation.mutate()}
                 size="icon"
@@ -189,7 +193,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
 
           {/* Source Section */}
           <section>
-            <SectionHeader icon={FileText} title="Fuentes" />
+            <SectionHeader icon={FileText} title={t('result.sources.title')} />
             <div className="flex flex-col gap-2">
               {source.map((source, index) => (
                 <a
@@ -225,7 +229,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
 
           {/* Detailed Answers Section */}
           <section>
-            <SectionHeader icon={Search} title="Respuestas Detalladas" />
+            <SectionHeader icon={Search} title={t('result.detailedAnswers.title')} />
             <div className="space-y-3">
               {Object.entries(answers).map(([question, answer], index) => (
                 <details
