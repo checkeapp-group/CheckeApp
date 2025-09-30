@@ -148,5 +148,31 @@
   "verification.step2.title": "Paso 2: Revisa e edita as preguntas",
   "verification.step2.description": "Confirma ou modifica as preguntas xeradas automaticamente",
   "verification.step3.title": "Paso 3: Selecciona as fontes",
-  "verification.step3.description": "Escolle as fontes máis fiables para a túa verificación"
+  "verification.step3.description": "Escolle as fontes máis fiables para a túa verificación",
+
+  "result.shareLink.created": "Ligazón compartida creada!",
+  "result.shareLink.description": "Calquera persoa con esta ligazón pode ver o resultado.",
+  "result.shareLink.copyLink": "Copiar Ligazón",
+  "result.shareLink.copied": "Ligazón copiada ao portapapeis!",
+  "result.noData": "Non hai datos de resultado dispoñibles.",
+  "result.anonymous": "Anónimo",
+  "result.response.title": "Resposta",
+  "result.sources.title": "Fontes",
+  "result.detailedAnswers.title": "Respostas Detalladas",
+  "result.visualSummary.alt": "Resumo visual de verificación",
+  "result.share.ariaLabel": "Compartir resultado",
+
+  "question.edit.ariaLabel": "Editar pregunta",
+  "question.delete.ariaLabel": "Eliminar pregunta",
+
+  "forgotPassword.title": "Recuperar Contrasinal",
+  "forgotPassword.subtitle": "Introduce o teu correo e enviarémosche unha ligazón para restablecelo.",
+  "forgotPassword.sending": "Enviando correo de recuperación...",
+  "forgotPassword.success": "Se o correo existe, recibirás unha ligazón para restablecer o teu contrasinal.",
+  "forgotPassword.error": "Non se puido enviar o correo. Téntao de novo.",
+  "forgotPassword.sendLink": "Enviar ligazón",
+  "forgotPassword.backToSignIn": "Volver a Iniciar Sesión",
+
+  "userMenu.myAccount": "A Miña Conta",
+  "userMenu.loggedOutSuccess": "Pechaches sesión con éxito."
 }

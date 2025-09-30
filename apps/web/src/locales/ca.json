@@ -148,5 +148,31 @@
   "verification.step2.title": "Pas 2: Revisa i edita les preguntes",
   "verification.step2.description": "Confirma o modifica les preguntes generades automàticament",
   "verification.step3.title": "Pas 3: Selecciona les fonts",
-  "verification.step3.description": "Tria les fonts més fiables per a la teva verificació"
+  "verification.step3.description": "Tria les fonts més fiables per a la teva verificació",
+
+  "result.shareLink.created": "Enllaç compartit creat!",
+  "result.shareLink.description": "Qualsevol persona amb aquest enllaç pot veure el resultat.",
+  "result.shareLink.copyLink": "Copiar Enllaç",
+  "result.shareLink.copied": "Enllaç copiat al porta-retalls!",
+  "result.noData": "No hi ha dades de resultat disponibles.",
+  "result.anonymous": "Anònim",
+  "result.response.title": "Resposta",
+  "result.sources.title": "Fonts",
+  "result.detailedAnswers.title": "Respostes Detallades",
+  "result.visualSummary.alt": "Resum visual de verificació",
+  "result.share.ariaLabel": "Compartir resultat",
+
+  "question.edit.ariaLabel": "Editar pregunta",
+  "question.delete.ariaLabel": "Eliminar pregunta",
+
+  "forgotPassword.title": "Recuperar Contrasenya",
+  "forgotPassword.subtitle": "Introdueix el teu correu i t'enviarem un enllaç per restablir-la.",
+  "forgotPassword.sending": "Enviant correu de recuperació...",
+  "forgotPassword.success": "Si el correu existeix, rebràs un enllaç per restablir la teva contrasenya.",
+  "forgotPassword.error": "No s'ha pogut enviar el correu. Torna-ho a intentar.",
+  "forgotPassword.sendLink": "Enviar enllaç",
+  "forgotPassword.backToSignIn": "Tornar a Iniciar Sessió",
+
+  "userMenu.myAccount": "El Meu Compte",
+  "userMenu.loggedOutSuccess": "Has tancat sessió amb èxit."
 }

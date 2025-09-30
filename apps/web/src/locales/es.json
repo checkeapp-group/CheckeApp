@@ -148,5 +148,31 @@
   "verification.step2.title": "Paso 2: Revisa y edita las preguntas",
   "verification.step2.description": "Confirma o modifica las preguntas generadas automáticamente",
   "verification.step3.title": "Paso 3: Selecciona las fuentes",
-  "verification.step3.description": "Elige las fuentes más confiables para tu verificación"
+  "verification.step3.description": "Elige las fuentes más confiables para tu verificación",
+
+  "result.shareLink.created": "¡Enlace compartido creado!",
+  "result.shareLink.description": "Cualquiera con este enlace puede ver el resultado.",
+  "result.shareLink.copyLink": "Copiar Enlace",
+  "result.shareLink.copied": "¡Enlace copiado al portapapeles!",
+  "result.noData": "No hay datos de resultado disponibles.",
+  "result.anonymous": "Anónimo",
+  "result.response.title": "Respuesta",
+  "result.sources.title": "Fuentes",
+  "result.detailedAnswers.title": "Respuestas Detalladas",
+  "result.visualSummary.alt": "Resumen visual de verificación",
+  "result.share.ariaLabel": "Compartir resultado",
+
+  "question.edit.ariaLabel": "Editar pregunta",
+  "question.delete.ariaLabel": "Eliminar pregunta",
+
+  "forgotPassword.title": "Recuperar Contraseña",
+  "forgotPassword.subtitle": "Introduce tu correo y te enviaremos un enlace para restablecerla.",
+  "forgotPassword.sending": "Enviando correo de recuperación...",
+  "forgotPassword.success": "Si el correo existe, recibirás un enlace para restablecer tu contraseña.",
+  "forgotPassword.error": "No se pudo enviar el correo. Inténtalo de nuevo.",
+  "forgotPassword.sendLink": "Enviar enlace",
+  "forgotPassword.backToSignIn": "Volver a Iniciar Sesión",
+
+  "userMenu.myAccount": "Mi Cuenta",
+  "userMenu.loggedOutSuccess": "Has cerrado sesión exitosamente."
 }

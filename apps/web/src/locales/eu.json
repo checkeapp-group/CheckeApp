@@ -148,5 +148,31 @@
   "verification.step2.title": "2. urratsa: Berrikusi eta editatu galderak",
   "verification.step2.description": "Berretsi edo aldatu automatikoki sortutako galderak",
   "verification.step3.title": "3. urratsa: Hautatu iturriak",
-  "verification.step3.description": "Aukeratu zure egiaztapenerako iturri fidagarrienak"
+  "verification.step3.description": "Aukeratu zure egiaztapenerako iturri fidagarrienak",
+
+   "result.shareLink.created": "Partekatutako esteka sortu da!",
+  "result.shareLink.description": "Esteka hau duen edonork emaitza ikusi dezake.",
+  "result.shareLink.copyLink": "Esteka Kopiatu",
+  "result.shareLink.copied": "Esteka arbelean kopiatu da!",
+  "result.noData": "Ez dago emaitza-daturik eskuragarri.",
+  "result.anonymous": "Anonimoa",
+  "result.response.title": "Erantzuna",
+  "result.sources.title": "Iturriak",
+  "result.detailedAnswers.title": "Erantzun Zehatzak",
+  "result.visualSummary.alt": "Egiaztapenaren laburpen bisuala",
+  "result.share.ariaLabel": "Emaitza partekatu",
+
+  "question.edit.ariaLabel": "Galdera editatu",
+  "question.delete.ariaLabel": "Galdera ezabatu",
+
+  "forgotPassword.title": "Pasahitza Berreskuratu",
+  "forgotPassword.subtitle": "Sartu zure posta eta esteka bat bidaliko dizugu berrezartzeko.",
+  "forgotPassword.sending": "Berreskuratze-posta bidaltzen...",
+  "forgotPassword.success": "Posta existitzen bada, esteka bat jasoko duzu zure pasahitza berrezartzeko.",
+  "forgotPassword.error": "Ezin izan da posta bidali. Saiatu berriro.",
+  "forgotPassword.sendLink": "Esteka bidali",
+  "forgotPassword.backToSignIn": "Itzuli Saio Hasierara",
+
+  "userMenu.myAccount": "Nire Kontua",
+  "userMenu.loggedOutSuccess": "Saioa ondo itxi duzu."
 }
