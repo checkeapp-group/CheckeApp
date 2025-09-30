@@ -26,12 +26,12 @@ export default function ForgotPasswordForm({ onClose, onSwitchToSignIn }: Forgot
       });
 
       toast.promise(promise, {
-        loading: 'Enviando correo de recuperación...',
+        loading: t('forgotPassword.sending'),
         success: () => {
           onClose?.();
-          return 'Si el correo existe, recibirás un enlace para restablecer tu contraseña.';
+          return t('forgotPassword.success');
         },
-        error: 'No se pudo enviar el correo. Inténtalo de nuevo.',
+        error: t('forgotPassword.error'),
       });
     },
     validators: {
@@ -44,9 +44,9 @@ export default function ForgotPasswordForm({ onClose, onSwitchToSignIn }: Forgot
   return (
     <div className="relative overflow-hidden rounded-2xl bg-white p-8 shadow-xl ring-1 ring-gray-900/5">
       <div className="text-center">
-        <h1 className="font-bold text-2xl text-foreground tracking-tight">Recuperar Contraseña</h1>
+        <h1 className="font-bold text-2xl text-foreground tracking-tight">{t('forgotPassword.title')}</h1>
         <p className="mt-2 text-gray-600 text-sm">
-          Introduce tu correo y te enviaremos un enlace para restablecerla.
+          {t('forgotPassword.subtitle')}
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export default function ForgotPasswordForm({ onClose, onSwitchToSignIn }: Forgot
               loading={state.isSubmitting}
               type="submit"
             >
-              Enviar enlace
+              {t('forgotPassword.sendLink')}
             </Button>
           )}
         </form.Subscribe>
@@ -97,7 +97,7 @@ export default function ForgotPasswordForm({ onClose, onSwitchToSignIn }: Forgot
       <div className="mt-6 text-center">
         <Button onClick={onSwitchToSignIn} variant="link">
           {' '}
-          Volver a Iniciar Sesión
+          {t('forgotPassword.backToSignIn')}
         </Button>
       </div>
     </div>
