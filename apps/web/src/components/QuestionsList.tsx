@@ -20,13 +20,37 @@ import { CSS } from '@dnd-kit/utilities';
 import { AlertCircle, CheckCircle2, Lock, Plus, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/hooks/use-i18n';
 import { useQuestionsEditor } from '@/hooks/use-questions-editor';
 import type { Question } from '@/types/questions';
 import { QuestionCard } from './QuestionCard';
+
+function QuestionsListSkeleton() {
+  return (
+    <div className="animate-pulse space-y-4">
+      {[...new Array(3)].map((_, i) => (
+        <Card className="liquid-glass liquid-glass--md p-4" key={i}>
+          <div className="flex w-full items-center gap-3">
+            <Skeleton className="h-6 w-5 flex-shrink-0 rounded-md bg-white/20" />
+
+            <div className="min-w-0 flex-1 space-y-2">
+              <Skeleton className="h-4 w-3/4 rounded-md bg-white/20" />
+              <Skeleton className="h-4 w-1/2 rounded-md bg-white/20" />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-8 rounded-md bg-white/20" />
+              <Skeleton className="h-8 w-8 rounded-md bg-white/20" />
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
 
 type QuestionsListProps = {
   verificationId: string;
@@ -116,13 +140,7 @@ export default function QuestionsList({
   };
 
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[...new Array(3)].map((_, i) => (
-          <Skeleton className="h-24 w-full" key={i} />
-        ))}
-      </div>
-    );
+    return <QuestionsListSkeleton />;
   }
 
   if (error) {

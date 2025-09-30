@@ -2,11 +2,34 @@
 
 import SourceCard from '@/components/SourceCards';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { UiSelect } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/hooks/use-i18n';
 import { useSourcesEditor } from '@/hooks/use-sources-editor';
+
+function SourcesListSkeleton() {
+  return (
+    <div className="animate-pulse space-y-4">
+      {[...new Array(3)].map((_, i) => (
+        <Card className="liquid-glass p-4" key={i}>
+          <div className="flex items-start gap-4">
+            <Skeleton className="mt-1 h-5 w-5 flex-shrink-0 rounded-sm bg-white/20" />
+            <div className="min-w-0 flex-1 space-y-2.5">
+              <Skeleton className="h-4 w-3/4 rounded bg-white/20" />
+              <Skeleton className="h-3 w-1/4 rounded bg-white/20" />
+              <div className="space-y-2 pt-2">
+                <Skeleton className="h-3 w-full rounded bg-white/20" />
+                <Skeleton className="h-3 w-5/6 rounded bg-white/20" />
+              </div>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
 
 type SourcesListProps = {
   verificationId: string;
@@ -36,17 +59,15 @@ export default function SourcesList({
   } = useSourcesEditor({ verificationId });
 
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-24 w-full" />
-      </div>
-    );
+    return <SourcesListSkeleton />;
   }
 
   if (error) {
-    return <p className="text-destructive">{t('sources.error_loading')}: {error.message}</p>;
+    return (
+      <p className="text-destructive">
+        {t('sources.error_loading')}: {error.message}
+      </p>
+    );
   }
 
   const domains = [...new Set(sources.map((s) => s.domain).filter(Boolean))];
@@ -85,7 +106,9 @@ export default function SourcesList({
           <Button onClick={deselectAll} size="sm" variant="link">
             {t('sources.deselect_all')}
           </Button>
-          <p className="font-medium text-sm">{t('sources.selected_count', { count: selectedSourcesCount })}</p>
+          <p className="font-medium text-sm">
+            {t('sources.selected_count', { count: selectedSourcesCount })}
+          </p>
         </div>
       </div>
       <div className="space-y-4">

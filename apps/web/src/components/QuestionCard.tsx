@@ -3,7 +3,7 @@
 import { AlertCircle, Edit, GripVertical, Save, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useI18n } from '@/hooks/use-i18n';
 import { cn } from '@/lib/utils';
@@ -151,7 +151,7 @@ export function QuestionCard({
               {!isLocked && (
                 <div className="flex items-center gap-1">
                   <Button
-                    aria-label="Edit question"
+                    aria-label={t('question.edit.ariaLabel')}
                     onClick={() => onEdit(question.id)}
                     size="icon"
                     variant="ghost"
@@ -159,7 +159,7 @@ export function QuestionCard({
                     <Edit className="h-4 w-4" />
                   </Button>
                   <Button
-                    aria-label="Delete question"
+                    aria-label={t('question.delete.ariaLabel')}
                     className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => onDelete(question.id)}
                     size="icon"

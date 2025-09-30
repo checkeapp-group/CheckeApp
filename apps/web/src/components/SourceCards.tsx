@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { Source } from '@/../server/src/db/schema/schema';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { useI18n } from '@/hooks/use-i18n';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
