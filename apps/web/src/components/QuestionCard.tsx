@@ -79,7 +79,7 @@ export function QuestionCard({
   return (
     <Card
       className={cn(
-        'p-4 transition-all duration-300',
+        'bg-background p-4 transition-all duration-300',
         isEditing && !isLocked && 'border-primary/50 ring-2 ring-primary/20',
         !isTextValid && isEditing && !isLocked && 'border-destructive/50 ring-destructive/20'
       )}

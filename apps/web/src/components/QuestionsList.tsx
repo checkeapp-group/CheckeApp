@@ -199,7 +199,7 @@ export default function QuestionsList({
 
       {!isLocked &&
         (showAddForm ? (
-          <Card className="border-primary/50 bg-primary/5 p-4">
+          <Card className="border-primary/50 p-4">
             <div className="space-y-3">
               <Input
                 autoFocus

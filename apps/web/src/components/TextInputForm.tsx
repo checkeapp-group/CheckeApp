@@ -97,32 +97,45 @@ const TextInputForm = ({
   return (
     <>
       <Card
-        className={`p-4 sm:p-6 ${isFocused ? 'border-primary/50 bg-card/95 shadow-md' : ''}`}
+        className={`p-4 sm:p-6 ${isFocused ? 'border-primary/50 bg-card/95 shadow-md' : 'bg-card/80'}`}
         onClick={handleInteraction}
       >
-        <TextareaAutosize
-          className="w-full resize-none border-0 bg-transparent text-lg placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:bg-muted/50"
-          disabled={isLoading || !isAuthenticated || isLocked}
-          maxLength={maxLength}
-          minRows={3}
-          onBlur={() => setIsFocused(false)}
-          onChange={handleTextChange}
-          onFocus={() => {
-            setIsFocused(true);
-            handleInteraction();
-          }}
-          placeholder={
-            authLoading
-              ? t('common.loading')
-              : isAuthenticated
-                ? t('textInput.placeholder')
-                : t('textInput.loginPlaceholder')
-          }
-          readOnly={!isAuthenticated}
-          value={text}
-        />
+        <div className="relative">
+          <TextareaAutosize
+            className="w-full resize-none border-0 text-lg placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed"
+            disabled={isLoading || !isAuthenticated || isLocked}
+            maxLength={maxLength}
+            minRows={3}
+            onBlur={() => setIsFocused(false)}
+            onChange={handleTextChange}
+            onClick={handleInteraction}
+            onFocus={() => {
+              setIsFocused(true);
+              handleInteraction();
+            }}
+            placeholder={
+              authLoading
+                ? t('common.loading')
+                : isAuthenticated
+                  ? t('textInput.placeholder')
+                  : t('textInput.loginPlaceholder')
+            }
+            readOnly={!isAuthenticated}
+            value={text}
+          />
+          {!isAuthenticated && (
+            <div
+              className="absolute inset-0 cursor-pointer bg-transparent"
+              onClick={handleInteraction}
+            />
+          )}
+        </div>
         <div className="mt-4 flex flex-col items-end gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-muted-foreground text-sm">
+          <div
+            className={`text-sm ${
+              text.length < minLength ? 'text-destructive' : 'text-muted-foreground'
+            }`}
+          >
             {text.length} / {maxLength}
           </div>
           <Button

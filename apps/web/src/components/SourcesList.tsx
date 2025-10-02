@@ -73,8 +73,8 @@ export default function SourcesList({
   const domains = [...new Set(sources.map((s) => s.domain).filter(Boolean))];
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 rounded-lg border bg-muted/50 p-4 md:grid-cols-3">
+    <div className="space-y-6 bg-gray-100">
+      <div className="grid grid-cols-1 gap-4 rounded-lg border bg-gray-100 p-4 md:grid-cols-3">
         <Input
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={t('sources.search_placeholder')}

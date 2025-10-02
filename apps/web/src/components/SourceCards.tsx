@@ -26,9 +26,9 @@ export default function SourceCard({ source, onSelectionChange }: SourceCardProp
   return (
     <Card
       className={cn(
-        'p-4 transition-all',
-        source.isSelected && 'border-primary ring-2 ring-primary/20'
-      )}
+    'bg-background p-4 transition-all',
+    source.isSelected && 'border-primary ring-2 ring-primary/20'
+    )}
     >
       <div className="flex items-start gap-4">
         <Checkbox

@@ -91,12 +91,13 @@ export default function VerificationFlow({ verification }: VerificationFlowProps
   };
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-4 ">
       <Step
         description={t('verification.step1.description')}
         isCompleted={completedSteps.includes('step-1')}
         isDisabled={false}
         isOpen={activeStep === 'step-1'}
+        onSelect={() => setActiveStep('step-1')}
         stepNumber={1}
         title={t('verification.step1.title')}
       >
@@ -108,6 +109,7 @@ export default function VerificationFlow({ verification }: VerificationFlowProps
         isCompleted={completedSteps.includes('step-2')}
         isDisabled={!completedSteps.includes('step-1')}
         isOpen={activeStep === 'step-2'}
+        onSelect={() => setActiveStep('step-2')}
         stepNumber={2}
         title={t('verification.step2.title')}
       >
@@ -124,6 +126,7 @@ export default function VerificationFlow({ verification }: VerificationFlowProps
         isCompleted={completedSteps.includes('step-3')}
         isDisabled={!completedSteps.includes('step-2')}
         isOpen={activeStep === 'step-3'}
+        onSelect={() => setActiveStep('step-3')}
         stepNumber={3}
         title={t('verification.step3.title')}
       >

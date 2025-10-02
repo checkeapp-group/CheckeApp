@@ -72,7 +72,7 @@ export default function VerificationEditPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto my-8 max-w-4xl rounded-lg bg-neutral/80 p-4 shadow-lg backdrop-blur-sm sm:p-6 lg:p-8">
       {verification ? <VerificationFlow verification={verification} /> : <Loader />}
     </div>
   );

@@ -14,6 +14,7 @@ type StepProps = {
   isDisabled: boolean;
   children: React.ReactNode;
   description?: string;
+  onSelect?: () => void;
 };
 
 export default function Step({
@@ -24,10 +25,15 @@ export default function Step({
   isDisabled,
   children,
   description,
+  onSelect,
 }: StepProps) {
   return (
-    <Disclosure as="div" className="w-full" defaultOpen={isOpen}>
-      {/** biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation> */}
+    <Disclosure
+      as="div"
+      className="w-full"
+      defaultOpen={isOpen}
+      key={`step-${stepNumber}-${isOpen}`}
+    >
       {({ open }) => (
         <Card
           className={cn(
@@ -44,12 +50,12 @@ export default function Step({
               isDisabled && 'cursor-not-allowed'
             )}
             disabled={isDisabled}
+            onClick={onSelect}
           >
             <div className="flex items-start gap-4">
               <div className="relative flex-shrink-0 pt-1">
                 {isCompleted ? (
                   <CheckCircleIcon className="h-6 w-6 text-success" />
-                  // biome-ignore lint/style/noNestedTernary: <explanation>
                 ) : isDisabled ? (
                   <LockIcon className="h-6 w-6 text-muted-foreground" />
                 ) : (

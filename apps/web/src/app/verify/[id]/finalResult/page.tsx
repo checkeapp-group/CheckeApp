@@ -12,7 +12,7 @@ import { orpc } from '@/utils/orpc';
 function LoadingState({ status }: { status?: string }) {
   const { t } = useI18n();
   return (
-    <Card className="p-4 text-center sm:p-6 md:p-8">
+    <Card className="bg-card p-4 text-center sm:p-6 md:p-8">
       <h1 className="mb-3 font-bold text-xl sm:mb-4 sm:text-2xl">
         {t('finalResult.analyzing_sources')}
       </h1>

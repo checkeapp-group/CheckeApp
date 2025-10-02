@@ -164,8 +164,8 @@ export default function SignInForm({
                       field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
                     }
                     aria-invalid={field.state.meta.errors.length > 0}
-                    autoComplete="current-password"
-                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
+                    autoComplete="email"
+                    className={`block w-full rounded-lg border-0 bg-white px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
                       field.state.meta.errors.length > 0
                         ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
                         : 'text-foreground ring-border'
