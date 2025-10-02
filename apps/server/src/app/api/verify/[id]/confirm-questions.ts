@@ -5,10 +5,10 @@ import {
   sendCriticalQuestions,
 } from '@/db/services/criticalQuestions/criticalQuestionService';
 import { makeSourcesReady } from '@/db/services/processLogs/processLogsService';
+import { saveSourcesFromAPI } from '@/db/services/sources/sourcesService';
 import { updateVerificationStatus } from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { auth } from '@/lib/auth';
-import { saveSourcesFromAPI } from '@/db/services/sources/sourcesService';
 
 const confirmQuestionsSchema = z.object({
   questions: z
@@ -61,7 +61,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         { status: 400 }
       );
     }
-
 
     try {
       await validateVerificationAccess(verificationId, userId);
