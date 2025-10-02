@@ -2,12 +2,15 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import React, { useState } from 'react';
+import AuthModal from '@/components/Auth/auth-modal';
 import Providers from '@/components/providers';
 import UserMenu from '@/components/UserMenu';
 import { LanguageSelector } from '@/components/ui/lenguage-selector';
 import { useAuth } from '@/hooks/use-auth';
 import { useI18n } from '@/hooks/use-i18n';
 import FactCheckerLogo from '@/public/FactCheckerLogo.webp';
+import BackGround from '../../public/softTeal.webp';
 import { Button } from '../ui/button';
 
 type LayoutProps = {
@@ -19,9 +22,25 @@ export default function RootLayout({ children, showHeader = true }: LayoutProps)
   const { t } = useI18n();
   const { isAuthenticated } = useAuth();
 
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const openAuthModal = () => setShowAuthModal(true);
+
   return (
     <Providers>
-      <div className="flex min-h-screen flex-col bg-background">
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <div className="-z-10 fixed inset-0">
+        <Image
+          alt="Background"
+          fill
+          priority
+          quality={85}
+          sizes="100vw"
+          src={BackGround}
+          style={{ objectFit: 'cover' }}
+        />
+      </div>
+
+      <div className="flex min-h-screen flex-col">
         {showHeader && (
           <header className="sticky top-0 z-50 w-full border-border border-b bg-card/95 backdrop-blur-sm">
             <div className="container mx-auto flex h-16 items-center justify-between">
@@ -38,7 +57,7 @@ export default function RootLayout({ children, showHeader = true }: LayoutProps)
 
               <div className="flex items-center gap-4">
                 <nav className="hidden items-center gap-6 md:flex">
-                  <Link href="/verify">{t('nav.verify')}</Link>
+                  <Link href="/">{t('nav.verify')}</Link>
                 </nav>
 
                 <div className="flex items-center gap-2">
@@ -46,12 +65,10 @@ export default function RootLayout({ children, showHeader = true }: LayoutProps)
                     <UserMenu />
                   ) : (
                     <div className="hidden items-center gap-2 sm:flex">
-                      <Button asChild variant="ghost">
-                        <Link href="/login">{t('auth.signIn')}</Link>
+                      <Button onClick={openAuthModal} variant="ghost">
+                        {t('auth.signIn')}
                       </Button>
-                      <Button asChild>
-                        <Link href="/verify">{t('auth.getStarted')}</Link>
-                      </Button>
+                      <Button onClick={openAuthModal}>{t('auth.getStarted')}</Button>
                     </div>
                   )}
                   <LanguageSelector />
@@ -61,7 +78,9 @@ export default function RootLayout({ children, showHeader = true }: LayoutProps)
           </header>
         )}
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {children && React.cloneElement(children as React.ReactElement, { openAuthModal })}
+        </main>
 
         <footer className="border-border border-t bg-card">
           {/* Sección principal del footer */}
