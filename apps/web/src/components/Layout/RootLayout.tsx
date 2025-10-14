@@ -58,6 +58,12 @@ export default function RootLayout({ children, showHeader = true }: LayoutProps)
               <div className="flex items-center gap-4">
                 <nav className="hidden items-center gap-6 md:flex">
                   <Link href="/">{t('nav.verify')}</Link>
+                  {isAuthenticated && (
+                    <>
+                      <Link href="/verifications">{t('verifications.title')}</Link>
+                      <Link href="/user-verifications">{t('user_verifications.title')}</Link>
+                    </>
+                  )}
                 </nav>
 
                 <div className="flex items-center gap-2">
