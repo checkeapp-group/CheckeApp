@@ -91,7 +91,7 @@
   "questions_edit.continued": "Preguntas gardadas correctamente",
   "questions_edit.continue_error": "Erro ao continuar a verificación",
   "questions_edit.access_denied": "Acceso denegado. Non tes permisos para editar esta verificación.",
-  "questions_edit.need_attention": "algunhas preguntas necesitan atención",
+  "questions_edit.need_attention": "Algunhas preguntas necesitan atención",
 
   "app.title": "FactChecker",
   "app.tagline": "Verifica con confianza",
@@ -138,6 +138,8 @@
   "sources.selected_count": "{count} seleccionada(s)",
   "sources.starting": "Iniciando...",
   "sources.continue_analysis": "Continuar coa Análise",
+  "sources.clickToSelect": "Preme para seleccionar",
+  "sources.all_domains": "Todos os dominios",
 
   "verification.sources_found": "Éxito! Atopáronse {count} fontes.",
   "verification.search_sources_error": "Ocorreu un erro ao buscar fontes.",
@@ -174,5 +176,26 @@
   "forgotPassword.backToSignIn": "Volver a Iniciar Sesión",
 
   "userMenu.myAccount": "A Miña Conta",
-  "userMenu.loggedOutSuccess": "Pechaches sesión con éxito."
+  "userMenu.loggedOutSuccess": "Pechaches sesión con éxito.",
+
+  "user_verifications.title": "As Miñas Verificacións",
+  "verifications.title": "Explora",
+  "verifications.status.draft": "Borrador",
+  "verifications.status.processing_questions": "Procesando Preguntas",
+  "verifications.status.sources_ready": "Fontes Listas",
+  "verifications.status.generating_summary": "Xerando Resumo",
+  "verifications.status.completed": "Completado",
+  "verifications.status.error": "Erro",
+  "verifications.no_claim": "Sen afirmación principal dispoñible.",
+  "verifications.no_results": "Non se atoparon verificacións que coincidan coa túa busca.",
+  "verifications.label.verified": "Verificado",
+  "verifications.label.fake": "Bulo",
+  "verifications.label.undetermined": "Indeterminado",
+  "verifications.search_placeholder": "Buscar nas miñas verificacións...",
+  "verifications.sort.newest": "Máis recentes primeiro",
+  "verifications.sort.oldest": "Máis antigos primeiro",
+
+  "pagination.showing": "Mostrando {start} a {end} de {total} resultados",
+  "pagination.previous": "Anterior",
+  "pagination.next": "Seguinte"
 }

@@ -138,6 +138,8 @@
   "sources.selected_count": "{count} seleccionada(es)",
   "sources.starting": "Iniciant...",
   "sources.continue_analysis": "Continuar amb l'Anàlisi",
+  "sources.clickToSelect": "Fes clic per seleccionar",
+  "sources.all_domains": "Tots els dominis",
 
   "verification.sources_found": "Èxit! S'han trobat {count} fonts.",
   "verification.search_sources_error": "S'ha produït un error en cercar fonts.",
@@ -174,5 +176,26 @@
   "forgotPassword.backToSignIn": "Tornar a Iniciar Sessió",
 
   "userMenu.myAccount": "El Meu Compte",
-  "userMenu.loggedOutSuccess": "Has tancat sessió amb èxit."
+  "userMenu.loggedOutSuccess": "Has tancat sessió amb èxit.",
+
+  "user_verifications.title": "Les Meves Verificacions",
+  "verifications.title": "Explora",
+  "verifications.status.draft": "Esborrany",
+  "verifications.status.processing_questions": "Processant Preguntes",
+  "verifications.status.sources_ready": "Fonts Llestes",
+  "verifications.status.generating_summary": "Generant Resum",
+  "verifications.status.completed": "Completat",
+  "verifications.status.error": "Error",
+  "verifications.no_claim": "No hi ha afirmació principal disponible.",
+  "verifications.no_results": "No s'han trobat verificacions que coincideixin amb la teva cerca.",
+  "verifications.label.verified": "Verificat",
+  "verifications.label.fake": "Fals",
+  "verifications.label.undetermined": "Indeterminat",
+  "verifications.search_placeholder": "Cerca a les meves verificacions...",
+  "verifications.sort.newest": "Més recents primer",
+  "verifications.sort.oldest": "Més antics primer",
+
+  "pagination.showing": "Mostrant {start} a {end} de {total} resultats",
+  "pagination.previous": "Anterior",
+  "pagination.next": "Següent"
 }

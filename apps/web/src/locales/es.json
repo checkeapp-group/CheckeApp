@@ -105,7 +105,7 @@
   "languageSelector.optionsAriaLabel": "Opciones de idioma disponibles",
   "languageSelector.flagAlt": "Bandera de {language}",
 
-  "finalResult.analyzing_sources": "Analizando Fuentes",
+  "finalResult.analyzing_sources": "Obteniendo verificación final...",
   "finalResult.processing_description": "Tu verificación está siendo procesada. Esto puede tardar unos minutos. El resultado aparecerá aquí automáticamente cuando esté listo.",
   "finalResult.current_status": "Estado Actual",
   "finalResult.starting": "Iniciando...",
@@ -174,5 +174,27 @@
   "forgotPassword.backToSignIn": "Volver a Iniciar Sesión",
 
   "userMenu.myAccount": "Mi Cuenta",
-  "userMenu.loggedOutSuccess": "Has cerrado sesión exitosamente."
+  "userMenu.loggedOutSuccess": "Has cerrado sesión exitosamente.",
+  "sources.clickToSelect": "Haz clic para seleccionar",
+  "sources.all_domains": "Todos los dominios",
+
+  "user_verifications.title": "Mis Verificaciones",
+  "verifications.title": "Explora",
+  "verifications.status.draft": "Borrador",
+  "verifications.status.processing_questions": "Procesando Preguntas",
+  "verifications.status.sources_ready": "Fuentes Listas",
+  "verifications.status.generating_summary": "Generando Resumen",
+  "verifications.status.completed": "Completado",
+  "verifications.status.error": "Error",
+  "verifications.no_claim": "Sin afirmación principal disponible.",
+  "verifications.no_results": "No se encontraron verificaciones que coincidan con tu búsqueda.",
+  "verifications.label.verified": "Verificado",
+  "verifications.label.fake": "Bulo",
+  "verifications.label.undetermined": "Indeterminado",
+  "verifications.search_placeholder": "Buscar en mis verificaciones...",
+  "verifications.sort.newest": "Más recientes primero",
+  "verifications.sort.oldest": "Más antiguos primero",
+  "pagination.showing": "Mostrando {start} a {end} de {total} resultados",
+  "pagination.previous": "Anterior",
+  "pagination.next": "Siguiente"
 }
