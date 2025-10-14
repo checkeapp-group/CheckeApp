@@ -3,12 +3,14 @@ import { publicProcedure } from '@/lib/orpc';
 import { questionsRouter } from './questionRouter';
 import { shareRouter } from './shareRouter';
 import { sourcesRouter } from './sourcesRouter';
+import { verificationRouter } from './verificationRouter';
 
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => 'OK'),
   ...questionsRouter,
   ...sourcesRouter,
   ...shareRouter,
+  ...verificationRouter,
 };
 
 export type AppRouter = typeof appRouter;
