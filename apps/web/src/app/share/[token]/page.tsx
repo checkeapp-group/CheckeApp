@@ -3,9 +3,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import Loader from '@/components/loader';
 import { Card } from '@/components/ui/card';
 import VerificationResult from '@/components/VerificationResult';
+import { useGlobalLoader } from '@/hooks/use-global-loader';
 import { orpc } from '@/utils/orpc';
 
 export default function SharePage() {
@@ -14,7 +14,9 @@ export default function SharePage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['sharedResult', shareToken],
     queryFn: () => {
-      if (!shareToken || typeof shareToken !== 'string') return null;
+      if (!shareToken || typeof shareToken !== 'string'){
+        return null;
+      }
       return orpc.getSharedResult.call({
         shareToken,
       });
@@ -23,9 +25,7 @@ export default function SharePage() {
     retry: 1,
   });
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  useGlobalLoader(isLoading, 'share-page');
 
   if (error) {
     return (
@@ -39,9 +39,9 @@ export default function SharePage() {
     );
   }
 
-  if (!data) {
-    return <p>Verification not found.</p>;
+  if (data) {
+    return <VerificationResult data={data} />;
   }
 
-  return <VerificationResult data={data as any} />;
+  return null;
 }

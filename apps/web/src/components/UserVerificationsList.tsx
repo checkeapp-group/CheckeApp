@@ -8,9 +8,9 @@ import { useDebounce } from 'use-debounce';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UiSelect as Select } from '@/components/ui/select';
+import { useGlobalLoader } from '@/hooks/use-global-loader';
 import { useI18n } from '@/hooks/use-i18n';
 import { orpc } from '@/utils/orpc';
-import Loader from './loader';
 import UserVerificationCard from './UserVerificationCard';
 
 export default function UserVerificationsList() {
@@ -47,6 +47,8 @@ export default function UserVerificationsList() {
       }),
   });
 
+  useGlobalLoader(isLoading, 'user-verifications-list');
+
   const handleSortChange = (value: string) => {
     const [newSortBy, newSortOrder] = value.split('-');
     const params = new URLSearchParams(searchParams.toString());
@@ -77,7 +79,6 @@ export default function UserVerificationsList() {
     [t]
   );
 
-  if (isLoading) return <Loader />;
   if (error)
     return (
       <p className="text-destructive">

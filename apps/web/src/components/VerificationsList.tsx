@@ -8,9 +8,9 @@ import { useDebounce } from 'use-debounce';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UiSelect as Select } from '@/components/ui/select';
+import { useGlobalLoader } from '@/hooks/use-global-loader';
 import { useI18n } from '@/hooks/use-i18n';
 import { orpc } from '@/utils/orpc';
-import Loader from './loader';
 import VerificationCard from './VerificationCard';
 
 export default function VerificationsList() {
@@ -47,6 +47,8 @@ export default function VerificationsList() {
       }),
   });
 
+  useGlobalLoader(isLoading, 'verifications-list');
+
   const handleSortChange = (value: string) => {
     const [newSortBy, newSortOrder] = value.split('-');
     const params = new URLSearchParams(searchParams.toString());
@@ -77,7 +79,6 @@ export default function VerificationsList() {
     [t]
   );
 
-  if (isLoading) return <Loader />;
   if (error)
     return (
       <p className="text-destructive">
@@ -89,7 +90,6 @@ export default function VerificationsList() {
 
   return (
     <div className="m-3 space-y-6">
-      {/* Controles de Búsqueda y Ordenación */}
       <div className="flex flex-col gap-4 md:flex-row">
         <div className="relative flex-grow">
           <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 text-muted-foreground" />
@@ -107,7 +107,6 @@ export default function VerificationsList() {
         />
       </div>
 
-      {/* Cuadrícula de Verificaciones */}
       {verifications && verifications.length > 0 ? (
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {verifications.map((v) => (
@@ -120,7 +119,6 @@ export default function VerificationsList() {
         </div>
       )}
 
-      {/* Controles de Paginación */}
       {pagination && pagination.totalPages > 1 && (
         <div className="flex items-center justify-between pt-4">
           <p className="text-muted-foreground text-sm">

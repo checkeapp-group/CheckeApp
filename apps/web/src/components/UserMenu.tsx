@@ -64,24 +64,6 @@ export default function UserMenu() {
               </p>
             </div>
 
-            {/* Dashboard/Login option */}
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${
-                    active ? 'bg-success/10 text-success-foreground' : 'text-foreground'
-                  } flex w-full items-center px-4 py-2 text-left text-sm transition-colors duration-150`}
-                  onClick={handleDashboard}
-                  type="button"
-                >
-                  <UserIcon className="mr-3 h-4 w-4" />
-                  {session?.user
-                    ? t('nav.dashboard') || 'Dashboard'
-                    : t('auth.signIn') || 'Sign In'}
-                </button>
-              )}
-            </Menu.Item>
-
             <div className="my-1 border-border border-t" />
 
             {/* Logout/Login option */}

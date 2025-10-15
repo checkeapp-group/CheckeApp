@@ -3,9 +3,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import Loader from '@/components/loader';
 import { Card } from '@/components/ui/card';
 import VerificationResult from '@/components/VerificationResult';
+import { useGlobalLoader } from '@/hooks/use-global-loader';
 import { useI18n } from '@/hooks/use-i18n';
 import { orpc } from '@/utils/orpc';
 
@@ -19,7 +19,6 @@ function LoadingState({ status }: { status?: string }) {
       <p className="mb-4 text-muted-foreground text-sm sm:mb-6 sm:text-base">
         {t('finalResult.processing_description')}
       </p>
-      <Loader />
       <p className="mt-3 font-semibold text-xs capitalize sm:mt-4 sm:text-sm">
         {t('finalResult.current_status')}: {status?.replace('_', ' ') || t('finalResult.starting')}
       </p>
@@ -44,6 +43,8 @@ export default function FinalResultPage() {
     enabled: !!verificationId,
     refetchInterval: (query) => (query.state.data?.finalResult ? false : 3000),
   });
+
+  useGlobalLoader(isLoading, 'final-result');
 
   if (isLoading || (isSuccess && !data?.finalResult)) {
     return (

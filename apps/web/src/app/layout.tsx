@@ -1,5 +1,5 @@
 import '@/../index.css';
-import RootLayout from '@/components/Layout/RootLayout';
+import Providers from '@/components/providers';
 import { I18nProvider } from '@/providers/I18nProvider';
 
 type RootLayoutProps = {
@@ -11,7 +11,7 @@ export default function Layout({ children }: RootLayoutProps) {
     <html lang="es" suppressHydrationWarning>
       <body>
         <I18nProvider>
-          <RootLayout>{children}</RootLayout>
+          <Providers>{children}</Providers>
         </I18nProvider>
       </body>
     </html>

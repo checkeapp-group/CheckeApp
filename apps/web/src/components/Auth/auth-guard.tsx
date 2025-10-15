@@ -1,23 +1,25 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
-import Loader from '../loader';
 
-export default function AuthGuard({ children }: { children: React.ReactNode }) {
+type AuthGuardProps = {
+  children: React.ReactNode;
+  openAuthModal?: () => void;
+};
+
+export default function AuthGuard({ children, openAuthModal }: AuthGuardProps) {
   const { data: session, isPending } = authClient.useSession();
-  const router = useRouter();
 
   useEffect(() => {
-    if (!(isPending || session)) {
-      router.push('/login');
+    if (!(isPending || session) && openAuthModal) {
+      openAuthModal();
     }
-  }, [isPending, session, router]);
+  }, [isPending, session, openAuthModal]);
 
-  if (isPending) {
-    return <Loader />;
+  if (session) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  return null;
 }

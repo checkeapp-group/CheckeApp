@@ -4,9 +4,9 @@ import { AlertCircle } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { Verification } from '@/../../server/src/db/schema/schema';
-import Loader from '@/components/loader';
 import { Card } from '@/components/ui/card';
 import VerificationFlow from '@/components/VerificationFlow';
+import { useGlobalLoader } from '@/hooks/use-global-loader';
 import { useAppRouter } from '@/lib/router';
 import { orpc } from '@/utils/orpc';
 
@@ -14,11 +14,13 @@ type VerificationData = Verification;
 
 export default function VerificationEditPage() {
   const { id: verificationId } = useParams();
-   const { navigate } = useAppRouter();
+  const { navigate } = useAppRouter();
 
   const [verification, setVerification] = useState<VerificationData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
+  useGlobalLoader(isLoading, 'edit-page');
 
   useEffect(() => {
     const currentVerificationId = Array.isArray(verificationId)
@@ -55,9 +57,6 @@ export default function VerificationEditPage() {
     fetchVerification();
   }, [verificationId, navigate]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
 
   if (error) {
     return (
@@ -73,7 +72,7 @@ export default function VerificationEditPage() {
 
   return (
     <div className="mx-auto my-8 max-w-4xl rounded-lg bg-neutral/80 p-4 shadow-lg backdrop-blur-sm sm:p-6 lg:p-8">
-      {verification ? <VerificationFlow verification={verification} /> : <Loader />}
+      {verification && !isLoading ? <VerificationFlow verification={verification} /> : null}
     </div>
   );
 }
