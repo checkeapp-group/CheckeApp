@@ -209,7 +209,10 @@ export default function QuestionsList({
                 value={newQuestionText}
               />
               <div className="flex justify-end gap-2">
-                <Button onClick={() => setShowAddForm(false)} variant="ghost">
+                <Button
+                  onClick={() => setShowAddForm(false)}
+                  variant="cancel"
+                >
                   {t('common.cancel')}
                 </Button>
                 <Button disabled={newQuestionText.trim().length < 5} onClick={handleAddQuestion}>

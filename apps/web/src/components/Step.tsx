@@ -99,8 +99,8 @@ export default function Step({
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-95 opacity-0"
           >
-            <Disclosure.Panel className="px-4 pt-2 pb-4">
-              <div className="ml-10 border-border border-l-2 border-dashed pl-4">{children}</div>
+            <Disclosure.Panel className="p-3">
+              <div className="ml-6 border-border border-l-2 border-dashed pl-3">{children}</div>
             </Disclosure.Panel>
           </Transition>
         </Card>

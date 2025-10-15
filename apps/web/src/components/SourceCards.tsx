@@ -29,7 +29,7 @@ export default function SourceCard({ source, onSelectionChange }: SourceCardProp
       className={cn(
         'group cursor-pointer p-4 transition-all duration-300',
         source.isSelected
-          ? 'scale-[1.02] border-primary bg-card shadow-lg shadow-primary/20'
+          ? 'scale-[1.009] border-primary bg-card shadow-lg shadow-primary/20'
           : 'border-border bg-card hover:border-primary/50 hover:shadow-md'
       )}
       onClick={() => onSelectionChange(!source.isSelected)}

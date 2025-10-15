@@ -91,7 +91,7 @@ export default function VerificationFlow({ verification }: VerificationFlowProps
   };
 
   return (
-    <div className="w-full space-y-4 ">
+    <div className="w-full space-y-4">
       <Step
         description={t('verification.step1.description')}
         isCompleted={completedSteps.includes('step-1')}
