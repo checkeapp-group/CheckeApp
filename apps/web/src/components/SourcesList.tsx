@@ -56,9 +56,11 @@ export default function SourcesList({
     setFilters,
     selectAll,
     deselectAll,
+    availableDomains,
+    isUpdating,
   } = useSourcesEditor({ verificationId });
 
-  if (isLoading) {
+  if (isLoading && !sources.length) {
     return <SourcesListSkeleton />;
   }
 
@@ -81,10 +83,15 @@ export default function SourcesList({
           value={searchQuery}
         />
         <UiSelect
-          onChange={(domain) => setFilters((prev) => ({ ...prev, domain }))}
-          options={domains.map((d) => ({ value: d!, label: d! }))}
+          onChange={(domain) =>
+            setFilters((prev) => ({ ...prev, domain: domain === 'all' ? undefined : domain }))
+          }
+          options={[
+            { value: 'all', label: t('sources.all_domains') },
+            ...availableDomains.map((d) => ({ value: d, label: d })),
+          ]}
           placeholder={t('sources.filter_by_domain')}
-          value={filters.domain}
+          value={filters.domain || 'all'}
         />
         <UiSelect
           onChange={(sortBy) => setFilters((prev) => ({ ...prev, sortBy }))}

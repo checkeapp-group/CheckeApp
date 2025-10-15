@@ -27,9 +27,9 @@ export default function SourceCard({ source, onSelectionChange }: SourceCardProp
     <Card
       aria-checked={source.isSelected}
       className={cn(
-        'group cursor-pointer p-4 transition-all duration-300',
+        'group cursor-pointer overflow-hidden p-4 transition-all duration-300',
         source.isSelected
-          ? 'scale-[1.009] border-primary bg-card shadow-lg shadow-primary/20'
+          ? 'scale-[1.001] border-primary bg-card shadow-lg shadow-primary/20'
           : 'border-border bg-card hover:border-primary/50 hover:shadow-md'
       )}
       onClick={() => onSelectionChange(!source.isSelected)}
