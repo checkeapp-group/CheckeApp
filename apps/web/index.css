@@ -2,7 +2,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 300, 6, 97.8;
     --foreground: 173.8 80.6% 34.1%;
 
     --card: 0 0% 100%;
@@ -116,7 +116,7 @@
   --color-neutral: #f3f4f6; /* gray-100 */
   --color-neutral-foreground: #111827;
 
-  --color-background: #ffffff;
+  --color-background: #f1f1f0;
   --color-foreground: #0f766e; /* teal-700 for main text */
   --color-card: #ffffff;
   --color-card-foreground: #0f766e;
