@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import type { Question } from '@/types/questions';
 import { orpc } from '@/utils/orpc';
@@ -12,6 +12,7 @@ type UseQuestionsEditorProps = {
 
 export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) {
   const queryClient = useQueryClient();
+  const queryKey = orpc.getVerificationQuestions.key({ input: { verificationId } });
 
   const questionsQuery = useQuery(
     orpc.getVerificationQuestions.queryOptions({
@@ -20,93 +21,154 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
     })
   );
 
-  const invalidateAndRefetch = () => {
-    queryClient.invalidateQueries({
-      queryKey: orpc.getVerificationQuestions.key({ input: { verificationId } }),
-    });
-  };
+  const updateQuestionMutation = useMutation({
+    mutationFn: (variables: { questionId: string; questionText: string }) =>
+      orpc.updateQuestion.call({ ...variables, verificationId }),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousQuestions = queryClient.getQueryData<Question[]>(queryKey);
+      queryClient.setQueryData<Question[]>(
+        queryKey,
+        (oldData) =>
+          oldData?.map((q) =>
+            q.id === variables.questionId
+              ? { ...q, questionText: variables.questionText, isEdited: true }
+              : q
+          ) || []
+      );
+      return { previousQuestions };
+    },
+    onError: (err: Error, variables, context) => {
+      toast.error(`Error al actualizar: ${err.message}`);
+      if (context?.previousQuestions) {
+        queryClient.setQueryData(queryKey, context.previousQuestions);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+    onSuccess: () => {
+      toast.success('Pregunta actualizada.');
+    },
+  });
 
-  const updateQuestionMutation = useMutation(
-    orpc.updateQuestion.mutationOptions({
-      onSuccess: () => {
-        toast.success('Pregunta actualizada.');
-        invalidateAndRefetch();
-      },
-      onError: (error: any) => {
-        toast.error(`Error al actualizar: ${error.message}`);
-        invalidateAndRefetch();
-      },
-    })
-  );
+  const deleteQuestionMutation = useMutation({
+    mutationFn: (variables: { questionId: string }) =>
+      orpc.deleteQuestion.call({ ...variables, verificationId }),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousQuestions = queryClient.getQueryData<Question[]>(queryKey);
+      queryClient.setQueryData<Question[]>(
+        queryKey,
+        (oldData) => oldData?.filter((q) => q.id !== variables.questionId) || []
+      );
+      return { previousQuestions };
+    },
+    onError: (err: Error, variables, context) => {
+      toast.error(`Error al eliminar: ${err.message}`);
+      if (context?.previousQuestions) {
+        queryClient.setQueryData(queryKey, context.previousQuestions);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+    onSuccess: () => {
+      toast.success('Pregunta eliminada.');
+    },
+  });
 
-  const deleteQuestionMutation = useMutation(
-    orpc.deleteQuestion.mutationOptions({
-      onSuccess: () => {
-        toast.success('Pregunta eliminada.');
-        invalidateAndRefetch();
-      },
-      onError: (error: any) => {
-        toast.error(`Error al eliminar: ${error.message}`);
-        invalidateAndRefetch();
-      },
-    })
-  );
+  const addQuestionMutation = useMutation({
+    mutationFn: (variables: { questionText: string }) =>
+      orpc.addQuestion.call({ ...variables, verificationId }),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousQuestions = queryClient.getQueryData<Question[]>(queryKey);
+      queryClient.setQueryData<Question[]>(queryKey, (oldData = []) => {
+        const optimisticQuestion: Question = {
+          id: `temp-${Date.now()}`,
+          verificationId,
+          questionText: variables.questionText,
+          originalQuestion: variables.questionText,
+          isEdited: false,
+          orderIndex: oldData.length,
+          createdAt: new Date(),
+        };
+        return [...oldData, optimisticQuestion];
+      });
+      return { previousQuestions };
+    },
+    onError: (err: Error, variables, context) => {
+      toast.error(`Error al añadir: ${err.message}`);
+      if (context?.previousQuestions) {
+        queryClient.setQueryData(queryKey, context.previousQuestions);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+    onSuccess: () => {
+      toast.success('Pregunta añadida.');
+    },
+  });
 
-  const addQuestionMutation = useMutation(
-    orpc.addQuestion.mutationOptions({
-      onSuccess: () => {
-        toast.success('Pregunta añadida.');
-        invalidateAndRefetch();
-      },
-      onError: (error: any) => {
-        toast.error(`Error al añadir: ${error.message}`);
-      },
-    })
-  );
-
-  const reorderQuestionsMutation = useMutation(
-    orpc.reorderQuestions.mutationOptions({
-      onSuccess: () => {
-        toast.success('Orden de preguntas actualizado.');
-        invalidateAndRefetch();
-      },
-      onError: (error: any) => {
-        toast.error(`Error al reordenar: ${error.message}`);
-        invalidateAndRefetch();
-      },
-    })
-  );
+  const reorderQuestionsMutation = useMutation({
+    mutationFn: (variables: { questions: { id: string; orderIndex: number }[] }) =>
+      orpc.reorderQuestions.call({ ...variables, verificationId }),
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousQuestions = queryClient.getQueryData<Question[]>(queryKey);
+      queryClient.setQueryData<Question[]>(queryKey, (oldData) => {
+        if (!oldData) return [];
+        const newOrderMap = new Map(variables.questions.map((q) => [q.id, q.orderIndex]));
+        return oldData
+          .map((q) => ({ ...q, orderIndex: newOrderMap.get(q.id) ?? q.orderIndex }))
+          .sort((a, b) => a.orderIndex - b.orderIndex);
+      });
+      return { previousQuestions };
+    },
+    onError: (err: Error, variables, context) => {
+      toast.error(`Error al reordenar: ${err.message}`);
+      if (context?.previousQuestions) {
+        queryClient.setQueryData(queryKey, context.previousQuestions);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
 
   const updateQuestion = useCallback(
     (questionId: string, questionText: string) => {
-      updateQuestionMutation.mutate({ verificationId, questionId, questionText });
+      updateQuestionMutation.mutate({ questionId, questionText });
     },
-    [updateQuestionMutation, verificationId]
+    [updateQuestionMutation]
   );
 
   const deleteQuestion = useCallback(
     (questionId: string) => {
-      deleteQuestionMutation.mutate({ questionId, verificationId });
+      deleteQuestionMutation.mutate({ questionId });
     },
-    [deleteQuestionMutation, verificationId]
+    [deleteQuestionMutation]
   );
 
   const addQuestion = useCallback(
     (questionText: string) => {
-      addQuestionMutation.mutate({ verificationId, questionText });
+      addQuestionMutation.mutate({ questionText });
     },
-    [addQuestionMutation, verificationId]
+    [addQuestionMutation]
   );
 
   const reorderQuestions = useCallback(
     (newOrder: Question[]) => {
       const questionsData = newOrder.map((q, index) => ({ id: q.id, orderIndex: index }));
-      reorderQuestionsMutation.mutate({ verificationId, questions: questionsData });
+      reorderQuestionsMutation.mutate({ questions: questionsData });
     },
-    [reorderQuestionsMutation, verificationId]
+    [reorderQuestionsMutation]
   );
 
-  const questions = questionsQuery.data || [];
+  const questions = useMemo(() => questionsQuery.data || [], [questionsQuery.data]);
+
   const canContinue =
     !questionsQuery.isLoading &&
     questions.length > 0 &&

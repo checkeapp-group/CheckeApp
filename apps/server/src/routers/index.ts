@@ -3,6 +3,7 @@ import { publicProcedure } from '@/lib/orpc';
 import { questionsRouter } from './questionRouter';
 import { shareRouter } from './shareRouter';
 import { sourcesRouter } from './sourcesRouter';
+import { userRouter } from './userRouter';
 import { verificationRouter } from './verificationRouter';
 
 export const appRouter = {
@@ -11,6 +12,7 @@ export const appRouter = {
   ...sourcesRouter,
   ...shareRouter,
   ...verificationRouter,
+  ...userRouter,
 };
 
 export type AppRouter = typeof appRouter;

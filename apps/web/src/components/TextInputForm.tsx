@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
 import type React from 'react';
 import { useCallback, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -27,7 +28,7 @@ const TextInputForm = ({
   isLocked = false,
 }: TextInputFormProps) => {
   const { t } = useI18n();
-  const { isAuthenticated: hookIsAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated: hookIsAuthenticated, isVerified, isLoading: authLoading } = useAuth();
   const { navigate } = useAppRouter();
   const [isFocused, setIsFocused] = useState(false);
 
@@ -64,11 +65,19 @@ const TextInputForm = ({
     if (isLoading || !isAuthenticated || text.trim().length < minLength) {
       return;
     }
+
+    // Check if user is verified before allowing submission
+    if (!isVerified) {
+      toast.warning(t('auth.verificationNeeded.title'));
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/verify/start', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/verify/start`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: text.trim() }),
       });
@@ -96,13 +105,22 @@ const TextInputForm = ({
 
   return (
     <>
+      {isAuthenticated && !isVerified && (
+        <Card className="mb-4 flex items-center gap-4 border-yellow-500/50 bg-yellow-50 p-4 text-yellow-800">
+          <AlertTriangle className="h-6 w-6 flex-shrink-0" />
+          <div className="flex-1">
+            <h3 className="font-semibold">{t('auth.verificationNeeded.title')}</h3>
+            <p className="text-sm">{t('auth.verificationNeeded.message')}</p>
+          </div>
+        </Card>
+      )}
       <Card
         className={`p-4 sm:p-6 ${isFocused ? 'border-primary/50 bg-card/95 shadow-md' : 'bg-card/80'}`}
         onClick={handleInteraction}
       >
         <div className="relative">
           <TextareaAutosize
-            className="w-full resize-none border-0 text-lg placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed"
+            className="w-full resize-none border-0 bg-transparent text-lg placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed"
             disabled={isLoading || !isAuthenticated || isLocked}
             maxLength={maxLength}
             minRows={3}

@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import type { Source } from '@/types/source';
 import { orpc } from '../utils/orpc';
 
 type UseSourcesEditorProps = {
@@ -13,54 +14,92 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
   const queryClient = useQueryClient();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<{ domain?: string; sortBy?: string }>({
+    sortBy: 'date_desc',
+  });
 
-  const [filters, setFilters] = useState<{ domain?: string; sortBy?: string }>({});
+  const queryKey = orpc.getSources.key({
+    input: { verificationId, filters, searchQuery },
+  });
 
-  const sourcesQuery = useQuery(
-    orpc.getSources.queryOptions({
-      input: { verificationId, filters, searchQuery },
-      enabled: !!verificationId,
-    })
-  );
+  const sourcesQuery = useQuery({
+    queryKey,
+    queryFn: () =>
+      orpc.getSources.call({
+        verificationId,
+        filters,
+        searchQuery,
+      }),
+    enabled: !!verificationId,
+  });
 
-  const invalidateSources = () => {
-    queryClient.invalidateQueries({
-      queryKey: orpc.getSources.key({ input: { verificationId } }),
-    });
-  };
+  const updateSelectionMutation = useMutation({
+    mutationFn: (variables: { sourceId: string; isSelected: boolean }) =>
+      orpc.updateSourceSelection.call({ ...variables, verificationId }),
 
-  const updateSelectionMutation = useMutation(
-    orpc.updateSourceSelection.mutationOptions({
-      onSuccess: (data) => {
-        toast.success(`Fuente ${data.isSelected ? 'seleccionada' : 'deseleccionada'}.`);
-        invalidateSources();
-      },
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      onError: (error: any) => {
-        toast.error(`Error: ${error.message}`);
-        invalidateSources();
-      },
-    })
-  );
+    onMutate: async (variables: {
+      previousSources: any; sourceId: string; isSelected: boolean 
+}) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousSources = queryClient.getQueryData<Source[]>(queryKey);
+
+      queryClient.setQueryData<Source[]>(queryKey, (oldData) =>
+        oldData
+          ? oldData.map((s) =>
+              s.id === variables.sourceId ? { ...s, isSelected: variables.isSelected } : s
+            )
+          : []
+      );
+
+      return { previousSources };
+    },
+    onError: (context) => {
+      if (context?.previousSources) {
+        queryClient.setQueryData(queryKey, context.previousSources);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+    onSuccess: (data) => {
+      toast.success(`Fuente ${data.isSelected ? 'seleccionada' : 'deseleccionada'}.`);
+    },
+  });
 
   const batchUpdateSelectionMutation = useMutation({
     mutationFn: async (isSelected: boolean) => {
-      const promises = sources.map((s) =>
-        updateSelectionMutation.mutateAsync({ verificationId, sourceId: s.id, isSelected })
+      const sourcesToUpdate = sourcesQuery.data || [];
+      const promises = sourcesToUpdate.map((s) =>
+        orpc.updateSourceSelection.call({ verificationId, sourceId: s.id, isSelected })
       );
-      await Promise.all(promises);
+      return Promise.all(promises);
+    },
+    onMutate: async (isSelected: boolean) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousSources = queryClient.getQueryData<Source[]>(queryKey);
+
+      queryClient.setQueryData<Source[]>(queryKey, (oldData) =>
+        oldData ? oldData.map((s) => ({ ...s, isSelected })) : []
+      );
+
+      return { previousSources };
+    },
+    onError: (err, variables, context) => {
+      toast.error(`Error en la selección masiva: ${err.message}`);
+      if (context?.previousSources) {
+        queryClient.setQueryData(queryKey, context.previousSources);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
     },
     onSuccess: () => {
       toast.success('Selección masiva actualizada.');
-      invalidateSources();
-    },
-    onError: (error: any) => {
-      toast.error(`Error en la selección masiva: ${error.message}`);
     },
   });
 
   const previewSourceMutation = useMutation({
-    mutationFn: (url: string) => orpc.getSourcePreview.mutationKey({ url }),
+    mutationFn: (url: string) => orpc.getSourcePreview.call({ url }),
     onError: (error: any) => {
       toast.error(`Error al obtener vista previa: ${error.message}`);
     },
@@ -70,8 +109,19 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
   const selectedSourcesCount = useMemo(() => sources.filter((s) => s.isSelected).length, [sources]);
 
   const toggleSourceSelection = (sourceId: string, isSelected: boolean) => {
-    updateSelectionMutation.mutate({ verificationId, sourceId, isSelected });
+    updateSelectionMutation.mutate({ sourceId, isSelected });
   };
+
+  const allDomainsQuery = useQuery({
+    queryKey: orpc.getSources.key({ input: { verificationId } }),
+    queryFn: () => orpc.getSources.call({ verificationId }),
+    enabled: !!verificationId,
+  });
+
+  const availableDomains = useMemo(() => {
+    const domains = allDomainsQuery.data?.map((s) => s.domain).filter(Boolean) as string[];
+    return [...new Set(domains)];
+  }, [allDomainsQuery.data]);
 
   return {
     sources,
@@ -87,5 +137,8 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
     setFilters,
     selectAll: () => batchUpdateSelectionMutation.mutate(true),
     deselectAll: () => batchUpdateSelectionMutation.mutate(false),
+
+    availableDomains,
+    isUpdating: updateSelectionMutation.isPending || batchUpdateSelectionMutation.isPending,
   };
 }

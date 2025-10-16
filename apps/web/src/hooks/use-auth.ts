@@ -1,26 +1,54 @@
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 import { authClient } from '@/lib/auth-client';
 
-// biome-ignore lint/nursery/useConsistentTypeDefinitions: <explanation>
-interface User {
+type User = {
   id: string;
   email: string;
   name?: string;
   emailVerified?: boolean;
   image?: string;
+  isVerified?: boolean;
 }
 
-// biome-ignore lint/nursery/useConsistentTypeDefinitions: <explanation>
-interface AuthState {
+type AuthState = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
+// Function to fetch verification status from the backend
+async function fetchVerificationStatus(): Promise<{ isVerified: boolean }> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/status`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch verification status');
+  }
+
+  return response.json();
+}
+
 export function useAuth() {
   const router = useRouter();
-  const { data: session, isPending: isLoading } = authClient.useSession();
+  const { data: session, isPending: isSessionLoading } = authClient.useSession();
+
+  // Fetch verification status using useQuery
+  const { data: verificationStatus, isPending: isStatusLoading } = useQuery({
+    queryKey: ['userVerificationStatus'],
+    queryFn: fetchVerificationStatus,
+    enabled: !!session?.user,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Combine loading states
+  const isLoading = isSessionLoading || isStatusLoading;
 
   // Memoize the auth state object to prevent unnecessary re-renders
   const authState: AuthState = useMemo(
@@ -32,18 +60,17 @@ export function useAuth() {
             name: session.user.name,
             emailVerified: session.user.emailVerified,
             image: session.user.image,
+            isVerified: verificationStatus?.isVerified ?? false,
           }
         : null,
       isAuthenticated: !!session?.user,
       isLoading,
     }),
-    [session?.user, isLoading]
+    [session?.user, isLoading, verificationStatus?.isVerified]
   );
 
   // Memoize functions to prevent unnecessary re-creations
   const checkAuthStatus = useCallback(async () => {
-    // This function is now handled automatically by authClient.useSession()
-    // Keep for backward compatibility but it's essentially a no-op
     return Promise.resolve();
   }, []);
 
@@ -64,8 +91,6 @@ export function useAuth() {
     }
   }, [router]);
 
-  // Note: Use useAuthNavigation hook for login/signup instead
-  // These are kept for backward compatibility but are deprecated
   const login = useCallback(async (email: string, password: string) => {
     console.warn('useAuth.login is deprecated, use useAuthNavigation.signIn instead');
     return { success: false, error: 'Use useAuthNavigation.signIn instead' };
@@ -144,6 +169,7 @@ export function useAuth() {
   return useMemo(
     () => ({
       ...authState,
+      isVerified: authState.user?.isVerified ?? false,
       login,
       logout,
       signup,
