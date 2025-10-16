@@ -4,11 +4,6 @@ import { useCallback, useEffect, useState } from 'react';
 export const ROUTES = {
   HOME: '/',
   DASHBOARD: '/dashboard',
-  LOGIN: '/login',
-  AUTH: {
-    SIGN_IN: '/login?mode=signin',
-    SIGN_UP: '/login?mode=signup',
-  },
   API: {
     AUTH: '/api/auth',
     RPC: '/api/rpc',

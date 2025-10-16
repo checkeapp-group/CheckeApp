@@ -1,7 +1,10 @@
+'use client';
+
 import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { authClient } from '@/lib/auth-client';
 import { ROUTES, useAppRouter } from '@/lib/router';
+import { useI18n } from './use-i18n';
 
 type AuthCredentials = {
   email: string;
@@ -16,11 +19,12 @@ type AuthOptions = {
 };
 
 export function useAuthNavigation() {
-  const { navigateToRoute, navigate } = useAppRouter();
+  const { navigate, refresh } = useAppRouter();
+  const { t } = useI18n();
 
   const signUp = useCallback(
     async (credentials: AuthCredentials, options?: AuthOptions) => {
-      const { redirectTo = ROUTES.DASHBOARD, onSuccess, onError } = options || {};
+      const { onSuccess, onError } = options || {};
 
       try {
         await authClient.signUp.email(
@@ -31,12 +35,12 @@ export function useAuthNavigation() {
           },
           {
             onSuccess: () => {
-              navigate(redirectTo);
-              toast.success('Sign up successful');
+              toast.success(t('auth.signUp.success') || 'Sign up successful!');
+              refresh();
               onSuccess?.();
             },
             onError: (error) => {
-              const message = error.error?.message || error.error?.statusText || 'Sign up failed';
+              const message = error.error?.message || t('auth.signUp.error');
               toast.error(message);
               onError?.(error);
             },
@@ -44,16 +48,16 @@ export function useAuthNavigation() {
         );
       } catch (error) {
         console.error('SignUp error:', error);
-        toast.error('An unexpected error occurred');
+        toast.error(t('common.error'));
         onError?.(error);
       }
     },
-    [navigate]
+    [refresh, t]
   );
 
   const signIn = useCallback(
     async (credentials: Omit<AuthCredentials, 'name'>, options?: AuthOptions) => {
-      const { redirectTo = ROUTES.HOME, onSuccess, onError } = options || {};
+      const { onSuccess, onError } = options || {};
 
       try {
         await authClient.signIn.email(
@@ -63,12 +67,12 @@ export function useAuthNavigation() {
           },
           {
             onSuccess: () => {
-              navigate(redirectTo);
-              toast.success('Sign in successful');
+              toast.success(t('auth.signIn.success') || 'Sign in successful!');
+              refresh();
               onSuccess?.();
             },
             onError: (error) => {
-              const message = error.error?.message || error.error?.statusText || 'Sign in failed';
+              const message = error.error?.message || t('auth.signIn.error');
               toast.error(message);
               onError?.(error);
             },
@@ -76,48 +80,42 @@ export function useAuthNavigation() {
         );
       } catch (error) {
         console.error('SignIn error:', error);
-        toast.error('An unexpected error occurred');
+        toast.error(t('common.error'));
         onError?.(error);
       }
     },
-    [navigate]
+    [refresh, t]
   );
 
   const signOut = useCallback(
     async (options?: Pick<AuthOptions, 'redirectTo' | 'onSuccess' | 'onError'>) => {
-      const { redirectTo = ROUTES.LOGIN, onSuccess, onError } = options || {};
+      const { redirectTo = ROUTES.HOME, onSuccess, onError } = options || {};
 
       try {
         await authClient.signOut({
           onSuccess: () => {
             navigate(redirectTo);
-            toast.success('Signed out successfully');
+            toast.success(t('auth.loggedOut'));
             onSuccess?.();
           },
           onError: (error) => {
             console.error('SignOut error:', error);
-            toast.error('Sign out failed');
+            toast.error(t('auth.signOut.error') || 'Sign out failed');
             onError?.(error);
           },
         });
       } catch (error) {
         console.error('SignOut error:', error);
-        toast.error('An unexpected error occurred');
+        toast.error(t('common.error'));
         onError?.(error);
       }
     },
-    [navigate]
+    [navigate, t]
   );
 
   return {
     signUp,
     signIn,
     signOut,
-
-    goToSignIn: () => navigate('/login'),
-    goToSignUp: () => navigate('/register'),
-    goToRecoverPassword: () => navigate('/recover-password'),
-    goToDashboard: () => navigateToRoute('DASHBOARD'),
-    goHome: () => navigateToRoute('HOME'),
   };
 }
