@@ -132,14 +132,14 @@ export default function QuestionsList({
   const refineMutation = useMutation({
     mutationFn: (refinement: string) => orpc.refineQuestions.call({ verificationId, refinement }),
     onSuccess: () => {
-      toast.success('Preguntas refinadas con éxito.');
+      toast.success(t('questions_edit.refined_success'));
       queryClient.invalidateQueries({
         queryKey: orpc.getVerificationQuestions.key({ input: { verificationId } }),
       });
       setRefinementText('');
     },
     onError: (error) => {
-      toast.error(`Error al refinar: ${error.message}`);
+      toast.error(t('questions_edit.refined_error', { error: error.message }));
     },
   });
 

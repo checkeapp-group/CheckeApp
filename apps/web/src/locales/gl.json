@@ -30,6 +30,11 @@
   "auth.validation.email.invalid": "Enderezo de correo electrónico inválido",
   "auth.validation.password.min": "O contrasinal debe ter polo menos 8 caracteres",
   "auth.signIn.error": "Email ou contrasinal inválidos",
+  "auth.verificationNeeded.title": "Conta pendente de verificación",
+  "auth.verificationNeeded.message": "A túa conta foi creada, pero necesitas que un administrador a verifique para poder crear novas verificacións. Por agora, só podes explorar as verificacións existentes.",
+  "auth.signUp.success": "Rexistro exitoso! A túa conta está pendente de verificación.",
+  "auth.signIn.success": "Iniciaches sesión correctamente!",
+  "auth.signOut.error": "Erro ao pechar sesión",
 
   "common.back": "Atrás",
   "common.retry": "Tentar de novo",
@@ -173,6 +178,7 @@
   "forgotPassword.error": "Non se puido enviar o correo. Téntao de novo.",
   "forgotPassword.sendLink": "Enviar ligazón",
   "forgotPassword.backToSignIn": "Volver a Iniciar Sesión",
+  "forgotPassword.forgot": "Esqueciches o teu contrasinal?",
 
   "userMenu.myAccount": "A Miña Conta",
   "userMenu.loggedOutSuccess": "Pechaches sesión con éxito.",
@@ -185,6 +191,7 @@
   "verifications.status.generating_summary": "Xerando Resumo",
   "verifications.status.completed": "Completado",
   "verifications.status.error": "Erro",
+  "verifications.status.undefined": "Indeterminado",
   "verifications.no_claim": "Sen afirmación principal dispoñible.",
   "verifications.no_results": "Non se atoparon verificacións que coincidan coa túa busca.",
   "verifications.label.verified": "Verificado",
@@ -196,5 +203,25 @@
 
   "pagination.showing": "Mostrando {start} a {end} de {total} resultados",
   "pagination.previous": "Anterior",
-  "pagination.next": "Seguinte"
+  "pagination.next": "Seguinte",
+
+  "home.title": "Verifica a Túa Información",
+  "home.latestVerifications": "Últimas verificacións",
+  "home.verificationsActive": "{count, plural, one {verificación} other {verificacións}} activas",
+  "home.realTime": "En tempo real",
+  "home.noRecentVerifications": "Non hai verificacións recentes",
+
+  "questions_edit.refine_prompt": "Refina as preguntas con instrucións adicionais",
+  "questions_edit.refine_placeholder": "Ex: Fainas máis específicas sobre...",
+  "questions_edit.refine_button": "Refinar",
+  "questions_edit.refined_success": "Preguntas refinadas con éxito.",
+  "questions_edit.refined_error": "Erro ao refinar: {error}",
+
+  "error.verificationIdMissing": "Falta o ID de verificación.",
+  "error.loadingVerification": "Erro ao cargar a verificación",
+  "error.couldNotLoadResult": "Non se puido cargar o resultado",
+  "error.noDataFound": "Non se atoparon datos para esta verificación.",
+  "error.createShareLink": "Erro ao crear a ligazón compartida: {error}",
+
+  "common.closeModal": "Pechar modal"
 }

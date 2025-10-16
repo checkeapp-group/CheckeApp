@@ -7,12 +7,14 @@ import type { Verification } from '@/../../server/src/db/schema/schema';
 import { Card } from '@/components/ui/card';
 import VerificationFlow from '@/components/VerificationFlow';
 import { useGlobalLoader } from '@/hooks/use-global-loader';
+import { useI18n } from '@/hooks/use-i18n';
 import { useAppRouter } from '@/lib/router';
 import { orpc } from '@/utils/orpc';
 
 type VerificationData = Verification;
 
 export default function VerificationEditPage() {
+  const { t } = useI18n();
   const { id: verificationId } = useParams();
   const { navigate } = useAppRouter();
 
@@ -29,7 +31,7 @@ export default function VerificationEditPage() {
 
     if (!currentVerificationId) {
       setIsLoading(false);
-      setError(new Error('Verification ID is missing.'));
+      setError(new Error(t('error.verificationIdMissing')));
       return;
     }
 
@@ -63,7 +65,7 @@ export default function VerificationEditPage() {
       <div className="container mx-auto max-w-2xl px-4 py-12">
         <Card className="flex flex-col items-center p-8 text-center text-destructive">
           <AlertCircle className="mb-4 h-12 w-12" />
-          <h2 className="mb-2 font-bold text-xl">Error Loading Verification</h2>
+          <h2 className="mb-2 font-bold text-xl">{t('error.loadingVerification')}</h2>
           <p>{error.message}</p>
         </Card>
       </div>

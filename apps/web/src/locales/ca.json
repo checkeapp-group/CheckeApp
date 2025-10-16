@@ -30,6 +30,11 @@
   "auth.validation.email.invalid": "Adreça de correu electrònic invàlida",
   "auth.validation.password.min": "La contrasenya ha de tenir almenys 8 caràcters",
   "auth.signIn.error": "Email o contrasenya invàlids",
+  "auth.verificationNeeded.title": "Compte pendent de verificació",
+  "auth.verificationNeeded.message": "El teu compte ha estat creat, però necessites que un administrador el verifiqui per poder crear noves verificacions. De moment, només pots explorar les verificacions existents.",
+  "auth.signUp.success": "Registre exitós! El teu compte està pendent de verificació.",
+  "auth.signIn.success": "Has iniciat sessió correctament!",
+  "auth.signOut.error": "Error en tancar sessió",
 
   "common.back": "Enrere",
   "common.retry": "Tornar a intentar",
@@ -173,6 +178,7 @@
   "forgotPassword.error": "No s'ha pogut enviar el correu. Torna-ho a intentar.",
   "forgotPassword.sendLink": "Enviar enllaç",
   "forgotPassword.backToSignIn": "Tornar a Iniciar Sessió",
+  "forgotPassword.forgot": "Has oblidat la teva contrasenya?",
 
   "userMenu.myAccount": "El Meu Compte",
   "userMenu.loggedOutSuccess": "Has tancat sessió amb èxit.",
@@ -185,6 +191,7 @@
   "verifications.status.generating_summary": "Generant Resum",
   "verifications.status.completed": "Completat",
   "verifications.status.error": "Error",
+  "verifications.status.undefined": "Indeterminat",
   "verifications.no_claim": "No hi ha afirmació principal disponible.",
   "verifications.no_results": "No s'han trobat verificacions que coincideixin amb la teva cerca.",
   "verifications.label.verified": "Verificat",
@@ -196,5 +203,25 @@
 
   "pagination.showing": "Mostrant {start} a {end} de {total} resultats",
   "pagination.previous": "Anterior",
-  "pagination.next": "Següent"
+  "pagination.next": "Següent",
+
+  "home.title": "Verifica la Teva Informació",
+  "home.latestVerifications": "Últimes verificacions",
+  "home.verificationsActive": "{count, plural, one {verificació} other {verificacions}} actives",
+  "home.realTime": "En temps real",
+  "home.noRecentVerifications": "No hi ha verificacions recents",
+
+  "questions_edit.refine_prompt": "Refina les preguntes amb instruccions addicionals",
+  "questions_edit.refine_placeholder": "Ex: Fes-les més específiques sobre...",
+  "questions_edit.refine_button": "Refinar",
+  "questions_edit.refined_success": "Preguntes refinades amb èxit.",
+  "questions_edit.refined_error": "Error en refinar: {error}",
+
+  "error.verificationIdMissing": "Falta l'ID de verificació.",
+  "error.loadingVerification": "Error en carregar la verificació",
+  "error.couldNotLoadResult": "No s'ha pogut carregar el resultat",
+  "error.noDataFound": "No s'han trobat dades per a aquesta verificació.",
+  "error.createShareLink": "Error en crear l'enllaç compartit: {error}",
+
+  "common.closeModal": "Tanca el modal"
 }

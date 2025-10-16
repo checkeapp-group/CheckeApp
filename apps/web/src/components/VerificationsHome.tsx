@@ -3,10 +3,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { Clock, Sparkles, Zap } from 'lucide-react';
 import { useGlobalLoader } from '@/hooks/use-global-loader';
+import { useI18n } from '@/hooks/use-i18n';
 import { orpc } from '@/utils/orpc';
 import VerificationCard from './VerificationCard';
 
 export default function VerificationsHome() {
+  const { t } = useI18n();
   const limit = 6;
 
   const { data, isLoading } = useQuery({
@@ -35,7 +37,7 @@ export default function VerificationsHome() {
             {/* Title */}
             <div>
               <h2 className="font-bold text-2xl text-white drop-shadow-md transition-all duration-300 sm:text-3xl">
-                Últimas verificaciones
+                {t('home.latestVerifications')}
               </h2>
 
               {!isLoading && verifications.length > 0 && (
@@ -45,8 +47,7 @@ export default function VerificationsHome() {
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                     </span>
-                    {verifications.length}{' '}
-                    {verifications.length === 1 ? 'verificación' : 'verificaciones'} activas
+                    {t('home.verificationsActive', { count: verifications.length })}
                   </span>
                 </p>
               )}
@@ -56,7 +57,7 @@ export default function VerificationsHome() {
           {/* Indicator */}
           <div className="hidden items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm transition-all duration-500 hover:bg-white/20 sm:flex">
             <Zap className="h-4 w-4 animate-pulse text-yellow-300" />
-            <span className="font-medium text-sm text-white">En tiempo real</span>
+            <span className="font-medium text-sm text-white">{t('home.realTime')}</span>
           </div>
         </div>
       </div>
@@ -70,7 +71,7 @@ export default function VerificationsHome() {
         </div>
       ) : (
         <div className="py-16 text-center text-muted-foreground">
-          <p>No hay verificaciones recientes</p>
+          <p>{t('home.noRecentVerifications')}</p>
         </div>
       )}
     </div>

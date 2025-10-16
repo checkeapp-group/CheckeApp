@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import TextInputForm from '@/components/TextInputForm';
 import VerificationsHome from '@/components/VerificationsHome';
+import { useI18n } from '@/hooks/use-i18n';
 import { useAppRouter } from '@/lib/router';
 
 function PreviousVerifications() {
@@ -10,6 +11,7 @@ function PreviousVerifications() {
 }
 
 export default function HomePage({ openAuthModal }: { openAuthModal?: () => void }) {
+  const { t } = useI18n();
   const [text, setText] = useState('');
   const { navigate } = useAppRouter();
 
@@ -21,7 +23,7 @@ export default function HomePage({ openAuthModal }: { openAuthModal?: () => void
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8 text-center">
         <h1 className="mb-4 animate-gradient bg-clip-text font-extrabold text-transparent text-xl">
-          Fact-Check Your Information
+          {t('home.title')}
         </h1>
       </div>
       <div className="w-full space-y-4">

@@ -67,7 +67,7 @@ export default function FinalResultPage() {
   }
 
   if (!data) {
-    return <p>No data found for this verification.</p>;
+    return <p>{t('error.noDataFound')}</p>;
   }
 
   return <VerificationResult data={data} />;

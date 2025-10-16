@@ -58,7 +58,7 @@ export default function SignInForm({
     <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-2xl">
       {/* Botón de cierre */}
       <Button
-        aria-label="Close modal"
+        aria-label={t('common.closeModal')}
         className="absolute top-4 right-4 h-8 w-8"
         onClick={onClose}
         size="icon"
@@ -215,7 +215,7 @@ export default function SignInForm({
             {t('auth.signUp.cta')}
           </Button>
           <Button className="mt-2 text-xs" onClick={onSwitchToForgotPassword} variant="link">
-            ¿Olvidaste tu contraseña?
+            {t('forgotPassword.forgot')}
           </Button>
         </div>
       </div>

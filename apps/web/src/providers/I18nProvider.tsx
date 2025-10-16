@@ -17,7 +17,6 @@ const I18nContext = createContext<{
   setLocale: (lng: Locale) => void;
 }>({
   locale: 'es',
-  // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
   setLocale: () => {},
 });
 

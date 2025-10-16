@@ -65,7 +65,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
   const createShareLinkMutation = useMutation({
     mutationFn: () => {
       if (!data?.id) {
-        throw new Error('Verification ID is missing.');
+        throw new Error(t('error.verificationIdMissing'));
       }
       return orpc.createShareLink.call({ verificationId: data.id });
     },
@@ -85,7 +85,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
       });
     },
     onError: (error) => {
-      toast.error(`Failed to create share link: ${error.message}`);
+      toast.error(t('error.createShareLink', { error: error.message }));
     },
   });
 

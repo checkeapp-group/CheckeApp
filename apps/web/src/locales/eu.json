@@ -30,6 +30,11 @@
   "auth.validation.email.invalid": "Posta elektroniko helbide baliogabea",
   "auth.validation.password.min": "Pasahitzak gutxienez 8 karaktere izan behar ditu",
   "auth.signIn.error": "Posta elektronikoa edo pasahitza baliogabeak",
+  "auth.verificationNeeded.title": "Egiaztapen pendenteko kontua",
+  "auth.verificationNeeded.message": "Zure kontua sortu da, baina administratzaile batek egiaztatu behar du egiaztapen berriak sortu ahal izateko. Oraingoz, egiaztapen existenteei begira bakarrik egin dezakezu.",
+  "auth.signUp.success": "Erregistroa arrakastatsua! Zure kontua egiaztapen zain dago.",
+  "auth.signIn.success": "Saioa ondo hasi duzu!",
+  "auth.signOut.error": "Errorea saioa ixtean",
 
   "common.back": "Atzera",
   "common.retry": "Saiatu berriro",
@@ -173,6 +178,7 @@
   "forgotPassword.error": "Ezin izan da posta bidali. Saiatu berriro.",
   "forgotPassword.sendLink": "Esteka bidali",
   "forgotPassword.backToSignIn": "Itzuli saio hasierara",
+  "forgotPassword.forgot": "Pasahitza ahaztu duzu?",
 
   "userMenu.myAccount": "Nire kontua",
   "userMenu.loggedOutSuccess": "Saioa ondo itxi duzu.",
@@ -185,6 +191,7 @@
   "verifications.status.generating_summary": "Laburpena sortzen",
   "verifications.status.completed": "Amaituta",
   "verifications.status.error": "Errorea",
+  "verifications.status.undefined": "Zehaztu gabea",
   "verifications.no_claim": "Ez dago adierazpen nagusirik eskuragarri.",
   "verifications.no_results": "Ez da aurkitu zure bilaketarekin bat datorren egiaztapenik.",
   "verifications.label.verified": "Egiaztatua",
@@ -196,5 +203,25 @@
 
   "pagination.showing": "{start} - {end} / {total} emaitzak erakusten",
   "pagination.previous": "Aurrekoa",
-  "pagination.next": "Hurrengoa"
+  "pagination.next": "Hurrengoa",
+
+  "home.title": "Egiaztatu Zure Informazioa",
+  "home.latestVerifications": "Azken egiaztapenak",
+  "home.verificationsActive": "{count, plural, one {egiaztapen #} other {# egiaztapen}} aktibo",
+  "home.realTime": "Denbora errealean",
+  "home.noRecentVerifications": "Ez dago azken egiaztapenik",
+
+  "questions_edit.refine_prompt": "Findu galderak jarraibide gehigarriekin",
+  "questions_edit.refine_placeholder": "Ad: Egin zehatzagoak honi buruz...",
+  "questions_edit.refine_button": "Findu",
+  "questions_edit.refined_success": "Galderak ondo findu dira.",
+  "questions_edit.refined_error": "Errorea fintzean: {error}",
+
+  "error.verificationIdMissing": "Egiaztapen IDa falta da.",
+  "error.loadingVerification": "Errorea egiaztapena kargatzean",
+  "error.couldNotLoadResult": "Ezin izan da emaitza kargatu",
+  "error.noDataFound": "Ez da daturik aurkitu egiaztapen honetarako.",
+  "error.createShareLink": "Errorea partekatutako esteka sortzean: {error}",
+
+  "common.closeModal": "Modala itxi"
 }
