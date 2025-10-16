@@ -17,15 +17,19 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { AlertCircle, CheckCircle2, Lock, Plus, RefreshCw } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AlertCircle, CheckCircle2, Lock, Plus, RefreshCw, Wand2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/hooks/use-i18n';
 import { useQuestionsEditor } from '@/hooks/use-questions-editor';
 import type { Question } from '@/types/questions';
+import { orpc } from '@/utils/orpc';
 import { QuestionCard } from './QuestionCard';
 
 function QuestionsListSkeleton() {
@@ -35,12 +39,10 @@ function QuestionsListSkeleton() {
         <Card className="liquid-glass liquid-glass--md p-4" key={i}>
           <div className="flex w-full items-center gap-3">
             <Skeleton className="h-6 w-5 flex-shrink-0 rounded-md bg-white/20" />
-
             <div className="min-w-0 flex-1 space-y-2">
               <Skeleton className="h-4 w-3/4 rounded-md bg-white/20" />
               <Skeleton className="h-4 w-1/2 rounded-md bg-white/20" />
             </div>
-
             <div className="flex items-center gap-2">
               <Skeleton className="h-8 w-8 rounded-md bg-white/20" />
               <Skeleton className="h-8 w-8 rounded-md bg-white/20" />
@@ -92,6 +94,7 @@ export default function QuestionsList({
   isLocked = false,
 }: QuestionsListProps) {
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const {
     questions,
     error,
@@ -107,6 +110,7 @@ export default function QuestionsList({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newQuestionText, setNewQuestionText] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [refinementText, setRefinementText] = useState('');
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -124,6 +128,20 @@ export default function QuestionsList({
       reorderQuestions(arrayMove(questions, oldIndex, newIndex));
     }
   };
+
+  const refineMutation = useMutation({
+    mutationFn: (refinement: string) => orpc.refineQuestions.call({ verificationId, refinement }),
+    onSuccess: () => {
+      toast.success('Preguntas refinadas con éxito.');
+      queryClient.invalidateQueries({
+        queryKey: orpc.getVerificationQuestions.key({ input: { verificationId } }),
+      });
+      setRefinementText('');
+    },
+    onError: (error) => {
+      toast.error(`Error al refinar: ${error.message}`);
+    },
+  });
 
   const handleAddQuestion = () => {
     if (newQuestionText.trim().length >= 5) {
@@ -170,6 +188,33 @@ export default function QuestionsList({
         </Card>
       )}
 
+      {!isLocked && (
+        <Card className="border-info/50 p-4">
+          <div className="space-y-3">
+            <Label className="font-semibold text-sm" htmlFor="refinement-input">
+              {t('questions_edit.refine_prompt')}
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                disabled={refineMutation.isPending}
+                id="refinement-input"
+                onChange={(e) => setRefinementText(e.target.value)}
+                placeholder={t('questions_edit.refine_placeholder')}
+                value={refinementText}
+              />
+              <Button
+                disabled={refinementText.trim().length < 5 || refineMutation.isPending}
+                loading={refineMutation.isPending}
+                onClick={() => refineMutation.mutate(refinementText)}
+              >
+                <Wand2 className="mr-2 h-4 w-4" />
+                {t('questions_edit.refine_button')}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
       <DndContext
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
@@ -184,7 +229,7 @@ export default function QuestionsList({
                 isSaving={false}
                 key={question.id}
                 onCancel={() => setEditingId(null)}
-                onDelete={deleteQuestion}
+                onDelete={() => deleteQuestion(question.id)}
                 onEdit={setEditingId}
                 onSave={(id, text) => {
                   updateQuestion(id, text);
@@ -209,10 +254,7 @@ export default function QuestionsList({
                 value={newQuestionText}
               />
               <div className="flex justify-end gap-2">
-                <Button
-                  onClick={() => setShowAddForm(false)}
-                  variant="cancel"
-                >
+                <Button onClick={() => setShowAddForm(false)} variant="cancel">
                   {t('common.cancel')}
                 </Button>
                 <Button disabled={newQuestionText.trim().length < 5} onClick={handleAddQuestion}>

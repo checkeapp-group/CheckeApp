@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import {
   DropdownMenu,
@@ -15,7 +13,6 @@ import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
 
 export default function UserMenu() {
-  const router = useRouter();
   const { t } = useI18n();
   const { data: session, isPending } = authClient.useSession();
 
@@ -27,7 +24,6 @@ export default function UserMenu() {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push('/login');
           toast.success(t('userMenu.loggedOutSuccess'));
         },
       },
@@ -41,7 +37,6 @@ export default function UserMenu() {
   if (!session) {
     return (
       <Button asChild variant="outline">
-        <Link href="/login">{t('auth.signIn')}</Link>
       </Button>
     );
   }

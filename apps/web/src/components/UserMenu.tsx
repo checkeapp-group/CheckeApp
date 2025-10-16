@@ -6,10 +6,8 @@ import { Fragment } from 'react';
 import { toast } from 'sonner';
 import { useI18n } from '@/hooks/use-i18n';
 import { authClient } from '@/lib/auth-client';
-import { useAppRouter } from '@/lib/router';
 
 export default function UserMenu() {
-  const { navigate } = useAppRouter();
   const { t } = useI18n();
   const { data: session } = authClient.useSession();
 
@@ -19,18 +17,6 @@ export default function UserMenu() {
       redirectTo: '/',
     });
     toast.success(t('auth.loggedOut') || 'Successfully logged out');
-  };
-
-  const handleLogin = () => {
-    navigate('/login');
-  };
-
-  const handleDashboard = () => {
-    if (!session?.user) {
-      navigate('/login');
-      return;
-    }
-    navigate('/dashboard');
   };
 
   return (
@@ -66,7 +52,6 @@ export default function UserMenu() {
 
             <div className="my-1 border-border border-t" />
 
-            {/* Logout/Login option */}
             <Menu.Item>
               {({ active }) => (
                 <button

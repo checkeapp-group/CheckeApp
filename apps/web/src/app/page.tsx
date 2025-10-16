@@ -2,35 +2,20 @@
 
 import { useState } from 'react';
 import TextInputForm from '@/components/TextInputForm';
+import VerificationsHome from '@/components/VerificationsHome';
 import { useAppRouter } from '@/lib/router';
 
 function PreviousVerifications() {
-  return (
-    <div className="mt-12">
-      <h2 className="mb-4 text-center font-bold text-2xl text-gray-700">Previously Fact-Checked</h2>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="h-48 rounded-lg border bg-gray-100 p-4">
-          <p className="text-gray-500">Previous verification card placeholder...</p>
-        </div>
-        <div className="h-48 rounded-lg border bg-gray-100 p-4">
-          <p className="text-gray-500">Previous verification card placeholder...</p>
-        </div>
-        <div className="h-48 rounded-lg border bg-gray-100 p-4">
-          <p className="text-gray-500">Previous verification card placeholder...</p>
-        </div>
-      </div>
-    </div>
-  );
+  return <VerificationsHome />;
 }
 
 export default function HomePage({ openAuthModal }: { openAuthModal?: () => void }) {
   const [text, setText] = useState('');
-  const { navigate } = useAppRouter(); 
+  const { navigate } = useAppRouter();
 
   const handleSuccess = (verificationId: string) => {
     navigate(`/verify/${verificationId}/edit`);
   };
-
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
