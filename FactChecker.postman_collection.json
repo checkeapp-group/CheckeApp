@@ -1,0 +1,773 @@
+{
+	"info": {
+		"_postman_id": "dd3ac929-632d-4fba-bfd0-35fd1385de68",
+		"name": "FactChecker API (Completa)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45476072"
+	},
+	"item": [
+		{
+			"name": "Full Workflow (No Stepwise)",
+			"item": [
+				{
+					"name": "Submit Fact-Check Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"article_topic\": \"Pedro Sánchez nunca ha felicitado a nadie por el premio Nobel de la paz\",\r\n  \"language\": \"es\",\r\n  \"location\": \"es\",\r\n  \"config\": \"unused\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/fact-check",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"fact-check"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Job Started Successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"article_topic\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"language\": \"es\",\n    \"location\": \"es\",\n    \"config\": \"unused\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/fact-check",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"fact-check"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"job_id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Full Fact-Check Result",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/result/123e4567-e89b-12d3-a456-426614174000",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"result",
+								"123e4567-e89b-12d3-a456-426614174000"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Completed Result",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/result/123e4567-e89b-12d3-a456-426614174000",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"result",
+										"123e4567-e89b-12d3-a456-426614174000"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"completed\",\n    \"result\": {\n        \"question\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n        \"answer\": \"Full fact-checking article...\",\n        \"metadata\": {\n            \"title\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n            \"label\": \"Fake\",\n            \"categories\": [\n                \"Automoción\",\n                \"Medio ambiente\",\n                \"Ciencia\"\n            ],\n            \"main_claim\": \"...\"\n        },\n        \"sources\": [],\n        \"related_questions\": [],\n        \"image\": {\n            \"url\": \"https://...\",\n            \"description\": \"...\"\n        },\n        \"logs\": {}\n    },\n    \"job_id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Stepwise Workflow",
+			"item": [
+				{
+					"name": "1. Generate Critical Questions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\r\n  \"model\": \"google/gemini-2.5-flash\",\r\n  \"language\": \"es\",\r\n  \"location\": \"es\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/stepwise/critical-questions",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stepwise",
+								"critical-questions"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Job ID for Questions",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"model\": \"google/gemini-2.5-flash\",\n    \"language\": \"es\",\n    \"location\": \"es\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/stepwise/critical-questions",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"stepwise",
+										"critical-questions"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"job_id\": \"c5238ec2-c8aa-4f46-a376-b128ed56657a\"\n}"
+						}
+					]
+				},
+				{
+					"name": "1a. Get Questions Result",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/result/{{job_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"result",
+								"{{job_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Completed Questions",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/result/c5238ec2-c8aa-4f46-a376-b128ed56657a",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"result",
+										"c5238ec2-c8aa-4f46-a376-b128ed56657a"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"completed\",\n    \"result\": {\n        \"questions\": [\n            \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico fabricado en 2025?\",\n            \"¿Qué tipo de emisiones producen los coches de gasolina en comparación con los eléctricos?\",\n            \"¿Qué impacto ambiental tiene la extracción de materias primas para las baterías?\"\n        ],\n        \"cost\": 0.0019304\n    },\n    \"job_id\": \"c5238ec2-c8aa-4f46-a376-b128ed56657a\"\n}"
+						}
+					]
+				},
+				{
+					"name": "2. Refine Questions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"questions\": [\n        \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico?\",\n        \"¿Qué tipo de emisiones producen los coches de gasolina?\"\n    ],\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"refinement\": \"También quiero que consideres la contaminación del proceso de reciclaje de la batería\",\n    \"language\": \"es\",\n    \"location\": \"es\",\n    \"model\": \"google/gemini-2.5-flash\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/stepwise/refine-questions",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stepwise",
+								"refine-questions"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Job ID for Refined Questions",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"questions\": [\n        \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico?\",\n        \"¿Qué tipo de emisiones producen los coches de gasolina?\"\n    ],\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"refinement\": \"También quiero que consideres la contaminación del proceso de reciclaje de la batería\",\n    \"language\": \"es\",\n    \"location\": \"es\",\n    \"model\": \"google/gemini-2.5-flash\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/stepwise/refine-questions",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"stepwise",
+										"refine-questions"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"job_id\": \"a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6\"\n}"
+						}
+					]
+				},
+				{
+					"name": "2a. Get Refined Questions Result",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/result/{{job_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"result",
+								"{{job_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Completed Refined Questions",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/result/a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"result",
+										"a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"completed\",\n    \"result\": {\n        \"questions\": [\n            \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico?\",\n            \"¿Qué tipo de emisiones producen los coches de gasolina?\",\n            \"¿Cuál es el impacto ambiental del proceso de reciclaje de las baterías?\"\n        ],\n        \"cost\": 0.0012145\n    },\n    \"job_id\": \"a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6\"\n}"
+						}
+					]
+				},
+				{
+					"name": "3. Search Sources",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"questions\": [\r\n        \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico?\",\r\n        \"¿Qué tipo de emisiones producen los coches de gasolina?\"\r\n    ],\r\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\r\n    \"language\": \"es\",\r\n    \"location\": \"es\",\r\n    \"model\": \"google/gemini-2.5-flash\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/stepwise/search-sources",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stepwise",
+								"search-sources"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Job ID for Sources",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"questions\": [\n        \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico?\",\n        \"¿Qué tipo de emisiones producen los coches de gasolina?\"\n    ],\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"language\": \"es\",\n    \"location\": \"es\",\n    \"model\": \"google/gemini-2.5-flash\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/stepwise/search-sources",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"stepwise",
+										"search-sources"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"job_id\": \"b2c3d4e5-f6a7-b8c9-d0e1-f2g3h4i5j6k7\"\n}"
+						}
+					]
+				},
+				{
+					"name": "3a. Get Sources Result",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/result/{{job_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"result",
+								"{{job_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Completed Sources",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/result/b2c3d4e5-f6a7-b8c9-d0e1-f2g3h4i5j6k7",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"result",
+										"b2c3d4e5-f6a7-b8c9-d0e1-f2g3h4i5j6k7"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"completed\",\n    \"result\": {\n        \"sources\": [\n            {\n                \"title\": \"Comparativa de emisiones de CO2 entre coche eléctrico y gasolina\",\n                \"link\": \"https://effimove.com/emisiones-de-co2-en-la-vida-del-coche-electricos-vs-combustion/\",\n                \"snippet\": \"En este estudio se considera que las emisiones se sitúan entre 61 y 106 kg de CO2 por kWh...\",\n                \"favicon\": \"https://effimove.com/favicon.ico\",\n                \"base_url\": \"https://effimove.com\"\n            }\n        ],\n        \"searches\": [\n            \"huella carbono ciclo vida coche eléctrico 2025 batería vs gasolina estudios\",\n            \"emisiones gases efecto invernadero coches eléctricos vs gasolina 2025\"\n        ],\n        \"cost\": 0.0056027\n    },\n    \"job_id\": \"b2c3d4e5-f6a7-b8c9-d0e1-f2g3h4i5j6k7\"\n}"
+						}
+					]
+				},
+				{
+					"name": "4. Refine Sources",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"searches\": [\n        \"huella carbono ciclo vida coche eléctrico 2025\",\n        \"emisiones gases efecto invernadero coches eléctricos vs gasolina\"\n    ],\n    \"language\": \"es\",\n    \"location\": \"es\",\n    \"refinement\": \"Quiero información oficial de la Unión Europea\",\n    \"model\": \"google/gemini-2.5-flash\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/stepwise/refine-sources",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stepwise",
+								"refine-sources"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Job ID for Refined Sources",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"searches\": [\n        \"huella carbono ciclo vida coche eléctrico 2025\",\n        \"emisiones gases efecto invernadero coches eléctricos vs gasolina\"\n    ],\n    \"language\": \"es\",\n    \"location\": \"es\",\n    \"refinement\": \"Quiero información oficial de la Unión Europea\",\n    \"model\": \"google/gemini-2.5-flash\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/stepwise/refine-sources",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"stepwise",
+										"refine-sources"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"job_id\": \"c3d4e5f6-a7b8-c9d0-e1f2-g3h4i5j6k7l8\"\n}"
+						}
+					]
+				},
+				{
+					"name": "4a. Get Refined Sources Result",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/result/{{job_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"result",
+								"{{job_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Completed Refined Sources",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/result/c3d4e5f6-a7b8-c9d0-e1f2-g3h4i5j6k7l8",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"result",
+										"c3d4e5f6-a7b8-c9d0-e1f2-g3h4i5j6k7l8"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"completed\",\n    \"result\": {\n        \"sources\": [\n            {\n                \"title\": \"Reducción de las emisiones de CO2 - Agencia Europea\",\n                \"link\": \"https://www.eca.europa.eu/es/publications?ref=sr-2024-01\",\n                \"snippet\": \"En 2021, representaron el 23% de las emisiones totales de gases...\",\n                \"favicon\": \"https://www.eca.europa.eu/favicon.ico\",\n                \"base_url\": \"https://www.eca.europa.eu\"\n            }\n        ],\n        \"searches\": [\n            \"Unión Europea comunicado prensa impacto ambiental coches eléctricos\"\n        ],\n        \"cost\": 0.0014266\n    },\n    \"job_id\": \"c3d4e5f6-a7b8-c9d0-e1f2-g3h4i5j6k7l8\"\n}"
+						}
+					]
+				},
+				{
+					"name": "5. Generate Final Article",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"questions\": [\r\n        \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico?\",\r\n        \"¿Qué tipo de emisiones producen los coches de gasolina?\"\r\n    ],\r\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\r\n    \"language\": \"es\",\r\n    \"location\": \"es\",\r\n    \"sources\": [\r\n        {\r\n            \"title\": \"Electric Cars - Wikipedia\",\r\n            \"link\": \"https://www.wikipedia.org/wiki/Electric_car\",\r\n            \"snippet\": \"An electric car is an automobile powered by electricity...\",\r\n            \"favicon\": \"https://www.wikipedia.org/favicon.ico\",\r\n            \"base_url\": \"https://www.wikipedia.org\"\r\n        }\r\n    ],\r\n    \"model\": \"google/gemini-2.5-flash\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/stepwise/generate-article",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stepwise",
+								"generate-article"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Job ID for Final Article",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"questions\": [\n        \"¿Cuál es la huella de carbono promedio del ciclo de vida completo de un coche eléctrico?\",\n        \"¿Qué tipo de emisiones producen los coches de gasolina?\"\n    ],\n    \"input\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n    \"language\": \"es\",\n    \"location\": \"es\",\n    \"sources\": [\n        {\n            \"title\": \"Electric Cars - Wikipedia\",\n            \"link\": \"https://www.wikipedia.org/wiki/Electric_car\",\n            \"snippet\": \"An electric car is an automobile powered by electricity...\",\n            \"favicon\": \"https://www.wikipedia.org/favicon.ico\",\n            \"base_url\": \"https://www.wikipedia.org\"\n        }\n    ],\n    \"model\": \"google/gemini-2.5-flash\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/stepwise/generate-article",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"stepwise",
+										"generate-article"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"job_id\": \"d4e5f6a7-b8c9-d0e1-f2g3-h4i5j6k7l8m9\"\n}"
+						}
+					]
+				},
+				{
+					"name": "5a. Get Final Article Result",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/result/{{job_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"result",
+								"{{job_id}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Completed Final Article",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/result/d4e5f6a7-b8c9-d0e1-f2g3-h4i5j6k7l8m9",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"result",
+										"d4e5f6a7-b8c9-d0e1-f2g3-h4i5j6k7l8m9"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"completed\",\n    \"result\": {\n        \"question\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n        \"answer\": \"Full fact-checking article with citations...\",\n        \"metadata\": {\n            \"title\": \"Los coches eléctricos son más contaminantes que los coches de gasolina\",\n            \"categories\": [\n                \"Automoción\",\n                \"Medio ambiente\",\n                \"Ciencia\"\n            ],\n            \"label\": \"Fake\",\n            \"main_claim\": \"Los coches eléctricos no son más contaminantes que los coches de gasolina\",\n            \"config\": null\n        },\n        \"sources\": [\n            {\n                \"id\": \"1\",\n                \"title\": \"Electric Cars - Wikipedia\",\n                \"link\": \"https://www.wikipedia.org/wiki/Electric_car\",\n                \"favicon\": \"https://www.wikipedia.org/favicon.ico\",\n                \"base_url\": \"https://www.wikipedia.org\"\n            }\n        ],\n        \"related_questions\": [\n            {\n                \"question\": \"¿Cuál es la huella de carbono del ciclo de vida completo?\",\n                \"answer\": \"La huella de carbono...\",\n                \"sources_id\": [\n                    \"1\"\n                ]\n            }\n        ],\n        \"cost\": 0.009145,\n        \"runtime\": null,\n        \"agents\": null,\n        \"config\": null,\n        \"image\": null,\n        \"logs\": null\n    },\n    \"job_id\": \"d4e5f6a7-b8c9-d0e1-f2g3-h4i5j6k7l8m9\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:7860"
+		},
+		{
+			"key": "API_KEY",
+			"value": "your-secret-api-key-here"
+		},
+		{
+			"key": "job_id",
+			"value": ""
+		}
+	]
+}
