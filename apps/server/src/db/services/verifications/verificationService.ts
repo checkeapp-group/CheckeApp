@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
-import { type NewVerification, verification } from '@/db/schema/schema';
+import { type NewVerification, verification, verificationtatusType } from '@/db/schema/schema';
 
 /**
  * Creates a new verification record in the database
@@ -10,7 +10,8 @@ import { type NewVerification, verification } from '@/db/schema/schema';
  */
 export async function createVerificationRecord(
   userId: string,
-  originalText: string
+  originalText: string,
+  status : verificationtatusType = 'processing_questions'
 ): Promise<string> {
   const verificationId = uuidv4();
 
@@ -18,7 +19,7 @@ export async function createVerificationRecord(
     id: verificationId,
     userId,
     originalText,
-    status: 'processing_questions',
+    status
   };
 
   try {

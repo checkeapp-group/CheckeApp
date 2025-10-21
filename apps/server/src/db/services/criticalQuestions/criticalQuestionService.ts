@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/style/useFilenamingConvention: <explanation> */
 import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
@@ -30,7 +29,19 @@ export async function saveCriticalQuestions(
   }
 
   try {
-    // Validate and prepare question records
+    const existingQuestions = await db
+      .select({ id: criticalQuestion.id })
+      .from(criticalQuestion)
+      .where(eq(criticalQuestion.verificationId, verificationId))
+      .limit(1);
+
+    if (existingQuestions.length > 0) {
+      console.log(
+        `[Idempotency] Questions already exist for verification ${verificationId}. Skipping save.`
+      );
+      return existingQuestions.length;
+    }
+
     const questionRecords: NewCriticalQuestion[] = [];
 
     for (let i = 0; i < questions.length; i++) {

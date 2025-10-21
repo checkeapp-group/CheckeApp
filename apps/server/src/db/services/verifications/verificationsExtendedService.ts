@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, like, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { user } from '@/db/schema/auth';
-import { finalResult, verification } from '@/db/schema/schema';
+import { finalResult, verification, type verificationtatusType } from '@/db/schema/schema';
 
 type GetVerificationsListParams = {
   userId: string;
@@ -10,6 +10,7 @@ type GetVerificationsListParams = {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   search?: string;
+  status?: verificationtatusType;
 };
 
 export async function getVerificationsList({
@@ -19,12 +20,19 @@ export async function getVerificationsList({
   sortBy = 'createdAt',
   sortOrder = 'desc',
   search,
+  status,
 }: GetVerificationsListParams) {
   const offset = (page - 1) * limit;
 
-  const whereConditions = [eq(verification.userId, userId)];
+  const whereConditions = [];
+  if (userId) {
+    whereConditions.push(eq(verification.userId, userId));
+  }
   if (search) {
     whereConditions.push(like(verification.originalText, `%${search}%`));
+  }
+  if (status) {
+    whereConditions.push(eq(verification.status, status));
   }
 
   // Mapeo de columnas para ordenación segura
