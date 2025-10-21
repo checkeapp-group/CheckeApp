@@ -1,4 +1,3 @@
-import type { CriticalQuestion, Source } from '@/db/schema/schema';
 import {
   logProcessCompleted,
   logProcessError,
@@ -10,21 +9,12 @@ const apiMode = process.env.API_MODE || 'development';
 const isDevelopment = apiMode === 'development';
 
 const config = {
-  // Default to fake API for development, require explicit configuration for production
-  baseUrl:
-    process.env.EXTERNAL_API_BASE_URL || (isDevelopment ? 'http://localhost:3000/api/fakeAPI' : ''),
-  apiKey: process.env.EXTERNAL_API_KEY || (isDevelopment ? 'fake-api-key-for-development' : ''),
+  baseUrl: process.env.EXTERNAL_API_BASE_URL,
+  apiKey: process.env.EXTERNAL_API_KEY,
   timeout: Number.parseInt(process.env.EXTERNAL_API_TIMEOUT || '60000'),
   maxRetries: Number.parseInt(process.env.MAX_RETRIES || '3'),
   retryDelay: Number.parseInt(process.env.RETRY_DELAY || '1000'),
-
-  // API mode for debugging/logging
   mode: apiMode,
-
-  // Individual endpoint URLs (can be overridden)
-  generateQuestionsUrl: process.env.EXTERNAL_API_GENERATE_QUESTIONS_URL,
-  searchSourcesUrl: process.env.EXTERNAL_API_SEARCH_SOURCES_URL,
-  generateAnalysisUrl: process.env.EXTERNAL_API_GENERATE_ANALYSIS_URL,
 };
 
 // Validate configuration
@@ -53,6 +43,7 @@ function getEndpointUrl(endpoint: string, customUrl?: string): string {
 }
 
 // Generic API call wrapper with logging and retries
+
 export async function callExternalApiWithLogging<T>(
   verificationId: string,
   step: string,
@@ -75,7 +66,6 @@ export async function callExternalApiWithLogging<T>(
         throw lastError;
       }
 
-      // Wait before retrying (exponential backoff)
       const delay = config.retryDelay * 2 ** (attempt - 1);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
@@ -89,12 +79,17 @@ async function makeApiCall<T>(url: string, data: any): Promise<T> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), config.timeout);
 
+   if (!config.apiKey) {
+    throw new Error("CRITICAL: EXTERNAL_API_KEY is not defined at the time of API call.");
+  }
+
   try {
+    console.log(`[makeApiCall] Attempting to POST to: ${url}`);
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${config.apiKey}`,
+        'X-API-Key': config.apiKey,
       },
       body: JSON.stringify(data),
       signal: controller.signal,
@@ -102,74 +97,144 @@ async function makeApiCall<T>(url: string, data: any): Promise<T> {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error(`[API_CALL_FAILED] URL: ${url}`);
+      console.error(`[API_CALL_FAILED] Status: ${response.status} ${response.statusText}`);
+      console.error(`[API_CALL_FAILED] Request Body Sent:`, JSON.stringify(data, null, 2));
+      console.error(`[API_CALL_FAILED] Response Body:`, errorText);
       throw new Error(`API call failed: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
-    const result = await response.json();
-
-    if (result.success === false) {
-      throw new Error(`API returned error: ${result.error} - ${result.message}`);
+    return response.json();
+  } catch (error) {
+    console.error(`[makeApiCall CATCH BLOCK] An unexpected error occurred while calling ${url}.`);
+    if (error instanceof Error) {
+        console.error(`[makeApiCall CATCH BLOCK] Error Name: ${error.name}`);
+        console.error(`[makeApiCall CATCH BLOCK] Error Message: ${error.message}`);
+        console.error(`[makeApiCall CATCH BLOCK] Error Cause:`, (error as any).cause);
+    } else {
+        console.error(`[makeApiCall CATCH BLOCK] A non-Error object was thrown:`, error);
     }
-
-    return result;
+    throw error;
   } finally {
     clearTimeout(timeoutId);
   }
 }
 
-// Specific API functions
-// biome-ignore lint/suspicious/useAwait: <explanation>
 export async function generateQuestions(data: {
-  verification_id: string;
-  original_text: string;
-  language?: string;
-  max_questions?: number;
+  input: string;
+  model: string;
+  language: string;
+  location: string;
 }) {
-  const url = getEndpointUrl('generate-questions', config.generateQuestionsUrl);
-  return makeApiCall(url, data);
+  const url = `${config.baseUrl}/stepwise/critical-questions`;
+  return makeApiCall<{ job_id: string }>(url, data);
 }
 
-// biome-ignore lint/suspicious/useAwait: <explanation>
 export async function searchSources(data: {
-  verification_id: string;
-  questions: Array<{
-    id: string;
-    question_text: string;
-    order_index: number;
-  }>;
-  original_text: string;
-  search_parameters?: {
-    max_sources?: number;
-    language?: string;
-    date_range?: string;
-  };
-}) {
-  const url = getEndpointUrl('search-sources', config.searchSourcesUrl);
-  return makeApiCall(url, data);
-}
-
-// biome-ignore lint/suspicious/useAwait: <explanation>
-export async function generateAnalysis(data: {
-  question: CriticalQuestion[];
+  questions: string[];
   input: string;
   language: string;
   location: string;
-  sources: Array<{
-    source: Source;
-  }>;
   model: string;
 }) {
-  const url = getEndpointUrl('generate-analysis', config.generateAnalysisUrl);
-  const apiPayload = {
-    question: data.question,
-    input: data.input,
-    language: data.language,
-    location: data.location,
-    'Listas de fuentes': data.sources,
-    model: data.model,
-  };
-  return makeApiCall(url, apiPayload);
+  const url = `${config.baseUrl}/stepwise/search-sources`;
+  return makeApiCall<{ job_id: string }>(url, data);
 }
 
-// Export the configuration for debugging/testing
+export async function generateArticle(data: {
+  questions: string[];
+  input: string;
+  language: string;
+  location: string;
+  sources: any;
+  model: string;
+}) {
+  const url = `${config.baseUrl}/stepwise/generate-article`;
+  return makeApiCall<{ job_id: string }>(url, data);
+}
+
+export async function generateImage(data: {
+  input: string;
+  model: string;
+  size?: string;
+  style?: string;
+}) {
+  const url = `${config.baseUrl}/stepwise/generate-image`;
+  return makeApiCall<{ job_id: string }>(url, data);
+}
+
+export async function refineQuestions(data: {
+  questions: Array<{ id: string; question_text: string; order_index: number }>;
+  input: string;
+  refinement: string;
+  language: string;
+  location: string;
+  model: string;
+}) {
+  const url = getEndpointUrl('refine-questions', process.env.EXTERNAL_API_REFINE_QUESTIONS_URL);
+  return makeApiCall<{
+    questions: { question_text: string; original_question: string; order_index: number }[];
+  }>(url, data);
+}
+
+export async function getJobResult<T>(
+  jobId: string
+): Promise<{ status: string; result: T }> {
+  const url = `${config.baseUrl}/result/${jobId}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': config.apiKey!,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `API call to get job result failed: ${response.status} ${response.statusText} - ${errorText}`
+    );
+  }
+
+  return response.json();
+}
+
+export async function pollForResult<T>(
+  jobId: string,
+  stepName: string,
+  verificationId: string
+): Promise<T> {
+  const maxAttempts = 20; 
+  const delay = 3000;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    console.log(`[Polling] Attempt ${attempt}/${maxAttempts} for job ${jobId} (${stepName})`);
+    
+    const response = await getJobResult<T>(jobId);
+
+    if (response.status === 'completed') {
+      console.log(`[Polling] Job ${jobId} (${stepName}) completed successfully.`);
+      if (!response.result) {
+        await logProcessError(verificationId, stepName, `Job ${jobId} completed but returned no result.`);
+        throw new Error(`Job ${jobId} (${stepName}) completed but returned no result.`);
+      }
+      return response.result;
+    }
+
+    if (response.status === 'failed' || response.status === 'error') {
+      const errorMessage = `Job processing failed for step: ${stepName} (Job ID: ${jobId})`;
+      console.error(`[Polling] Job ${jobId} (${stepName}) failed.`);
+      await logProcessError(verificationId, stepName, errorMessage, response);
+      throw new Error(errorMessage);
+    }
+
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+
+  const timeoutMessage = `Polling timed out for job ${jobId} (${stepName}) after ${maxAttempts} attempts.`;
+  await logProcessError(verificationId, stepName, timeoutMessage);
+  throw new Error(timeoutMessage);
+}
+
 export { config as externalApiConfig };

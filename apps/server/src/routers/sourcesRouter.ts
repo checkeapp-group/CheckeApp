@@ -6,7 +6,6 @@ import { source, verification } from '@/db/schema/schema';
 import { generateAndSaveFinalAnalysis } from '@/db/services/finalResult/finalsResultService';
 import { extractArticleData } from '@/db/services/scraping/articleExtractorService';
 import { getSources, updateSourceSelection } from '@/db/services/sources/sourcesService';
-import { getVerificationById } from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { protectedProcedure } from '@/lib/orpc';
 
@@ -73,16 +72,34 @@ export const sourcesRouter = {
       return { success: true, message: 'Proceso de análisis iniciado.', nextStep: 'finalResult' };
     }),
 
-  getVerificationStatus: protectedProcedure
+  getVerificationProgress: protectedProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id);
-      const verification = await getVerificationById(verificationId);
-      if (!verification) {
-        throw new ORPCError('BAD_REQUEST');
+      await validateVerificationAccess(verificationId, context.session.user.id, 'view');
+
+      const verificationState = await db.query.verification.findFirst({
+        where: eq(verification.id, verificationId),
+        columns: {
+          status: true,
+        },
+        with: {
+          finalResult: {
+            columns: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      if (!verificationState) {
+        throw new ORPCError('NOT_FOUND', { message: 'Verification not found.' });
       }
-      return { status: verification.status };
+
+      return {
+        status: verificationState.status,
+        hasFinalResult: !!verificationState.finalResult,
+      };
     }),
 
   getVerificationResultData: protectedProcedure

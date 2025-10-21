@@ -72,43 +72,72 @@ export const questionsRouter = {
     .input(continueVerificationSchema)
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
-
       await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
 
       const { canContinue, message } = await validateVerificationReadyToContinue(verificationId);
       if (!canContinue) {
-        throw new Error(message);
+        throw new ORPCError('BAD_REQUEST', { message });
       }
 
       const finalQuestions = await getCriticalQuestions(verificationId);
       const verification = await getVerificationById(verificationId);
       if (!verification) {
-        throw new ORPCError('BAD_REQUEST');
+        throw new ORPCError('NOT_FOUND', { message: 'Verification not found' });
       }
 
-      const sourcesResult = await callExternalApiWithLogging(verificationId, 'search_sources', () =>
-        searchSources({
-          verification_id: verificationId,
-          questions: finalQuestions.map((q) => ({
-            id: q.id,
-            question_text: q.questionText,
-            order_index: q.orderIndex,
-          })),
-          original_text: verification.originalText,
-        })
-      );
+      try {
+        const sourcesJob = await callExternalApiWithLogging(verificationId, 'search_sources', () =>
+          searchSources({
+            questions: finalQuestions.map((q) => q.questionText),
+            input: verification.originalText,
+            language: 'es',
+            location: 'es',
+            model: 'google/gemini-2.5-flash',
+          })
+        );
 
-      if (sourcesResult.sources?.length > 0) {
-        await saveSourcesFromAPI(verificationId, sourcesResult.sources);
+        // Return the job ID immediately for the client to poll
+        return {
+          success: true,
+          jobId: sourcesJob.job_id,
+          message: 'Job for source searching started successfully.',
+        };
+      } catch (apiError) {
+        console.error(
+          `[confirmQuestions ERROR] Failed for verificationId: ${verificationId}`,
+          apiError
+        );
+        await updateVerificationStatus(verificationId, 'error');
+        throw new ORPCError('INTERNAL_SERVER_ERROR', {
+          message: apiError instanceof Error ? apiError.message : 'Failed to search for sources',
+        });
       }
+    }),
 
+  saveSearchedSources: protectedProcedure
+    .input(
+      z.object({
+        verificationId: z.string(),
+        sources: z.array(
+          z.object({
+            url: z.string(),
+            title: z.string().optional().nullable(),
+            summary: z.string().optional().nullable(),
+            domain: z.string().optional().nullable(),
+            isSelected: z.boolean().optional(),
+            scrapingDate: z.string().datetime().optional().nullable(),
+          })
+        ),
+      })
+    )
+    .handler(async ({ input, context }) => {
+      const { verificationId, sources } = input;
+      await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
+
+      await saveSourcesFromAPI(verificationId, sources as any);
       await updateVerificationStatus(verificationId, 'sources_ready');
-      return {
-        success: true,
-        message: 'Fuentes encontradas y guardadas.',
-        nextStep: 'sources',
-        sources_count: sourcesResult.sources?.length || 0,
-      };
+
+      return { success: true, message: 'Sources saved successfully.' };
     }),
 
   getVerificationDetails: protectedProcedure
