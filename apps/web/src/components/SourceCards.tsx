@@ -1,129 +1,153 @@
-'use client';
+"use client";
 
-import { Check } from 'lucide-react';
-import { useState } from 'react';
-import type { Source } from '@/../server/src/db/schema/schema';
-import { Card } from '@/components/ui/card';
-import { useI18n } from '@/hooks/use-i18n';
-import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
+import { Check, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import type { Source } from "@/../server/src/db/schema/schema";
+import { Card } from "@/components/ui/card";
+import { useI18n } from "@/hooks/use-i18n";
+import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 type SourceCardProps = {
   source: Source;
   onSelectionChange: (isSelected: boolean) => void;
 };
 
-export default function SourceCard({ source, onSelectionChange }: SourceCardProps) {
+export default function SourceCard({
+  source,
+  onSelectionChange,
+}: SourceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useI18n();
 
-  const summary = source.summary || '';
-  const isTruncated = summary.length > 200;
+  const summary = source.summary || "";
+  const TRUNCATE_LENGTH = 350;
+  const isTruncated = summary.length > TRUNCATE_LENGTH;
   const displaySummary = isExpanded
     ? summary
-    : `${summary.slice(0, 200)}${isTruncated ? '...' : ''}`;
+    : `${summary.slice(0, TRUNCATE_LENGTH)}${isTruncated ? "..." : ""}`;
 
   return (
     <Card
       aria-checked={source.isSelected}
       className={cn(
-        'group cursor-pointer overflow-hidden p-4 transition-all duration-300',
+        "group cursor-pointer overflow-hidden p-5 transition-all duration-200",
         source.isSelected
-          ? 'scale-[1.001] border-primary bg-card shadow-lg shadow-primary/20'
-          : 'border-border bg-card hover:border-primary/50 hover:shadow-md'
+          ? "scale-[1.02] border-primary bg-card shadow-lg shadow-primary/10"
+          : "border-border bg-card hover:border-primary/40 hover:shadow-md"
       )}
       onClick={() => onSelectionChange(!source.isSelected)}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onSelectionChange(!source.isSelected);
         }
       }}
+      role="checkbox"
       tabIndex={0}
     >
-      {/* Indicador visual superior */}
+      {/* Header */}
       <div
         className={cn(
-          'md absolute top-0 right-0 left-0 h-2 rounded-t-lg border-radius transition-all duration-300',
-          source.isSelected ? 'bg-gradient-to-r from-primary to-primary/50' : 'bg-transparent'
+          "absolute top-0 right-0 left-0 h-1.5 rounded-t-lg transition-all duration-200",
+          source.isSelected
+            ? "bg-gradient-to-r from-primary to-primary/60"
+            : "bg-transparent"
         )}
       />
 
       <div className="flex items-start gap-4">
-        {/* Icono de selección animado */}
-        <div className="relative mt-1 h-6 w-6 shrink-0">
+        {/* Selection checkbox */}
+        <div className="relative mt-0.5 h-5 w-5 shrink-0">
           <div
             className={cn(
-              'absolute inset-0 flex items-center justify-center rounded-full border-2 transition-all duration-300',
+              "flex h-full w-full items-center justify-center rounded-md border-2 transition-all duration-200",
               source.isSelected
-                ? 'scale-100 border-primary bg-primary'
-                : 'scale-100 border-muted-foreground/30 bg-background group-hover:border-primary/50'
+                ? "border-primary bg-primary"
+                : "border-muted-foreground/30 bg-background group-hover:border-primary/50"
             )}
           >
             {source.isSelected && (
-              <Check className="h-4 w-4 text-primary-foreground" strokeWidth={3} />
+              <Check
+                className="h-3.5 w-3.5 text-primary-foreground"
+                strokeWidth={3}
+              />
             )}
           </div>
-
-          {/* Efecto de pulso al seleccionar */}
-          {source.isSelected && (
-            <div className="absolute inset-0 animate-ping rounded-full border-2 border-primary opacity-75" />
-          )}
         </div>
 
-        <div className="grid flex-1 gap-1.5 leading-none">
-          <div>
-            <p
-              className={cn(
-                'font-semibold transition-colors',
-                source.isSelected ? 'text-primary' : 'text-foreground'
-              )}
-            >
-              {source.title}
-            </p>
+        <div className="flex-1 space-y-2.5">
+          {/* Title */}
+          <h3
+            className={cn(
+              "line-clamp-2 font-bold text-base leading-snug transition-colors",
+              source.isSelected ? "text-primary" : "text-foreground"
+            )}
+          >
+            {source.title}
+          </h3>
+
+          {/* Metadata: domain and date */}
+          <div className="flex flex-wrap items-center gap-2 text-sm">
             <a
-              className="text-muted-foreground text-sm hover:underline"
+              aria-label={`Abrir ${source.domain} en nueva pestaña`}
+              className="inline-flex items-center gap-1.5 font-medium text-primary transition-colors hover:text-primary/80 hover:underline"
               href={source.url}
               onClick={(e) => e.stopPropagation()}
               rel="noopener noreferrer"
               target="_blank"
             >
+              <img
+                alt=""
+                className="h-4 w-4"
+                onError={(e) => {
+                  e.currentTarget.src = `https://icons.duckduckgo.com/ip3/${source.domain}.ico`;
+                }}
+                src={
+                  source.favicon ||
+                  `https://www.google.com/s2/favicons?domain=${source.domain}&sz=16`
+                }
+              />
               {source.domain}
+              <ExternalLink className="h-3.5 w-3.5" />
             </a>
+            {source.scrapingDate && (
+              <>
+                <span className="text-muted-foreground">•</span>
+                <span className="text-muted-foreground text-xs">
+                  {new Date(source.scrapingDate).toLocaleDateString("es-ES", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+              </>
+            )}
           </div>
 
-          {source.scrapingDate && (
-            <p className="mt-1 text-muted-foreground text-xs">
-              {t('sources.scraped')}: {new Date(source.scrapingDate).toLocaleDateString()}
-            </p>
-          )}
+          {/* Summary */}
+          {summary && (
+            <>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {displaySummary}
+              </p>
 
-          <p className="mt-2 text-muted-foreground text-sm">{displaySummary}</p>
-
-          {isTruncated && (
-            <Button
-              className="h-auto justify-start p-0 text-primary"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(!isExpanded);
-              }}
-              size="sm"
-              variant="link"
-            >
-              {isExpanded ? t('sources.showLess') : t('sources.showMore')}
-            </Button>
+              {isTruncated && (
+                <Button
+                  aria-expanded={isExpanded}
+                  className="h-auto p-0 font-semibold text-xs hover:no-underline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsExpanded(!isExpanded);
+                  }}
+                  variant="link"
+                >
+                  {isExpanded ? "← Mostrar menos" : "Leer más →"}
+                </Button>
+              )}
+            </>
           )}
         </div>
-      </div>
-
-      {/* Hint text en hover */}
-      <div
-        className={cn(
-          'mt-2 text-center text-muted-foreground text-xs transition-opacity',
-          source.isSelected ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'
-        )}
-      >
-        {t('sources.clickToSelect')}
       </div>
     </Card>
   );

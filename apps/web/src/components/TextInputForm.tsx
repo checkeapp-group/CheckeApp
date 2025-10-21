@@ -9,6 +9,7 @@ import AuthModal from "@/components/Auth/auth-modal";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
+import { orpc } from "@/utils/orpc";
 import { Card } from "./ui/card";
 
 type TextInputFormProps = {
@@ -67,8 +68,6 @@ const TextInputForm = ({
       return;
     }
 
-    console.log("Texto enviado:", text, text.length);
-
     if (!isVerified) {
       toast.warning(t("auth.verificationNeeded.title"));
       return;
@@ -77,32 +76,17 @@ const TextInputForm = ({
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/verify/start`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: text.trim() }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        console.error("Verify Start Error Response:", result);
-        throw new Error(result.message || "An unknown error occurred.");
-      }
-
-      if (result.success && result.verification_id) {
+      const result = await orpc.startVerification.call({ text: text.trim() });
+      
+      if (result.success && result.verificationId && result.job_id) {
         sessionStorage.setItem(
-          `verification_text_${result.verification_id}`,
-          text.trim()
+          `verification_job_${result.verificationId}`,
+          result.job_id
         );
         toast.success(t("textInput.verification_started_success"));
 
         if (onSuccess) {
-          onSuccess(result.verification_id);
+          onSuccess(result.verificationId);
         }
       } else {
         toast.error(result.message || t("textInput.verification_failed"));
