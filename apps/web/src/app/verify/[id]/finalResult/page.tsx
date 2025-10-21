@@ -1,27 +1,47 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { AlertCircle } from 'lucide-react';
-import { useParams } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import VerificationResult from '@/components/VerificationResult';
-import { useGlobalLoader } from '@/hooks/use-global-loader';
-import { useI18n } from '@/hooks/use-i18n';
-import { orpc } from '@/utils/orpc';
+import { useQuery } from "@tanstack/react-query";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import VerificationResult from "@/components/VerificationResult";
+import { useGlobalLoader } from "@/hooks/use-global-loader";
+import { useI18n } from "@/hooks/use-i18n";
+import { orpc } from "@/utils/orpc";
 
 function LoadingState({ status }: { status?: string }) {
   const { t } = useI18n();
+  const getStatusMessage = () => {
+    switch (status) {
+      case "generating_summary":
+        return t("finalResult.processing_description");
+      default:
+        return t("finalResult.starting");
+    }
+  };
+
   return (
-    <Card className="bg-card p-4 text-center sm:p-6 md:p-8">
-      <h1 className="mb-3 font-bold text-xl sm:mb-4 sm:text-2xl">
-        {t('finalResult.analyzing_sources')}
-      </h1>
-      <p className="mb-4 text-muted-foreground text-sm sm:mb-6 sm:text-base">
-        {t('finalResult.processing_description')}
+    <Card className="flex flex-col items-center p-6 text-center sm:p-8">
+      <Loader2 className="mb-4 h-10 w-10 animate-spin text-primary sm:h-12 sm:w-12" />
+      <h2 className="mb-2 font-bold text-lg sm:text-xl">
+        {t("finalResult.analyzing_sources")}
+      </h2>
+      <p className="text-muted-foreground text-sm sm:text-base">
+        {getStatusMessage()}
       </p>
-      <p className="mt-3 font-semibold text-xs capitalize sm:mt-4 sm:text-sm">
-        {t('finalResult.current_status')}: {status?.replace('_', ' ') || t('finalResult.starting')}
-      </p>
+    </Card>
+  );
+}
+
+function ErrorState({ errorMessage }: { errorMessage: string }) {
+  const { t } = useI18n();
+  return (
+    <Card className="flex flex-col items-center p-6 text-center text-destructive sm:p-8">
+      <AlertCircle className="mb-3 h-10 w-10 sm:mb-4 sm:h-12 sm:w-12" />
+      <h2 className="mb-2 font-bold text-lg sm:text-xl">
+        {t("finalResult.process_error")}
+      </h2>
+      <p className="text-sm sm:text-base">{errorMessage}</p>
     </Card>
   );
 }
@@ -30,45 +50,74 @@ export default function FinalResultPage() {
   const { id: verificationId } = useParams();
   const { t } = useI18n();
 
-  const { data, isLoading, error, isSuccess } = useQuery({
-    queryKey: ['verificationResult', verificationId],
+  const { data: statusData, error: statusError } = useQuery({
+    queryKey: ["verificationProgress", verificationId], 
     queryFn: () => {
-      if (!verificationId) {
+      if (!verificationId || typeof verificationId !== "string") {
         return null;
       }
-      return orpc.getVerificationResultData.call({
-        verificationId: verificationId as string,
-      });
+      return orpc.getVerificationProgress.call({ verificationId });
     },
     enabled: !!verificationId,
-    refetchInterval: (query) => (query.state.data?.finalResult ? false : 3000),
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (data?.hasFinalResult || data?.status === "error") {
+        return false;
+      }
+      return 3000;
+    },
+    retry: 1,
   });
 
-  useGlobalLoader(isLoading, 'final-result');
+  const {
+    data: resultData,
+    isLoading: isLoadingResult,
+    error: resultError,
+  } = useQuery({
+    queryKey: ["verificationResult", verificationId],
+    queryFn: () => {
+      if (!verificationId || typeof verificationId !== "string") {
+        return null;
+      }
+      return orpc.getVerificationResultData.call({ verificationId });
+    },
+    enabled: !!statusData?.hasFinalResult,
+    retry: false,
+  });
 
-  if (isLoading || (isSuccess && !data?.finalResult)) {
-    return (
-      <div className="container mx-auto max-w-4xl px-4 py-8 sm:py-12">
-        <LoadingState status={data?.status} />
-      </div>
-    );
-  }
+  useGlobalLoader(isLoadingResult || !statusData, "final-result-loader");
 
-  if (error) {
+  if (statusError) {
     return (
       <div className="container mx-auto max-w-2xl px-4 py-8 sm:py-12">
-        <Card className="flex flex-col items-center p-6 text-center text-destructive sm:p-8">
-          <AlertCircle className="mb-3 h-10 w-10 sm:mb-4 sm:h-12 sm:w-12" />
-          <h2 className="mb-2 font-bold text-lg sm:text-xl">{t('finalResult.process_error')}</h2>
-          <p className="text-sm sm:text-base">{error.message}</p>
-        </Card>
+        <ErrorState errorMessage={statusError.message} />
       </div>
     );
   }
 
-  if (!data) {
-    return <p>{t('error.noDataFound')}</p>;
+  if (resultError) {
+    return (
+      <div className="container mx-auto max-w-2xl px-4 py-8 sm:py-12">
+        <ErrorState errorMessage={resultError.message} />
+      </div>
+    );
   }
 
-  return <VerificationResult data={data} />;
+  if (statusData?.status === "error") {
+    return (
+      <div className="container mx-auto max-w-2xl px-4 py-8 sm:py-12">
+        <ErrorState errorMessage={t("finalResult.analysis_failed")} />
+      </div>
+    );
+  }
+
+  if (resultData) {
+    return <VerificationResult data={resultData} />;
+  }
+
+  return (
+    <div className="container mx-auto max-w-4xl px-4 py-8 sm:py-12">
+      <LoadingState status={statusData?.status} />
+    </div>
+  );
 }
