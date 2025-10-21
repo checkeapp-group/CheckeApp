@@ -2,9 +2,9 @@ import { getSessionCookie } from 'better-auth/cookies';
 import { type NextRequest, NextResponse } from 'next/server';
 
 const publicRoutes = ['/', '/share/:path*'];
+const homeUrl = '/';
 const guestRoutes = ['/login', '/register', '/recover-password'];
 const loginUrl = '/login';
-const homeUrl = '/';
 
 function matches(pattern: string, pathname: string) {
   if (pattern.endsWith('/:path*')) {

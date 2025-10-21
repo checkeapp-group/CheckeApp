@@ -5,6 +5,14 @@ import { QueryCache, QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { AppRouterClient } from '../../../server/src/routers/index';
 
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+console.log(`[oRPC Client] Initializing with server URL: ${serverUrl}`);
+
+if (!serverUrl) {
+  console.error("[oRPC Client] CRITICAL: NEXT_PUBLIC_SERVER_URL is not defined! API calls will fail.");
+  toast.error("Error de configuración: La URL del servidor no está definida.", { duration: Infinity });
+}
+
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error) => {
@@ -21,7 +29,7 @@ export const queryClient = new QueryClient({
 });
 
 export const link = new RPCLink({
-  url: `${process.env.NEXT_PUBLIC_SERVER_URL}/rpc`,
+  url: `${serverUrl}/rpc`,
   fetch(url, options) {
     return fetch(url, {
       ...options,
