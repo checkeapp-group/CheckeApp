@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "dab11d2a-5306-4b01-8bd3-26049cdec78a",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "36a724d1-0cca-4b08-8078-df6e960b6225",
+  "prevId": "f85bf0ba-909e-40a4-9200-4426cefe9be8",
   "tables": {
     "account": {
       "name": "account",
@@ -14,57 +14,57 @@
           "notNull": true,
           "autoincrement": false
         },
-        "account_id": {
-          "name": "account_id",
+        "accountId": {
+          "name": "accountId",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "provider_id": {
-          "name": "provider_id",
+        "providerId": {
+          "name": "providerId",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "access_token": {
-          "name": "access_token",
+        "accessToken": {
+          "name": "accessToken",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "refresh_token": {
-          "name": "refresh_token",
+        "refreshToken": {
+          "name": "refreshToken",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "id_token": {
-          "name": "id_token",
+        "idToken": {
+          "name": "idToken",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "access_token_expires_at": {
-          "name": "access_token_expires_at",
+        "accessTokenExpiresAt": {
+          "name": "accessTokenExpiresAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "refresh_token_expires_at": {
-          "name": "refresh_token_expires_at",
+        "refreshTokenExpiresAt": {
+          "name": "refreshTokenExpiresAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
@@ -84,15 +84,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -101,12 +101,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "account_user_id_user_id_fk": {
-          "name": "account_user_id_user_id_fk",
+        "account_userId_user_id_fk": {
+          "name": "account_userId_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -136,8 +136,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "expires_at": {
-          "name": "expires_at",
+        "expiresAt": {
+          "name": "expiresAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
@@ -150,36 +150,36 @@
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "ip_address": {
-          "name": "ip_address",
+        "ipAddress": {
+          "name": "ipAddress",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "user_agent": {
-          "name": "user_agent",
+        "userAgent": {
+          "name": "userAgent",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
@@ -188,12 +188,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "session_user_id_user_id_fk": {
-          "name": "session_user_id_user_id_fk",
+        "session_userId_user_id_fk": {
+          "name": "session_userId_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -235,7 +235,8 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "('')"
         },
         "email": {
           "name": "email",
@@ -244,19 +245,21 @@
           "notNull": true,
           "autoincrement": false
         },
-        "email_verified": {
-          "name": "email_verified",
+        "emailVerified": {
+          "name": "emailVerified",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": false
         },
-        "password": {
-          "name": "password",
-          "type": "varchar(255)",
+        "is_verified": {
+          "name": "is_verified",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": false
         },
         "image": {
           "name": "image",
@@ -265,19 +268,21 @@
           "notNull": false,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(now())"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(now())"
         }
       },
       "indexes": {},
@@ -332,6 +337,13 @@
           "autoincrement": false,
           "default": "'draft'"
         },
+        "share_token": {
+          "name": "share_token",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -379,6 +391,13 @@
             "status"
           ],
           "isUnique": false
+        },
+        "idx_verification_share_token": {
+          "name": "idx_verification_share_token",
+          "columns": [
+            "share_token"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {
@@ -404,7 +423,14 @@
           ]
         }
       },
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "verification_share_token_unique": {
+          "name": "verification_share_token_unique",
+          "columns": [
+            "share_token"
+          ]
+        }
+      },
       "checkConstraint": {
         "chk_verification_original_text_length": {
           "name": "chk_verification_original_text_length",
@@ -523,7 +549,7 @@
         },
         "chk_critical_questions_text_length": {
           "name": "chk_critical_questions_text_length",
-          "value": "CHAR_LENGTH(`critical_questions`.`question_text`) >= 5 AND CHAR_LENGTH(`critical_questions`.`question_text`) <= 1000"
+          "value": "CHAR_LENGTH(`critical_questions`.`question_text`) >= 5 AND CHAR_LENGTH(`critical_questions`.`question_text`) <= 200"
         }
       }
     },
@@ -567,6 +593,13 @@
         },
         "answers_json": {
           "name": "answers_json",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "metadata": {
+          "name": "metadata",
           "type": "json",
           "primaryKey": false,
           "notNull": false,
@@ -644,6 +677,10 @@
         "chk_final_results_answers_json": {
           "name": "chk_final_results_answers_json",
           "value": "`final_results`.`answers_json` IS NULL OR JSON_VALID(`final_results`.`answers_json`)"
+        },
+        "chk_final_results_metadata_json": {
+          "name": "chk_final_results_metadata_json",
+          "value": "`final_results`.`metadata` IS NULL OR JSON_VALID(`final_results`.`metadata`)"
         }
       }
     },
@@ -818,6 +855,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "favicon": {
+          "name": "favicon",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "is_selected": {
           "name": "is_selected",
           "type": "boolean",
@@ -901,10 +945,6 @@
         "chk_source_url_length": {
           "name": "chk_source_url_length",
           "value": "CHAR_LENGTH(`source`.`url`) > 0 AND CHAR_LENGTH(`source`.`url`) <= 2048"
-        },
-        "chk_source_url_format": {
-          "name": "chk_source_url_format",
-          "value": "`source`.`url` REGEXP '^https?://[^\\s/$.?#].[^\\s]*$'"
         }
       }
     }

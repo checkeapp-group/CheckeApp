@@ -1,0 +1,1 @@
+ALTER TABLE `source` ADD `favicon` varchar(2048);

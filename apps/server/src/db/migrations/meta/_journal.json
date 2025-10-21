@@ -36,6 +36,20 @@
       "when": 1758805599290,
       "tag": "0004_massive_proemial_gods",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1760531181577,
+      "tag": "0005_smooth_enchantress",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1761042273949,
+      "tag": "0006_absurd_guardsmen",
+      "breakpoints": true
     }
   ]
 }
