@@ -98,6 +98,7 @@ export const source = mysqlTable(
     title: varchar('title', { length: 500 }),
     summary: text('summary'),
     domain: varchar('domain', { length: 255 }),
+    favicon: varchar('favicon', { length: 2048 }),
     isSelected: boolean('is_selected').notNull().default(false),
     scrapingDate: timestamp('scraping_date'),
     createdAt: timestamp('created_at').notNull().defaultNow(),

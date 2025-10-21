@@ -36,7 +36,9 @@
     "ldrs": "^1.1.7",
     "ogl": "^1.0.11",
     "react-intl": "^7.1.11",
+    "react-markdown": "^10.1.0",
     "react-textarea-autosize": "^8.5.9",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.3.1",
     "use-debounce": "^10.0.6",
     "uuid": "^11.1.0"
