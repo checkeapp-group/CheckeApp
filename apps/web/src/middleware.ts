@@ -1,7 +1,7 @@
 import { getSessionCookie } from 'better-auth/cookies';
 import { type NextRequest, NextResponse } from 'next/server';
 
-const publicRoutes = ['/', '/share/:path*'];
+const publicRoutes = ['/', '/share/:path*', '/verify/:path*'];
 const homeUrl = '/';
 const guestRoutes = ['/login', '/register', '/recover-password'];
 const loginUrl = '/login';

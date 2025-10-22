@@ -7,7 +7,7 @@ import { generateAndSaveFinalAnalysis } from '@/db/services/finalResult/finalsRe
 import { extractArticleData } from '@/db/services/scraping/articleExtractorService';
 import { getSources, updateSourceSelection } from '@/db/services/sources/sourcesService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
-import { protectedProcedure } from '@/lib/orpc';
+import { protectedProcedure, publicProcedure } from '@/lib/orpc';
 
 export const sourcesRouter = {
   getSourcePreview: protectedProcedure
@@ -72,16 +72,17 @@ export const sourcesRouter = {
       return { success: true, message: 'Proceso de análisis iniciado.', nextStep: 'finalResult' };
     }),
 
-  getVerificationProgress: protectedProcedure
+  getVerificationProgress: publicProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id, 'view');
+      const userId = context.session?.user?.id;
 
       const verificationState = await db.query.verification.findFirst({
         where: eq(verification.id, verificationId),
         columns: {
           status: true,
+          userId: true,
         },
         with: {
           finalResult: {
@@ -96,46 +97,48 @@ export const sourcesRouter = {
         throw new ORPCError('NOT_FOUND', { message: 'Verification not found.' });
       }
 
+      if (verificationState.status !== 'completed' && verificationState.userId !== userId) {
+        throw new ORPCError('UNAUTHORIZED', {
+          message: 'You do not have permission to view the progress of this verification.',
+        });
+      }
+
       return {
         status: verificationState.status,
         hasFinalResult: !!verificationState.finalResult,
       };
     }),
 
-  getVerificationResultData: protectedProcedure
+  getVerificationResultData: publicProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
     .handler(async ({ input, context }) => {
       const { verificationId } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id, 'view');
+      const userId = context.session?.user?.id;
 
-      // Fetch all related data using Drizzle's relational queries.
       const result = await db.query.verification.findFirst({
         where: eq(verification.id, verificationId),
         with: {
-          user: {
-            columns: {
-              name: true,
-            },
-          },
-          criticalQuestion: {
-            orderBy: (questions, { asc }) => [asc(questions.orderIndex)],
-          },
-          source: {
-            where: eq(source.isSelected, true),
-          },
+          user: { columns: { name: true } },
+          criticalQuestion: { orderBy: (questions, { asc }) => [asc(questions.orderIndex)] },
+          source: { where: eq(source.isSelected, true) },
           finalResult: true,
         },
       });
 
-      if (!(result && result.finalResult)) {
+      if (!result) {
+        throw new ORPCError('NOT_FOUND', { message: 'Verification not found.' });
+      }
+
+      if (result.status !== 'completed' && result.userId !== userId) {
+        throw new ORPCError('UNAUTHORIZED', { message: 'This verification is not yet public.' });
+      }
+
+      if (!result.finalResult) {
         throw new ORPCError('NOT_FOUND', {
           message: 'Verification result not found. The analysis may not be complete yet.',
         });
       }
 
-      console.log(
-        `[getVerificationResultData] Successfully fetched completed result for ${verificationId} from DB.`
-      );
       return result;
     }),
 };

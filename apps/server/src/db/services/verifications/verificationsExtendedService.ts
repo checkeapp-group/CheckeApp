@@ -4,7 +4,7 @@ import { user } from '@/db/schema/auth';
 import { finalResult, verification, type verificationtatusType } from '@/db/schema/schema';
 
 type GetVerificationsListParams = {
-  userId: string;
+  userId?: string;
   page: number;
   limit: number;
   sortBy?: string;

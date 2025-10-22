@@ -18,6 +18,15 @@ import {
 } from '@/lib/externalApiClient';
 import { protectedProcedure, publicProcedure } from '@/lib/orpc';
 
+const paginationSchema = z.object({
+  page: z.number().min(1).default(1),
+  limit: z.number().min(1).max(100).default(20),
+  sortBy: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
+  search: z.string().optional(),
+});
+
+
 export const verificationRouter = {
   startVerification: protectedProcedure
     .input(
@@ -43,18 +52,21 @@ export const verificationRouter = {
       }
 
       const { text, language } = input;
-       const verificationId = await createVerificationRecord(userId, text, language, 'draft');
+      const verificationId = await createVerificationRecord(userId, text, language, 'draft');
 
       try {
         await updateVerificationStatus(verificationId, 'processing_questions');
 
-        const questionsJob = await callExternalApiWithLogging(verificationId, 'generate_questions', () =>
-          generateQuestions({
-            input: text,
-            model: 'google/gemini-2.5-flash',
-            language,
-            location: 'es',
-          })
+        const questionsJob = await callExternalApiWithLogging(
+          verificationId,
+          'generate_questions',
+          () =>
+            generateQuestions({
+              input: text,
+              model: 'google/gemini-2.5-flash',
+              language,
+              location: 'es',
+            })
         );
 
         // Return the job ID immediately for the client to poll
@@ -73,6 +85,38 @@ export const verificationRouter = {
         throw new ORPCError('INTERNAL_SERVER_ERROR', {
           message:
             apiError instanceof Error ? apiError.message : 'Falló la generación de preguntas.',
+        });
+      }
+    }),
+
+  getPublicVerifications: publicProcedure.input(paginationSchema).handler(async ({ input }) => {
+    try {
+      const result = await getVerificationsList({
+        ...input,
+        status: 'completed',
+      });
+      return result;
+    } catch (error) {
+      console.error('Error in getPublicVerifications oRPC procedure:', error);
+      throw new ORPCError('INTERNAL_SERVER_ERROR', {
+        message: 'Failed to retrieve public verifications.',
+      });
+    }
+  }),
+  getOwnVerifications: protectedProcedure
+    .input(paginationSchema)
+    .handler(async ({ input, context }) => {
+      const userId = context.session.user.id;
+      try {
+        const result = await getVerificationsList({
+          ...input,
+          userId,
+        });
+        return result;
+      } catch (error) {
+        console.error('Error in getMyVerifications oRPC procedure:', error);
+        throw new ORPCError('INTERNAL_SERVER_ERROR', {
+          message: 'Failed to retrieve user verifications.',
         });
       }
     }),
@@ -142,7 +186,6 @@ export const verificationRouter = {
           sortBy: input.sortBy,
           sortOrder: input.sortOrder,
           search: input.search,
-          status: 'completed',
         });
         return result;
       } catch (error) {
@@ -161,10 +204,8 @@ export const verificationRouter = {
         sortBy: z.string().optional(),
       })
     )
-    .handler(async ({ input, context }) => {
+    .handler(async ({ input }) => {
       try {
-        const userId = context.session.user.id;
-        console.log(userId);
         const publicVerifications = await db.query.verification.findMany({
           where: eq(verification.status, 'completed'),
           limit: input.limit,

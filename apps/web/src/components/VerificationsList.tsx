@@ -28,7 +28,7 @@ export default function VerificationsList() {
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: orpc.getVerifications.key({
+    queryKey: orpc.getPublicVerifications.key({
       input: {
         page,
         limit,
@@ -38,7 +38,7 @@ export default function VerificationsList() {
       },
     }),
     queryFn: () =>
-      orpc.getVerifications.call({
+      orpc.getPublicVerifications.call({
         page,
         limit,
         sortBy,
