@@ -69,6 +69,8 @@ erDiagram
         enum status "🚦 Process Status"
         timestamp created_at "📅 Creation Date"
         timestamp updated_at "🔄 Last Update"
+        varchar_36 share_token "✅ Token to share the verification"
+        enum lenguage "🗣️ Lenguage that the article is written in"
     }
 
     CRITICAL_QUESTIONS {
@@ -78,7 +80,7 @@ erDiagram
         text original_question "📝 Original Question"
         boolean is_edited "✏️ User Modified"
         int order_index "📊 Display Order"
-        timestamp created_at "📅 Creation Date"
+        timestamp created_at "📅 Creation Date":
     }
 
     SOURCES {
@@ -88,6 +90,7 @@ erDiagram
         varchar_500 title "📰 Article Title"
         text summary "📄 Content Summary"
         varchar_255 domain "🌐 Domain Name"
+        varchar_2048 favicon "🖥️ Icon image"
         boolean is_selected "✅ User Selected"
         timestamp scraping_date "🕷️ Data Scraped"
         timestamp created_at "📅 Creation Date"
@@ -162,14 +165,6 @@ erDiagram
 - **Constraints**: Unique user-provider combinations
 - **Security**: Secure token storage
 
-#### **`verification`** - Email/Phone Verification
-
-- **Purpose**: Temporary verification codes for email/phone
-- **Key Features**:
-  - Time-limited verification codes
-  - Multiple verification types support
-- **Security**: Automatic expiration cleanup
-
 ---
 
 ### Main Tables
@@ -215,7 +210,6 @@ erDiagram
   - Domain-based organization
   - Scraping timestamp tracking
 - **Constraints**:
-  - Valid URL format (regex validation)
   - URL length limits (2048 characters)
 - **Indexes**: Verification lookup, domain filtering, selection status
 
@@ -263,6 +257,7 @@ erDiagram
         varchar name
         timestamp created_at
         timestamp updated_at
+        boolean is_verified
     }
 
     VERIFICATION {
@@ -272,6 +267,7 @@ erDiagram
         enum status "draft, processing_questions, sources_ready, generating_summary, completed, error"
         timestamp created_at
         timestamp updated_at
+        boolean is_verified
     }
 
     CRITICAL_QUESTION {
@@ -291,6 +287,7 @@ erDiagram
         varchar title "≤ 500 chars"
         text summary
         varchar domain "≤ 255 chars"
+        varchar favicon "≤ 2048"
         boolean is_selected "Default false"
         timestamp scraping_date
         timestamp created_at
@@ -407,7 +404,6 @@ idx_process_logs_step_status(verification_id, step, status)
 
 #### **Data Format Validation**
 
-- URL format validation with regex
 - JSON field validation for all JSON columns
 - Non-negative order indexes
 - Error message requirements for error status

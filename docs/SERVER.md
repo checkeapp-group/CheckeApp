@@ -1,26 +1,35 @@
+# 🔧 Backend Architecture (`apps/server`)
+
+## Overview
+
+The backend is built as a Next.js application that primarily functions as an API server. It uses oRPC for client communication and an external API client for AI-related tasks.
+
 ```mermaid
 graph TD
-    subgraph "API Layer"
-        A[Web Client] -->|oRPC Call| B(oRPC Router);
-        B --> C{Questions Router};
-        B --> D{Sources Router};
-        B --> E{Share Router};
+    subgraph "API Layer (Entry Point)"
+        A[Web Client] -->|oRPC Call| B(oRPC Handler<br>/rpc/*);
+        B --> C{appRouter};
     end
 
-    subgraph "Business Logic (Services)"
-        C --> F[Question Services];
-        D --> G[Source Services];
-        E --> H[Verification Services];
-        F & G & H --> I[Permission Service];
+    subgraph "Routing Layer (oRPC)"
+        C --> D[verificationRouter];
+        C --> E[questionRouter];
+        C --> F[sourcesRouter];
+        C --> G[userRouter];
+        C --> H[shareRouter];
     end
 
-    subgraph "Data & External Layer"
-        F --> J[DB: critical_questions];
-        G --> K[DB: source];
-        H --> L[DB: verification];
-        I --> L;
-        F & G --> M[External API Client];
-        M --> N[Fake/Real API];
+    subgraph "Business Logic Layer (Services)"
+        D & E & F & G & H --> I[Permissions Services<br>verificationsPermissionsService.ts];
+        D & E & F & G & H --> J["Database Services<br>(verification, question, source, etc.)"];
+
+    end
+
+    subgraph "Data and External Layer"
+        J --> K[Drizzle ORM<br>db/index.ts];
+        K --> L[MySQL Database];
+        J --> M[External API Client<br>externalApiClient.ts];
+        M -.->|Async Call| N[External AI API];
     end
 
     style A fill:#cde4ff
@@ -28,55 +37,55 @@ graph TD
     style N fill:#f4cccc
 ```
 
-## Features
+## Key Features
 
-- **End-to-End Typed API**: Type-safe oRPC procedures with input validation and output types.
-- **Verification Lifecycle**: Complete process management from initial record to final report.
+- **Type-Safe API**: oRPC procedures include input validation (Zod) and end-to-end type safety.
+- **Verification Lifecycle**: Full lifecycle management — from record creation to final report generation.
 - **Security**:
-  - Authentication via Better Auth
-  - User permissions control through verificationsPermissionsService.ts
-- **External Integration**:
-  - API communication for AI tasks
-  - Supports both real and simulated (Fake API) modes
-- **Database Management**:
-  - Encapsulated database interactions
-  - Service-based architecture
-- **Sharing Capability**: Generates secure public access tokens for verification results
+
+  - Session-based authentication managed by Better Auth.
+  - Resource-level permission control handled by `verificationsPermissionsService.ts`.
+
+- **Asynchronous External Integration**:
+
+  - Communication with the AI API through a centralized client that initiates jobs and manages result polling.
+  - Supports development mode (with Mock API) and production mode, configurable via environment variables.
+
+- **Service-Oriented Architecture**: Business logic is encapsulated within services, keeping routers clean and API-focused.
+- **Share Capability**: Generates secure tokens for public access to verification results.
 
 ## Key Components
 
-### API Layer (apps/server/src/routers/)
+### API Layer (`apps/server/src/routers/`)
 
-- **oRPC Routers**: Define API entry points
-  - `questionRouter.ts`: CRUD operations for critical questions
-  - `sourcesRouter.ts`: Source management and analysis
-  - `shareRouter.ts`: Result sharing logic
+- **oRPC Routers**: Define API entry points.
 
-### Business Logic (apps/server/src/db/services/)
+  - `verificationRouter.ts`: Starts and manages verifications.
+  - `questionRouter.ts`: CRUD operations for critical questions.
+  - `sourcesRouter.ts`: Manages sources and orchestrates the final analysis.
+  - `userRouter.ts`: Retrieves authenticated user information.
+  - `shareRouter.ts`: Handles result-sharing logic.
 
-- **Database Services**:
-  - `verificationService.ts`: Verification record management
-  - `criticalQuestionService.ts`: Question management
-  - `sourcesService.ts`: Source management
-  - `finalsResultService.ts`: Analysis orchestration
-  - `verificationsPermissionsService.ts`: Permission control
+### Business Logic Layer (`apps/server/src/db/services/`)
+
+- **Database Services**: Encapsulate all database interactions.
+
+  - `verificationService.ts`: Creation and update of verification records.
+  - `criticalQuestionService.ts`: Management of critical questions.
+  - `sourcesService.ts`: Source management.
+  - `finalResultService.ts`: Final analysis orchestration and result storage.
+  - `verificationsPermissionsService.ts`: Centralized access control logic for resources.
 
 ### Integration Layer
 
-- **External API Client** (`apps/server/src/lib/externalApiClient.ts`):
-  - Manages external API communication
-  - Supports dev/prod modes
-  - Includes retry logic and logging
+- **External API Client (`apps/server/src/lib/externalApiClient.ts`)**:
+
+  - Single communication point with the AI API.
+  - Includes retry logic, process logging (`process_logs`), and job polling (`pollForResult`).
 
 ### Data Layer
 
-- **Drizzle Schema** (`apps/server/src/db/schema/`):
-  - Code-first database structure
-  - Auto-generated migrations
-  - Type-safe queries
+- **Drizzle Schema (`apps/server/src/db/schema/`)**:
 
-### System Interconnections
-
-- **Frontend**: oRPC endpoint with CORS protection
-- **Database**: Drizzle ORM connection
-- **External API**: Configurable HTTP client
+  - Defines the database structure as TypeScript code.
+  - Enables automatic generation of SQL migrations.
