@@ -1,0 +1,1 @@
+ALTER TABLE `verification` ADD `language` enum('es','eu','ca','gl') DEFAULT 'es' NOT NULL;

@@ -90,7 +90,7 @@ export const questionsRouter = {
           searchSources({
             questions: finalQuestions.map((q) => q.questionText),
             input: verification.originalText,
-            language: 'es',
+            language: verification.language,
             location: 'es',
             model: 'google/gemini-2.5-flash',
           })

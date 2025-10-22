@@ -32,6 +32,7 @@ export const verification = mysqlTable(
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     originalText: text('original_text').notNull(),
+    language: mysqlEnum('language', ['es', 'eu', 'ca', 'gl']).notNull().default('es'),
     status: mysqlEnum('status', [
       'draft',
       'processing_questions',

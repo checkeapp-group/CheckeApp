@@ -23,6 +23,7 @@ export const verificationRouter = {
     .input(
       z.object({
         text: z.string().min(50).max(5000).trim(),
+        language: z.enum(['es', 'eu', 'ca', 'gl']).default('es'),
       })
     )
     .handler(async ({ input, context }) => {
@@ -41,22 +42,19 @@ export const verificationRouter = {
         });
       }
 
-      const { text } = input;
-      const verificationId = await createVerificationRecord(userId, text, 'draft');
+      const { text, language } = input;
+       const verificationId = await createVerificationRecord(userId, text, language, 'draft');
 
       try {
         await updateVerificationStatus(verificationId, 'processing_questions');
 
-        const questionsJob = await callExternalApiWithLogging(
-          verificationId,
-          'generate_questions',
-          () =>
-            generateQuestions({
-              input: text,
-              model: 'google/gemini-2.5-flash',
-              language: 'es',
-              location: 'es',
-            })
+        const questionsJob = await callExternalApiWithLogging(verificationId, 'generate_questions', () =>
+          generateQuestions({
+            input: text,
+            model: 'google/gemini-2.5-flash',
+            language,
+            location: 'es',
+          })
         );
 
         // Return the job ID immediately for the client to poll
@@ -183,8 +181,8 @@ export const verificationRouter = {
           createdAt: v.createdAt,
           originalText: v.originalText,
           userName: v.user?.name ?? null,
-          claim: (v.finalResult?.metadata)?.main_claim ?? null,
-          label: (v.finalResult?.metadata)?.label ?? null,
+          claim: v.finalResult?.metadata?.main_claim ?? null,
+          label: v.finalResult?.metadata?.label ?? null,
         }));
 
         const totalCountResult = await db

@@ -27,7 +27,7 @@ const TextInputForm = ({
   onTextChange,
   isLocked = false,
 }: TextInputFormProps) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const {
     isAuthenticated: hookIsAuthenticated,
     isVerified,
@@ -76,8 +76,11 @@ const TextInputForm = ({
     setIsLoading(true);
 
     try {
-      const result = await orpc.startVerification.call({ text: text.trim() });
-      
+      const result = await orpc.startVerification.call({
+        text: text.trim(),
+        language: locale,
+      });
+
       if (result.success && result.verificationId && result.job_id) {
         sessionStorage.setItem(
           `verification_job_${result.verificationId}`,
