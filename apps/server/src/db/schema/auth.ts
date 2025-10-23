@@ -6,6 +6,7 @@ export const user = mysqlTable('user', {
   email: varchar('email', { length: 255 }).notNull().unique(),
   emailVerified: boolean('emailVerified').notNull().default(false),
   isVerified: boolean('is_verified').notNull().default(false),
+  isAdmin: boolean('is_admin').notNull().default(false),
   image: text('image'),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
@@ -43,11 +44,12 @@ export const account = mysqlTable('account', {
   updatedAt: timestamp('updatedAt').notNull(),
 });
 
-export const verification = mysqlTable('verification', {
+export const verification = mysqlTable('auth_verification', {
   id: varchar('id', { length: 36 }).primaryKey(),
   identifier: text('identifier').notNull(),
   value: text('value').notNull(),
   expiresAt: timestamp('expiresAt').notNull(),
-  createdAt: timestamp('createdAt'),
-  updatedAt: timestamp('updatedAt'),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 });
+

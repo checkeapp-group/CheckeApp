@@ -1,5 +1,6 @@
 import type { RouterClient } from '@orpc/server';
 import { publicProcedure } from '@/lib/orpc';
+import { adminRouter } from './adminRouter';
 import { questionsRouter } from './questionRouter';
 import { shareRouter } from './shareRouter';
 import { sourcesRouter } from './sourcesRouter';
@@ -13,6 +14,7 @@ export const appRouter = {
   ...shareRouter,
   ...verificationRouter,
   ...userRouter,
+  ...adminRouter,
 };
 
 export type AppRouter = typeof appRouter;

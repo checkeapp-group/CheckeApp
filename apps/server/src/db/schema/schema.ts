@@ -129,6 +129,7 @@ export const finalResult = mysqlTable(
       .references(() => verification.id, { onDelete: 'cascade' })
       .unique(),
     finalText: text('final_text').notNull(),
+    imageUrl : varchar('image_url', { length: 255 }),
     labelsJson: json('labels_json'),
     citationsJson: json('citations_json'),
     answersJson: json('answers_json'),

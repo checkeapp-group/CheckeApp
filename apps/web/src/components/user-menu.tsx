@@ -12,6 +12,7 @@ import { authClient } from '@/lib/auth-client';
 import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
 
+
 export default function UserMenu() {
   const { t } = useI18n();
   const { data: session, isPending } = authClient.useSession();
@@ -35,10 +36,7 @@ export default function UserMenu() {
   }
 
   if (!session) {
-    return (
-      <Button asChild variant="outline">
-      </Button>
-    );
+    return <Button asChild variant="outline" />;
   }
 
   return (

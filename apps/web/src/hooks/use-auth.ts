@@ -10,16 +10,16 @@ type User = {
   emailVerified?: boolean;
   image?: string;
   isVerified?: boolean;
-}
+  isAdmin?: boolean;
+};
 
 type AuthState = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-}
+};
 
-// Function to fetch verification status from the backend
-async function fetchVerificationStatus(): Promise<{ isVerified: boolean }> {
+async function fetchUserStatus(): Promise<{ isVerified: boolean; isAdmin: boolean }> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/status`, {
     method: 'GET',
     credentials: 'include',
@@ -29,7 +29,10 @@ async function fetchVerificationStatus(): Promise<{ isVerified: boolean }> {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch verification status');
+    if (response.status === 401 || response.status === 404) {
+      return { isVerified: false, isAdmin: false };
+    }
+    throw new Error('Failed to fetch user status');
   }
 
   return response.json();
@@ -39,18 +42,15 @@ export function useAuth() {
   const router = useRouter();
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
 
-  // Fetch verification status using useQuery
-  const { data: verificationStatus, isPending: isStatusLoading } = useQuery({
-    queryKey: ['userVerificationStatus'],
-    queryFn: fetchVerificationStatus,
+  const { data: userStatus, isPending: isStatusLoading } = useQuery({
+    queryKey: ['userStatus', session?.user?.id],
+    queryFn: fetchUserStatus,
     enabled: !!session?.user,
     staleTime: 5 * 60 * 1000,
   });
 
-  // Combine loading states
-  const isLoading = isSessionLoading || isStatusLoading;
+  const isLoading = isSessionLoading || (!!session?.user && isStatusLoading);
 
-  // Memoize the auth state object to prevent unnecessary re-renders
   const authState: AuthState = useMemo(
     () => ({
       user: session?.user
@@ -60,16 +60,16 @@ export function useAuth() {
             name: session.user.name,
             emailVerified: session.user.emailVerified,
             image: session.user.image,
-            isVerified: verificationStatus?.isVerified ?? false,
+            isVerified: userStatus?.isVerified ?? false,
+            isAdmin: userStatus?.isAdmin ?? false,
           }
         : null,
       isAuthenticated: !!session?.user,
       isLoading,
     }),
-    [session?.user, isLoading, verificationStatus?.isVerified]
+    [session?.user, isLoading, userStatus]
   );
 
-  // Memoize functions to prevent unnecessary re-creations
   const checkAuthStatus = useCallback(async () => {
     return Promise.resolve();
   }, []);
@@ -105,10 +105,9 @@ export function useAuth() {
     try {
       await authClient.signIn.social({
         provider,
+        callbackURL: process.env.NEXT_PUBLIC_APP_URL || window.location.origin,
         fetchOptions: {
-          onSuccess: () => {
-            // Session will be updated automatically by authClient.useSession()
-          },
+          onSuccess: () => {},
           onError: (ctx) => {
             console.error(`${provider} signin failed:`, ctx.error);
           },
@@ -153,8 +152,7 @@ export function useAuth() {
 
   const updateProfile = useCallback(async (data: { name?: string; image?: string }) => {
     try {
-      const response = await authClient.updateUser(data);
-      // Session will be updated automatically by authClient.useSession()
+      await authClient.updateUser(data);
       return { success: true };
     } catch (error) {
       console.error('Update profile failed:', error);
@@ -165,11 +163,11 @@ export function useAuth() {
     }
   }, []);
 
-  // Memoize the return object to prevent unnecessary re-renders
   return useMemo(
     () => ({
       ...authState,
       isVerified: authState.user?.isVerified ?? false,
+      isAdmin: authState.user?.isAdmin ?? false,
       login,
       logout,
       signup,
