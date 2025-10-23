@@ -1,0 +1,2 @@
+ALTER TABLE `auth_verification` MODIFY COLUMN `createdAt` timestamp NOT NULL DEFAULT (now());--> statement-breakpoint
+ALTER TABLE `auth_verification` MODIFY COLUMN `updatedAt` timestamp NOT NULL DEFAULT (now());

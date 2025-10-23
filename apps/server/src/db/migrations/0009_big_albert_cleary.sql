@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `is_admin` boolean DEFAULT false NOT NULL;

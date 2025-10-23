@@ -1,0 +1,1 @@
+ALTER TABLE `final_results` ADD `image_url` varchar(255);

@@ -57,6 +57,34 @@
       "when": 1761052603043,
       "tag": "0007_dizzy_thaddeus_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1761129090788,
+      "tag": "0008_daily_invaders",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1761201405528,
+      "tag": "0009_big_albert_cleary",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1761210300479,
+      "tag": "0010_parched_hairball",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1761210861743,
+      "tag": "0011_complete_calypso",
+      "breakpoints": true
     }
   ]
 }
