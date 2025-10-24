@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { useGlobalLoader } from '@/hooks/use-global-loader';
 import type { Source } from '@/types/source';
 import { orpc } from '../utils/orpc';
 
@@ -38,8 +39,10 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
       orpc.updateSourceSelection.call({ ...variables, verificationId }),
 
     onMutate: async (variables: {
-      previousSources: any; sourceId: string; isSelected: boolean 
-}) => {
+      previousSources: any;
+      sourceId: string;
+      isSelected: boolean;
+    }) => {
       await queryClient.cancelQueries({ queryKey });
       const previousSources = queryClient.getQueryData<Source[]>(queryKey);
 
@@ -122,6 +125,10 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
     const domains = allDomainsQuery.data?.map((s) => s.domain).filter(Boolean) as string[];
     return [...new Set(domains)];
   }, [allDomainsQuery.data]);
+
+  useGlobalLoader(sourcesQuery.isLoading, `sources-loading-${verificationId}`);
+  useGlobalLoader(updateSelectionMutation.isPending, `source-update-${verificationId}`);
+  useGlobalLoader(batchUpdateSelectionMutation.isPending, `source-batch-update-${verificationId}`);
 
   return {
     sources,

@@ -1,0 +1,1 @@
+ALTER TABLE `verification` MODIFY COLUMN `status` ENUM('draft','processing_questions','sources_ready','generating_summary','generating_image','completed','error') NOT NULL DEFAULT 'draft';

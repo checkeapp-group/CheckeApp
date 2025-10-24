@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
+import { useGlobalLoader } from '@/hooks/use-global-loader';
 import type { Question } from '@/types/questions';
 import { orpc } from '@/utils/orpc';
 
@@ -174,9 +175,18 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
     questions.length > 0 &&
     questions.every((q) => q.questionText.trim().length >= 5);
 
+  const isMutating =
+    updateQuestionMutation.isPending ||
+    deleteQuestionMutation.isPending ||
+    addQuestionMutation.isPending ||
+    reorderQuestionsMutation.isPending;
+  useGlobalLoader(questionsQuery.isLoading, 'questions-initial-load');
+  useGlobalLoader(isMutating, 'questions-mutation');
+
   return {
     questions,
     isLoading: questionsQuery.isLoading,
+    isMutating,
     error: questionsQuery.error,
     updateQuestion,
     deleteQuestion,
