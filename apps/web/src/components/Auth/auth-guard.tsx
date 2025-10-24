@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { authClient } from "@/lib/auth-client";
 import { useAppRouter } from "@/lib/router";
-import Loader from "../loader";
 
 type AuthGuardProps = {
   children: React.ReactNode;
@@ -14,6 +14,8 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   const { data: session, isPending } = authClient.useSession();
   const { navigate } = useAppRouter();
 
+  useGlobalLoader(isPending, "auth-guard");
+
   useEffect(() => {
     if (!(isPending || session)) {
       navigate("/");
@@ -21,7 +23,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   }, [isPending, session, navigate]);
 
   if (isPending) {
-    return <Loader />;
+    return null;
   }
 
   if (session) {

@@ -1,70 +1,64 @@
-'use client';
+"use client";
 
-import { Field, Fieldset, Input, Label } from '@headlessui/react';
-import { useForm } from '@tanstack/react-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import Loader from '@/components/loader';
-import { Button } from '@/components/ui/button';
-import { useAuthNavigation } from '@/hooks/use-auth-navigation';
-import { useI18n } from '@/hooks/use-i18n';
-import { authClient } from '@/lib/auth-client';
+import { Button } from "@/components/ui/button";
+import { useGlobalLoader } from "@/hooks/use-global-loader";
+import { useI18n } from "@/hooks/use-i18n";
+import { authClient } from "@/lib/auth-client";
+
+const GoogleIcon = () => (
+  <svg
+    className="mr-2 h-4 w-4"
+    viewBox="0 0 48 48"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+      fill="#FFC107"
+    />
+    <path
+      d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"
+      fill="#FF3D00"
+    />
+    <path
+      d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.222 0-9.618-3.226-11.283-7.582l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+      fill="#4CAF50"
+    />
+    <path
+      d="M43.611 20.083H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 36.49 44 30.686 44 24c0-1.341-.138-2.65-.389-3.917z"
+      fill="#1976D2"
+    />
+  </svg>
+);
 
 type SignInFormProps = {
-  onSwitchToSignUp: () => void;
-  onSwitchToForgotPassword: () => void;
   onClose: () => void;
 };
 
-export default function SignInForm({
-  onSwitchToSignUp,
-  onSwitchToForgotPassword,
-  onClose,
-}: SignInFormProps) {
-  const { signIn } = useAuthNavigation();
+export default function SignInForm({ onClose }: SignInFormProps) {
   const { isPending } = authClient.useSession();
   const { t } = useI18n();
 
-  const form = useForm({
-    defaultValues: { email: '', password: '' },
-    onSubmit: async ({ value }) => {
-      await signIn(
-        { email: value.email, password: value.password },
-        {
-          redirectTo: window.location.pathname,
-          onSuccess: () => {
-            onClose();
-          },
-          onError: (error) => {
-            const errorMessage = error?.error?.message || t('auth.signIn.error');
-            toast.error(errorMessage);
-          },
-        }
-      );
-    },
-    validators: {
-      onSubmit: z.object({
-        email: z.string().email(t('auth.validation.email.invalid')),
-        password: z.string().min(8, t('auth.validation.password.min')),
-      }),
-    },
-  });
+  useGlobalLoader(isPending, "sign-in-form");
 
   if (isPending) {
-    return <Loader />;
+    return null;
   }
 
   return (
     <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-2xl">
-      {/* Botón de cierre */}
       <Button
-        aria-label={t('common.closeModal')}
+        aria-label={t("common.closeModal")}
         className="absolute top-4 right-4 h-8 w-8"
         onClick={onClose}
         size="icon"
         variant="ghost"
       >
-        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             d="M6 18L18 6M6 6l12 12"
             strokeLinecap="round"
@@ -73,150 +67,38 @@ export default function SignInForm({
           />
         </svg>
       </Button>
-
-      {/* Gradient Accent */}
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-info to-success" />
-
       <div className="px-6 py-8 sm:px-8 sm:py-10">
         <div className="mb-6 text-center">
-          <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-success shadow-lg">
-            <svg
-              className="h-6 w-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-              />
-            </svg>
-          </div>
           <h1 className="mt-4 font-bold text-2xl text-foreground tracking-tight sm:text-3xl">
-            {t('auth.welcome')}
+            {t("auth.welcome")}
           </h1>
-          <p className="mt-2 text-gray-600 text-sm">{t('textInput.loginToSubmit')}</p>
+          <p className="mt-2 text-gray-600 text-sm">
+            {t("textInput.loginToSubmit")}
+          </p>
         </div>
 
-        {/* Form */}
-        <form
-          className="mt-8 space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <Fieldset className="space-y-5">
-            <form.Field name="email">
-              {(field) => (
-                <Field className="space-y-2" key="email">
-                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
-                    {t('auth.Email')}
-                  </Label>
-                  <Input
-                    aria-describedby={
-                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
-                    }
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    autoComplete="email"
-                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
-                      field.state.meta.errors.length > 0
-                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
-                        : 'text-foreground ring-border'
-                    }`}
-                    id={field.name}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t('auth.Email.placeholder')}
-                    type="email"
-                    value={field.state.value as string}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <div
-                      aria-live="polite"
-                      className="space-y-1"
-                      id={`${field.name}-error`}
-                      role="alert"
-                    >
-                      {field.state.meta.errors.map((error, i) => (
-                        <p className="flex items-center text-destructive text-sm" key={i}>
-                          {error}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field name="password">
-              {(field) => (
-                <Field className="space-y-2" key="password">
-                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
-                    {t('auth.Password')}
-                  </Label>
-                  <Input
-                    aria-describedby={
-                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
-                    }
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    autoComplete="email"
-                    className={`block w-full rounded-lg border-0 bg-white px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
-                      field.state.meta.errors.length > 0
-                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
-                        : 'text-foreground ring-border'
-                    }`}
-                    id={field.name}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t('auth.Password.placeholder')}
-                    type="password"
-                    value={field.state.value as string}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <div
-                      aria-live="polite"
-                      className="space-y-1"
-                      id={`${field.name}-error`}
-                      role="alert"
-                    >
-                      {field.state.meta.errors.map((error, i) => (
-                        <p className="flex items-center text-destructive text-sm" key={i}>
-                          {error}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </Field>
-              )}
-            </form.Field>
-          </Fieldset>
-
-          <form.Subscribe>
-            {(state) => (
-              <Button
-                className="flex w-full justify-center rounded-lg bg-primary px-3 py-3 font-semibold text-primary-foreground text-sm leading-6 shadow-sm transition-all duration-200 hover:bg-success"
-                disabled={!state.canSubmit || state.isSubmitting}
-                type="submit"
-              >
-                {state.isSubmitting ? t('auth.signIn.Loader') : t('auth.signIn')}
-              </Button>
-            )}
-          </form.Subscribe>
-        </form>
+        <div>
+          <Button
+            className="w-full"
+            onClick={async () => {
+              await authClient.signIn.social({
+                provider: "google",
+                callbackURL:
+                  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001",
+              });
+            }}
+            variant="outline"
+          >
+            <GoogleIcon />
+            Continuar con Google
+          </Button>
+        </div>
 
         <div className="mt-6 text-center">
-          <Button className="font-semibold text-sm" onClick={onSwitchToSignUp} variant="link">
-            {t('auth.signUp.cta')}
-          </Button>
-          <Button className="mt-2 text-xs" onClick={onSwitchToForgotPassword} variant="link">
-            {t('forgotPassword.forgot')}
-          </Button>
+          <p className="text-muted-foreground text-xs">
+            Al continuar, aceptas nuestros Términos de Servicio.
+          </p>
         </div>
       </div>
     </div>

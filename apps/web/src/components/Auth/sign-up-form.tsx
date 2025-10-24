@@ -1,237 +1,103 @@
-import { Field, Fieldset, Input, Label } from '@headlessui/react';
-import { useForm } from '@tanstack/react-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import Loader from '@/components/loader';
-import { Button } from '@/components/ui/button';
-import { useAuthNavigation } from '@/hooks/use-auth-navigation';
-import { useI18n } from '@/hooks/use-i18n';
-import { authClient } from '@/lib/auth-client';
+"use client";
+
+import { Field, Fieldset, Input, Label } from "@headlessui/react";
+import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { useAuthNavigation } from "@/hooks/use-auth-navigation";
+import { useGlobalLoader } from "@/hooks/use-global-loader";
+import { useI18n } from "@/hooks/use-i18n";
+import { authClient } from "@/lib/auth-client";
+
+const GoogleIcon = () => (
+  <svg
+    className="mr-2 h-4 w-4"
+    viewBox="0 0 48 48"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+      fill="#FFC107"
+    />
+    <path
+      d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"
+      fill="#FF3D00"
+    />
+    <path
+      d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.222 0-9.618-3.226-11.283-7.582l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+      fill="#4CAF50"
+    />
+    <path
+      d="M43.611 20.083H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 36.49 44 30.686 44 24c0-1.341-.138-2.65-.389-3.917z"
+      fill="#1976D2"
+    />
+  </svg>
+);
 
 type SignUpFormProps = {
   onSwitchToSignIn: () => void;
   onClose?: () => void;
 };
 
-export default function SignUpForm({ onSwitchToSignIn, onClose }: SignUpFormProps) {
+export default function SignUpForm({
+  onSwitchToSignIn,
+  onClose,
+}: SignUpFormProps) {
   const { signUp } = useAuthNavigation();
   const { isPending } = authClient.useSession();
   const { t } = useI18n();
 
-  const form = useForm({
-    defaultValues: { name: '', email: '', password: '' },
-    onSubmit: async ({ value }) => {
-      await signUp(
-        { name: value.name, email: value.email, password: value.password },
-        {
-          redirectTo: window.location.pathname,
-          onSuccess: () => {
-            onClose?.();
-          },
-          onError: (error) => {
-            const errorMessage = error?.error?.message || t('auth.signUp.error');
-            toast.error(errorMessage);
-          },
-        }
-      );
-    },
-    validators: {
-      onSubmit: z.object({
-        name: z.string().min(2, t('auth.validation.name.min')),
-        email: z.string().email(t('auth.validation.email.invalid')),
-        password: z.string().min(8, t('auth.validation.password.min')),
-      }),
-    },
-  });
+  useGlobalLoader(isPending, "sign-up-form");
+
+  const form = useForm({});
 
   if (isPending) {
-    return <Loader />;
+    return null;
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-2xl">
-      {onClose && (
-        <Button
-          aria-label={t('auth.closeModal')}
-          className="absolute top-4 right-4 h-8 w-8"
-          onClick={onClose}
-          size="icon"
-          variant="ghost"
-        >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              d="M6 18L18 6M6 6l12 12"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-            />
-          </svg>
-        </Button>
-      )}
-
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-success to-info" />
-
+    <div className="... relative overflow-hidden">
       <div className="px-6 py-8 sm:px-8 sm:py-10">
         <div className="mb-6 text-center">
-          <h1 className="font-bold text-2xl text-foreground tracking-tight sm:text-3xl">
-            {t('auth.SignUp.title')}
-          </h1>
-          <p className="mt-2 text-gray-600 text-sm">{t('auth.signUp.description')}</p>
+          <h1 className="... font-bold">{t("auth.SignUp.title")}</h1>
+          <p className="... mt-2">{t("auth.signUp.description")}</p>
         </div>
 
-        {/* Form */}
-        <form
-          className="mt-8 space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <Fieldset className="space-y-5">
-            <form.Field name="name">
-              {(field) => (
-                <Field className="space-y-2">
-                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
-                    {t('auth.Name')}
-                  </Label>
-                  <Input
-                    aria-describedby={
-                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
-                    }
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
-                      field.state.meta.errors.length > 0
-                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
-                        : 'text-foreground ring-border'
-                    }`}
-                    id={field.name}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t('auth.Name.placeholder')}
-                    type="text"
-                    value={field.state.value}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <div
-                      aria-live="polite"
-                      className="space-y-1"
-                      id={`${field.name}-error`}
-                      role="alert"
-                    >
-                      {field.state.meta.errors.map((error, i) => (
-                        <p className="flex items-center text-destructive text-sm" key={i}>
-                          {error.message}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </Field>
-              )}
-            </form.Field>
+        <form className="space-y-6" onSubmit={(e) => {}}></form>
 
-            <form.Field name="email">
-              {(field) => (
-                <Field className="space-y-2">
-                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
-                    {t('auth.Email')}
-                  </Label>
-                  <Input
-                    aria-describedby={
-                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
-                    }
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
-                      field.state.meta.errors.length > 0
-                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
-                        : 'text-foreground ring-border'
-                    }`}
-                    id={field.name}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t('auth.Email.placeholder')}
-                    type="email"
-                    value={field.state.value}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <div
-                      aria-live="polite"
-                      className="space-y-1"
-                      id={`${field.name}-error`}
-                      role="alert"
-                    >
-                      {field.state.meta.errors.map((error, i) => (
-                        <p className="flex items-center text-destructive text-sm" key={i}>
-                          {error.message}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </Field>
-              )}
-            </form.Field>
+        <div className="relative my-6">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 flex items-center"
+          >
+            <div className="w-full border-border border-t" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="bg-white px-2 text-muted-foreground">
+              O regístrate con
+            </span>
+          </div>
+        </div>
 
-            <form.Field name="password">
-              {(field) => (
-                <Field className="space-y-2">
-                  <Label className="block font-semibold text-gray-700 text-sm" htmlFor={field.name}>
-                    {t('auth.Password')}
-                  </Label>
-                  <Input
-                    aria-describedby={
-                      field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
-                    }
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    className={`block w-full rounded-lg border-0 px-3 py-3 shadow-sm ring-1 ring-inset transition-all duration-200 placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-inset sm:text-sm sm:leading-6 ${
-                      field.state.meta.errors.length > 0
-                        ? 'text-destructive-foreground ring-destructive focus:ring-destructive'
-                        : 'text-foreground ring-border'
-                    }`}
-                    id={field.name}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t('auth.Password.placeholder')}
-                    type="password"
-                    value={field.state.value}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <div
-                      aria-live="polite"
-                      className="space-y-1"
-                      id={`${field.name}-error`}
-                      role="alert"
-                    >
-                      {field.state.meta.errors.map((error, i) => (
-                        <p className="flex items-center text-destructive text-sm" key={i}>
-                          {error.message}
-                        </p>
-                      ))}
-                    </div>
-                  )}
-                </Field>
-              )}
-            </form.Field>
-          </Fieldset>
-
-          <form.Subscribe>
-            {(state) => (
-              <Button
-                className="flex w-full justify-center rounded-lg bg-primary px-3 py-3 font-semibold text-primary-foreground text-sm leading-6 shadow-sm transition-all duration-200 hover:bg-success"
-                disabled={!state.canSubmit || state.isSubmitting}
-                type="submit"
-              >
-                {state.isSubmitting ? t('auth.signUp.loading') : t('auth.signUp.button')}
-              </Button>
-            )}
-          </form.Subscribe>
-        </form>
+        <div>
+          <Button
+            className="w-full"
+            onClick={() => authClient.signIn.social({ provider: "google" })}
+            variant="outline"
+          >
+            <GoogleIcon />
+            Google
+          </Button>
+        </div>
 
         <div className="mt-6 text-center">
-          <Button className="font-semibold text-sm" onClick={onSwitchToSignIn} variant="link">
-            {t('auth.signIn.cta')}
+          <Button
+            className="font-semibold text-sm"
+            onClick={onSwitchToSignIn}
+            variant="link"
+          >
+            {t("auth.signIn.cta")}
           </Button>
         </div>
       </div>
