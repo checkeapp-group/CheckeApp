@@ -53,6 +53,7 @@ export async function updateVerificationStatus(
     | 'processing_questions'
     | 'sources_ready'
     | 'generating_summary'
+    | 'generating_image'
     | 'completed'
     | 'error'
 ): Promise<void> {

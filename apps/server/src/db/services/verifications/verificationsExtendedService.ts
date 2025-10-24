@@ -56,6 +56,8 @@ export async function getVerificationsList({
       userName: user.name,
       claim: sql<string>`JSON_UNQUOTE(JSON_EXTRACT(${finalResult.metadata}, '$.main_claim'))`,
       label: sql<string>`JSON_UNQUOTE(JSON_EXTRACT(${finalResult.metadata}, '$.label'))`,
+      imageUrl: finalResult.imageUrl,
+      labelsJson: sql<string>`JSON_UNQUOTE(JSON_EXTRACT(${finalResult.metadata}, '$.categories'))`,
     })
     .from(verification)
     .leftJoin(user, eq(verification.userId, user.id))

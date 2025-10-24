@@ -38,6 +38,7 @@ export const verification = mysqlTable(
       'processing_questions',
       'sources_ready',
       'generating_summary',
+      'generating_image',
       'completed',
       'error',
     ])

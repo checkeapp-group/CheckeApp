@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: '**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
     ],
   },
   async rewrites() {
