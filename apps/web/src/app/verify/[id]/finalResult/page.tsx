@@ -1,37 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useParams } from "next/navigation";
+import { FinalAnalysisLoader } from "@/components/FinalAnalysisLoader";
 import { Card } from "@/components/ui/card";
 import VerificationResult from "@/components/VerificationResult";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
 import { orpc } from "@/utils/orpc";
-
-function LoadingState({ status }: { status?: string }) {
-  const { t } = useI18n();
-  const getStatusMessage = () => {
-    switch (status) {
-      case "generating_summary":
-        return t("finalResult.processing_description");
-      default:
-        return t("finalResult.starting");
-    }
-  };
-
-  return (
-    <Card className="flex flex-col items-center p-6 text-center sm:p-8">
-      <Loader2 className="mb-4 h-10 w-10 animate-spin text-primary sm:h-12 sm:w-12" />
-      <h2 className="mb-2 font-bold text-lg sm:text-xl">
-        {t("finalResult.analyzing_sources")}
-      </h2>
-      <p className="text-muted-foreground text-sm sm:text-base">
-        {getStatusMessage()}
-      </p>
-    </Card>
-  );
-}
 
 function ErrorState({ errorMessage }: { errorMessage: string }) {
   const { t } = useI18n();
@@ -51,7 +28,7 @@ export default function FinalResultPage() {
   const { t } = useI18n();
 
   const { data: statusData, error: statusError } = useQuery({
-    queryKey: ["verificationProgress", verificationId], 
+    queryKey: ["verificationProgress", verificationId],
     queryFn: () => {
       if (!verificationId || typeof verificationId !== "string") {
         return null;
@@ -61,7 +38,7 @@ export default function FinalResultPage() {
     enabled: !!verificationId,
     refetchInterval: (query) => {
       const data = query.state.data;
-      if (data?.hasFinalResult || data?.status === "error") {
+      if (data?.status === "completed" || data?.status === "error") {
         return false;
       }
       return 3000;
@@ -81,8 +58,17 @@ export default function FinalResultPage() {
       }
       return orpc.getVerificationResultData.call({ verificationId });
     },
-    enabled: !!statusData?.hasFinalResult,
+    enabled: statusData?.status === "completed",
     retry: false,
+  });
+
+  const { data: verificationDetails } = useQuery({
+    queryKey: ["verificationDetails", verificationId],
+    queryFn: () =>
+      orpc.getVerificationDetails.call({
+        verificationId: verificationId as string,
+      }),
+    enabled: !!verificationId && !resultData,
   });
 
   useGlobalLoader(isLoadingResult || !statusData, "final-result-loader");
@@ -117,7 +103,9 @@ export default function FinalResultPage() {
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:py-12">
-      <LoadingState status={statusData?.status} />
+      <FinalAnalysisLoader
+        title={verificationDetails?.originalText || t("common.loading")}
+      />
     </div>
   );
 }

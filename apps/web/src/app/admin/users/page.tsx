@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 import AdminGuard from "@/components/Auth/admin-guard";
-import Loader from "@/components/loader";
 import {
   Table,
   TableBody,
@@ -14,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { orpc } from "@/utils/orpc";
 
 function AdminUsersPageContent() {
@@ -23,6 +23,8 @@ function AdminUsersPageContent() {
     queryKey: ["admin-all-users"],
     queryFn: () => orpc.getAllUsers.call(),
   });
+
+  useGlobalLoader(isLoading, 'admin-users-list');
 
   const updateUserMutation = useMutation({
     mutationFn: async (variables: {
@@ -68,7 +70,7 @@ function AdminUsersPageContent() {
   });
 
   if (isLoading) {
-    return <Loader />;
+    return null;
   }
 
   return (

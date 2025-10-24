@@ -183,22 +183,6 @@ function PageContent({ verificationId }: { verificationId: string }) {
   }
 
   if (verificationData) {
-    if (isPolling || saveQuestionsMutation.isPending) {
-      return (
-        <div className="container mx-auto max-w-4xl px-4 py-12">
-          <Card className="flex flex-col items-center p-8 text-center">
-            <Loader2 className="mb-4 h-12 w-12 animate-spin text-primary" />
-            <h2 className="mb-2 font-bold text-xl">
-              Generando preguntas críticas...
-            </h2>
-            <p className="text-muted-foreground">
-              Este proceso puede tardar un momento. La página se actualizará
-              automáticamente.
-            </p>
-          </Card>
-        </div>
-      );
-    }
     return (
       <div className="mx-auto my-8 max-w-4xl rounded-lg bg-neutral/80 p-4 shadow-lg backdrop-blur-sm sm:p-6 lg:p-8">
         <VerificationFlow verification={verificationData} />

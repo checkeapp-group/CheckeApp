@@ -4,13 +4,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { fa } from "zod/v4/locales";
 import type { Verification } from "@/../../server/src/db/schema/schema";
 import QuestionsList from "@/components/QuestionsList";
 import SourcesList from "@/components/SourcesList";
 import Step from "@/components/Step";
 import { Modal } from "@/components/ui/Modal";
 import SubmittedTextDisplay from "@/components/ui/TextSubmittedDisplay";
+import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAppRouter } from "@/lib/router";
 import { orpc, queryClient } from "@/utils/orpc";
@@ -72,10 +72,8 @@ export default function VerificationFlow({
     mutationFn: () => orpc.deleteVerification.call({ verificationId }),
     onSuccess: () => {
       toast.success(t("verification.deleted_success"));
-      queryClient.invalidateQueries({ queryKey: orpc.getVerifications.key() });
-      queryClient.invalidateQueries({
-        queryKey: orpc.getVerificationsHome.key(),
-      });
+      queryClient.invalidateQueries({ queryKey: ["userVerifications"] });
+      queryClient.invalidateQueries({ queryKey: ["publicVerifications"] });
       navigate("/user-verifications");
     },
     onError: (error) => {
@@ -130,6 +128,15 @@ export default function VerificationFlow({
     },
   });
 
+  const isStepProcessing =
+    searchSourcesMutation.isPending ||
+    isPolling ||
+    saveSourcesMutation.isPending ||
+    continueToAnalysisMutation.isPending ||
+    deleteVerificationMutation.isPending;
+
+  useGlobalLoader(isStepProcessing, "verification-flow-processing");
+
   useEffect(() => {
     if (jobResult?.status === "completed") {
       setPollingJobId(null);
@@ -171,8 +178,6 @@ export default function VerificationFlow({
     continueToAnalysisMutation.mutate();
   };
 
-  const isSearchingSources = searchSourcesMutation.isPending || isPolling;
-
   return (
     <>
       <Modal
@@ -180,33 +185,35 @@ export default function VerificationFlow({
         onClose={() => setIsDeleteModalOpen(false)}
         title={t("verification.delete_modal.title")}
       >
-        {" "}
         <div className="space-y-4">
-          {" "}
           <p className="text-muted-foreground">
-            {t("verification.delete_modal.message")}{" "}
-          </p>{" "}
+            {t("verification.delete_modal.message")}
+          </p>
           <div className="flex justify-end gap-2">
-            <Button onClick={() => setIsDeleteModalOpen(false)} variant="ghost">
-              {t("common.cancel")}{" "}
-            </Button>{" "}
             <Button
-              loading={deleteVerificationMutation.isPending}
+              disabled={isStepProcessing}
+              onClick={() => setIsDeleteModalOpen(false)}
+              variant="ghost"
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              disabled={isStepProcessing}
               onClick={handleDeleteVerification}
               variant="destructive"
             >
-              {t("common.delete")}{" "}
-            </Button>{" "}
-          </div>{" "}
-        </div>{" "}
+              {t("common.delete")}
+            </Button>
+          </div>
+        </div>
       </Modal>
       <div className="w-full space-y-4">
         <Step
           description={t("verification.step1.description")}
           isCompleted={completedSteps.includes("step-1")}
-          isDisabled={false}
+          isDisabled={isStepProcessing}
           isOpen={activeStep === "step-1"}
-          onSelect={() => setActiveStep("step-1")}
+          onSelect={() => !isStepProcessing && setActiveStep("step-1")}
           stepNumber={1}
           title={t("verification.step1.title")}
         >
@@ -216,17 +223,18 @@ export default function VerificationFlow({
         <Step
           description={t("verification.step2.description")}
           isCompleted={completedSteps.includes("step-2")}
-          isDisabled={!completedSteps.includes("step-1")}
+          isDisabled={!completedSteps.includes("step-1") || isStepProcessing}
           isOpen={activeStep === "step-2"}
           onSelect={() =>
-            !completedSteps.includes("step-2") && setActiveStep("step-2")
+            !(completedSteps.includes("step-2") || isStepProcessing) &&
+            setActiveStep("step-2")
           }
           stepNumber={2}
           title={t("verification.step2.title")}
         >
           <QuestionsList
-            isContinuing={isSearchingSources}
-            isLocked={completedSteps.includes("step-2")}
+            completedSteps={completedSteps}
+            isContinuing={isStepProcessing}
             onComplete={handleQuestionsConfirmed}
             verificationId={verificationId}
           />
@@ -235,16 +243,17 @@ export default function VerificationFlow({
         <Step
           description={t("verification.step3.description")}
           isCompleted={completedSteps.includes("step-3")}
-          isDisabled={!completedSteps.includes("step-2")}
+          isDisabled={!completedSteps.includes("step-2") || isStepProcessing}
           isOpen={activeStep === "step-3"}
           onSelect={() =>
-            !completedSteps.includes("step-3") && setActiveStep("step-3")
+            !(completedSteps.includes("step-3") || isStepProcessing) &&
+            setActiveStep("step-3")
           }
           stepNumber={3}
           title={t("verification.step3.title")}
         >
           <SourcesList
-            isContinuing={continueToAnalysisMutation.isPending}
+            isContinuing={isStepProcessing}
             onComplete={handleSourcesConfirmed}
             verificationId={verificationId}
           />
@@ -252,6 +261,7 @@ export default function VerificationFlow({
       </div>
       <div className="mt-8 flex justify-start border-t pt-6">
         <Button
+          disabled={isStepProcessing}
           onClick={() => setIsDeleteModalOpen(true)}
           variant="destructive"
         >

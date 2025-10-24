@@ -11,11 +11,13 @@ import { Button } from "./ui/button";
 type SourceCardProps = {
   source: Source;
   onSelectionChange: (isSelected: boolean) => void;
+  isLocked?: boolean;
 };
 
 export default function SourceCard({
   source,
   onSelectionChange,
+  isLocked = false,
 }: SourceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useI18n();
@@ -27,47 +29,54 @@ export default function SourceCard({
     ? summary
     : `${summary.slice(0, TRUNCATE_LENGTH)}${isTruncated ? "..." : ""}`;
 
+  const handleCardClick = () => {
+    if (isLocked) return;
+    onSelectionChange(!source.isSelected);
+  };
+
   return (
     <Card
       aria-checked={source.isSelected}
       className={cn(
-        "group cursor-pointer overflow-hidden p-5 transition-all duration-200",
-        source.isSelected
+        "group overflow-hidden p-5 transition-all duration-200",
+        isLocked
+          ? "cursor-not-allowed bg-card"
+          : "cursor-pointer hover:border-primary/40 hover:shadow-md",
+        source.isSelected && !isLocked
           ? "scale-[1.02] border-primary bg-card shadow-lg shadow-primary/10"
-          : "border-border bg-card hover:border-primary/40 hover:shadow-md"
+          : "border-border bg-card"
       )}
-      onClick={() => onSelectionChange(!source.isSelected)}
+      onClick={handleCardClick}
       onKeyDown={(e) => {
+        if (isLocked) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onSelectionChange(!source.isSelected);
         }
       }}
       role="checkbox"
-      tabIndex={0}
+      tabIndex={isLocked ? -1 : 0}
     >
-      {/* Header */}
       <div
         className={cn(
           "absolute top-0 right-0 left-0 h-1.5 rounded-t-lg transition-all duration-200",
-          source.isSelected
+          source.isSelected && !isLocked
             ? "bg-gradient-to-r from-primary to-primary/60"
             : "bg-transparent"
         )}
       />
 
       <div className="flex items-start gap-4">
-        {/* Selection checkbox */}
         <div className="relative mt-0.5 h-5 w-5 shrink-0">
           <div
             className={cn(
               "flex h-full w-full items-center justify-center rounded-md border-2 transition-all duration-200",
-              source.isSelected
+              source.isSelected && !isLocked
                 ? "border-primary bg-primary"
                 : "border-muted-foreground/30 bg-background group-hover:border-primary/50"
             )}
           >
-            {source.isSelected && (
+            {source.isSelected && !isLocked && (
               <Check
                 className="h-3.5 w-3.5 text-primary-foreground"
                 strokeWidth={3}
@@ -77,17 +86,17 @@ export default function SourceCard({
         </div>
 
         <div className="flex-1 space-y-2.5">
-          {/* Title */}
           <h3
             className={cn(
               "line-clamp-2 font-bold text-base leading-snug transition-colors",
-              source.isSelected ? "text-primary" : "text-foreground"
+              source.isSelected && !isLocked
+                ? "text-primary"
+                : "text-foreground"
             )}
           >
             {source.title}
           </h3>
 
-          {/* Metadata: domain and date */}
           <div className="flex flex-wrap items-center gap-2 text-sm">
             <a
               aria-label={`Abrir ${source.domain} en nueva pestaña`}
@@ -95,6 +104,7 @@ export default function SourceCard({
               href={source.url}
               onClick={(e) => e.stopPropagation()}
               rel="noopener noreferrer"
+              tabIndex={isLocked ? -1 : 0}
               target="_blank"
             >
               <img
@@ -125,7 +135,6 @@ export default function SourceCard({
             )}
           </div>
 
-          {/* Summary */}
           {summary && (
             <>
               <p className="text-muted-foreground text-sm leading-relaxed">
@@ -140,6 +149,7 @@ export default function SourceCard({
                     e.stopPropagation();
                     setIsExpanded(!isExpanded);
                   }}
+                  tabIndex={isLocked ? -1 : 0}
                   variant="link"
                 >
                   {isExpanded ? "← Mostrar menos" : "Leer más →"}
