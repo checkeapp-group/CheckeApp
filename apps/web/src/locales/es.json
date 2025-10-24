@@ -153,6 +153,11 @@
   "verification.step2.description": "Confirma o modifica las preguntas generadas automáticamente",
   "verification.step3.title": "Paso 3: Selecciona las fuentes",
   "verification.step3.description": "Elige las fuentes más confiables para tu verificación",
+   "verification.delete_button": "Eliminar Verificación",
+  "verification.deleted_success": "La verificación ha sido eliminada.",
+  "verification.deleted_error": "No se pudo eliminar la verificación.",
+  "verification.delete_modal.title": "¿Estás seguro de que quieres eliminar esta verificación?",
+  "verification.delete_modal.message": "Esta acción no se puede deshacer. Se borrará permanentemente la verificación y todos sus datos asociados, incluyendo preguntas y fuentes.",
 
   "result.shareLink.created": "¡Enlace compartido creado!",
   "result.shareLink.description": "Cualquiera con este enlace puede ver el resultado.",
@@ -195,6 +200,7 @@
   "verifications.no_claim": "Sin afirmación principal disponible.",
   "verifications.no_results": "No se encontraron verificaciones que coincidan con tu búsqueda.",
   "verifications.label.verified": "Verificado",
+  "verifications.label.true": "Verdadero",
   "verifications.label.fake": "Bulo",
   "verifications.label.undetermined": "Indeterminado",
   "verifications.search_placeholder": "Buscar en mis verificaciones...",
@@ -207,7 +213,7 @@
   "home.title": "Verifica Tu Información",
   "home.latestVerifications": "Últimas verificaciones",
   "home.verificationsActive": "{count, plural, one {verificación} other {verificaciones}} activas",
-  "home.realTime": "En tiempo real",
+  "home.realTime": "Verifica hechos usando fuentes en tiempo real",
   "home.noRecentVerifications": "No hay verificaciones recientes",
 
   "questions_edit.refine_prompt": "Refina las preguntas con instrucciones adicionales",
@@ -222,5 +228,34 @@
   "error.noDataFound": "No se encontraron datos para esta verificación.",
   "error.createShareLink": "Error al crear el enlace compartido: {error}",
 
-  "common.closeModal": "Cerrar modal"
+  "common.closeModal": "Cerrar modal",
+
+  "admin.users.title": "Gestión de Usuarios",
+  "admin.users.email": "Email",
+  "admin.users.name": "Nombre",
+  "admin.users.verified": "Verificado",
+  "admin.users.admin": "Admin",
+  "admin.users.noValue": "-",
+  "admin.users.updateFailed": "Actualización fallida",
+  "admin.users.updateSuccess": "Usuario actualizado correctamente",
+  "admin.users.noUsers": "No hay usuarios registrados",
+  "admin.title": "Administración",
+
+  "sources.openInNewTab": "Abrir {domain} en nueva pestaña",
+  "sources.showLessAction": "← Mostrar menos",
+  "sources.readMoreAction": "Leer más →",
+
+  "auth.continueWithGoogle": "Continuar con Google",
+  "auth.termsAcceptance": "Al continuar, aceptas nuestros Términos de Servicio.",
+  "auth.orSignUpWith": "O regístrate con",
+  "auth.googleProvider": "Google",
+
+  "verification.loadingDetails": "Cargando detalles de la verificación...",
+  "verification.questionsGenerated": "Preguntas generadas y guardadas correctamente.",
+  "verification.errorSavingQuestions": "Error al guardar las preguntas: {error}",
+  "verification.noValidQuestions": "El trabajo se completó pero no se recibieron preguntas válidas.",
+  "verification.generationFailed": "El proceso de generación de preguntas ha fallado.",
+
+  "result.untitled": "Sin título",
+  "result.noImage": "Sin imagen"
 }

@@ -20,9 +20,7 @@ function LoadingState() {
         {t("common.loading", { defaultValue: "Cargando..." })}
       </h2>
       <p className="text-muted-foreground">
-        {t("verification.loading_details", {
-          defaultValue: "Cargando detalles de la verificación...",
-        })}
+        {t("verification.loadingDetails")}
       </p>
     </Card>
   );
@@ -57,6 +55,7 @@ export default function VerificationEditPage() {
 }
 
 function PageContent({ verificationId }: { verificationId: string }) {
+  const { t } = useI18n();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [jobId, setJobId] = useState<string | null>(null);
@@ -90,7 +89,7 @@ function PageContent({ verificationId }: { verificationId: string }) {
       }>
     ) => orpc.saveGeneratedQuestions.call({ verificationId, questions }),
     onSuccess: () => {
-      toast.success("Preguntas generadas y guardadas correctamente.");
+      toast.success(t("verification.questionsGenerated"));
       queryClient.invalidateQueries({
         queryKey: ["verificationFlowData", verificationId],
       });
@@ -103,7 +102,7 @@ function PageContent({ verificationId }: { verificationId: string }) {
       setJobId(null);
     },
     onError: (error) => {
-      toast.error(`Error al guardar las preguntas: ${error.message}`);
+      toast.error(t("verification.errorSavingQuestions", { error: error.message }));
       sessionStorage.removeItem(`verification_job_${verificationId}`);
       setJobId(null);
     },
@@ -136,7 +135,7 @@ function PageContent({ verificationId }: { verificationId: string }) {
         saveQuestionsMutation.mutate(formattedQuestions);
       } else {
         toast.error(
-          "El trabajo se completó pero no se recibieron preguntas válidas."
+          t("verification.noValidQuestions")
         );
         sessionStorage.removeItem(`verification_job_${verificationId}`);
         setJobId(null);
@@ -147,7 +146,7 @@ function PageContent({ verificationId }: { verificationId: string }) {
     ) {
       setJobId(null);
       sessionStorage.removeItem(`verification_job_${verificationId}`);
-      toast.error("El proceso de generación de preguntas ha fallado.");
+      toast.error(t("verification.generationFailed"));
     }
   }, [jobResult, saveQuestionsMutation, verificationId]);
 

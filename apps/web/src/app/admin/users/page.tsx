@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/table";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { orpc } from "@/utils/orpc";
+import { useI18n } from "@/hooks/use-i18n";
 
 function AdminUsersPageContent() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
 
   const { data: users, isLoading } = useQuery({
@@ -57,7 +59,7 @@ function AdminUsersPageContent() {
       }
       toast.error(
         `Error: ${
-          error instanceof Error ? error.message : "Actualización fallida"
+          error instanceof Error ? error.message : t("admin.users.updateFailed")
         }`
       );
     },
@@ -65,7 +67,7 @@ function AdminUsersPageContent() {
       queryClient.invalidateQueries({ queryKey: ["admin-all-users"] });
     },
     onSuccess: () => {
-      toast.success("Usuario actualizado correctamente");
+      toast.success(t("admin.users.updateSuccess"));
     },
   });
 
@@ -76,19 +78,19 @@ function AdminUsersPageContent() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-6 font-bold text-2xl sm:text-3xl">
-        Gestión de Usuarios
+        {t("admin.users.title")}
       </h1>
 
       <div className="hidden overflow-x-auto rounded-lg border md:block">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="min-w-[200px]">Email</TableHead>
-              <TableHead className="min-w-[150px]">Nombre</TableHead>
+              <TableHead className="min-w-[200px]">{t("admin.users.email")}</TableHead>
+              <TableHead className="min-w-[150px]">{t("admin.users.name")}</TableHead>
               <TableHead className="w-[120px] text-center">
-                Verificado
+                {t("admin.users.verified")}
               </TableHead>
-              <TableHead className="w-[120px] text-center">Admin</TableHead>
+              <TableHead className="w-[120px] text-center">{t("admin.users.admin")}</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -96,7 +98,7 @@ function AdminUsersPageContent() {
             {users?.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="font-medium">{user.email}</TableCell>
-                <TableCell>{user.name || "-"}</TableCell>
+                <TableCell>{user.name || t("admin.users.noValue")}</TableCell>
                 <TableCell className="text-center">
                   <div className="flex justify-center">
                     <Checkbox
@@ -144,15 +146,15 @@ function AdminUsersPageContent() {
             key={user.id}
           >
             <div className="mb-3 border-b pb-3">
-              <p className="font-medium text-gray-500 text-sm">Email</p>
+              <p className="font-medium text-gray-500 text-sm">{t("admin.users.email")}</p>
               <p className="mt-1 break-all font-semibold text-gray-900">
                 {user.email}
               </p>
             </div>
 
             <div className="mb-3 border-b pb-3">
-              <p className="font-medium text-gray-500 text-sm">Nombre</p>
-              <p className="mt-1 text-gray-900">{user.name || "-"}</p>
+              <p className="font-medium text-gray-500 text-sm">{t("admin.users.name")}</p>
+              <p className="mt-1 text-gray-900">{user.name || t("admin.users.noValue")}</p>
             </div>
 
             <div className="flex items-center justify-between gap-4">
@@ -170,7 +172,7 @@ function AdminUsersPageContent() {
                 >
                   <Check className="h-4 w-4 text-white opacity-0 transition-opacity group-data-[checked]:opacity-100" />
                 </Checkbox>
-                <span className="text-gray-700 text-sm">Verificado</span>
+                <span className="text-gray-700 text-sm">{t("admin.users.verified")}</span>
               </div>
 
               <div className="flex flex-1 items-center gap-3">
@@ -187,7 +189,7 @@ function AdminUsersPageContent() {
                 >
                   <Check className="h-4 w-4 text-white opacity-0 transition-opacity group-data-[checked]:opacity-100" />
                 </Checkbox>
-                <span className="text-gray-700 text-sm">Admin</span>
+                <span className="text-gray-700 text-sm">{t("admin.users.admin")}</span>
               </div>
             </div>
           </div>
@@ -196,7 +198,7 @@ function AdminUsersPageContent() {
 
       {users?.length === 0 && (
         <div className="py-12 text-center text-gray-500">
-          No hay usuarios registrados
+          {t("admin.users.noUsers")}
         </div>
       )}
     </div>

@@ -208,7 +208,7 @@
   "home.title": "Verifica a Túa Información",
   "home.latestVerifications": "Últimas verificacións",
   "home.verificationsActive": "{count, plural, one {verificación} other {verificacións}} activas",
-  "home.realTime": "En tempo real",
+  "home.realTime": "Verifica feitos usando fontes en tempo real",
   "home.noRecentVerifications": "Non hai verificacións recentes",
 
   "questions_edit.refine_prompt": "Refina as preguntas con instrucións adicionais",
@@ -223,5 +223,40 @@
   "error.noDataFound": "Non se atoparon datos para esta verificación.",
   "error.createShareLink": "Erro ao crear a ligazón compartida: {error}",
 
-  "common.closeModal": "Pechar modal"
+  "common.closeModal": "Pechar modal",
+    "verification.delete_button": "Eliminar verificación",
+  "verification.deleted_success": "A verificación foi eliminada correctamente.",
+  "verification.deleted_error": "Non se puido eliminar a verificación.",
+  "verification.delete_modal.title": "Estás seguro de que queres eliminar esta verificación?",
+  "verification.delete_modal.message": "Esta acción non se pode desfacer. Eliminarase permanentemente a verificación e todos os seus datos asociados, incluíndo preguntas e fontes.",
+
+  "verifications.label.true": "Verdadeiro",
+  "admin.users.title": "Xestión de usuarios",
+  "admin.users.email": "Correo electrónico",
+  "admin.users.name": "Nome",
+  "admin.users.verified": "Verificado",
+  "admin.users.admin": "Administrador",
+  "admin.users.noValue": "-",
+  "admin.users.updateFailed": "A actualización fallou",
+  "admin.users.updateSuccess": "Usuario actualizado correctamente",
+  "admin.users.noUsers": "Non hai usuarios rexistrados",
+  "admin.title": "Administración",
+
+  "sources.openInNewTab": "Abrir {domain} nunha nova lapela",
+  "sources.showLessAction": "← Amosar menos",
+  "sources.readMoreAction": "Ler máis →",
+
+  "auth.continueWithGoogle": "Continuar con Google",
+  "auth.termsAcceptance": "Ao continuar, aceptas os nosos Termos de Servizo.",
+  "auth.orSignUpWith": "Ou rexístrate con",
+  "auth.googleProvider": "Google",
+
+  "verification.loadingDetails": "Cargando detalles da verificación...",
+  "verification.questionsGenerated": "Preguntas xeradas e gardadas correctamente.",
+  "verification.errorSavingQuestions": "Erro ao gardar as preguntas: {error}",
+  "verification.noValidQuestions": "O proceso completouse pero non se recibiron preguntas válidas.",
+  "verification.generationFailed": "O proceso de xeración de preguntas fallou.",
+
+  "result.untitled": "Sen título",
+  "result.noImage": "Sen imaxe"
 }

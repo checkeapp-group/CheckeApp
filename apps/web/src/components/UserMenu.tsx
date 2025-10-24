@@ -69,7 +69,7 @@ export default function UserMenu() {
                     href="/admin/users"
                   >
                     <ShieldCheckIcon className="mr-3 h-4 w-4" />
-                    Administración
+                    {t("admin.title")}
                   </Link>
                 )}
               </Menu.Item>

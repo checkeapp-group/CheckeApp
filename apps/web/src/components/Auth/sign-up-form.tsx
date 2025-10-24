@@ -75,7 +75,7 @@ export default function SignUpForm({
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="bg-white px-2 text-muted-foreground">
-              O regístrate con
+              {t("auth.orSignUpWith")}
             </span>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function SignUpForm({
             variant="outline"
           >
             <GoogleIcon />
-            Google
+            {t("auth.googleProvider")}
           </Button>
         </div>
 

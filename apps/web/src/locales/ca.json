@@ -208,7 +208,7 @@
   "home.title": "Verifica la Teva Informació",
   "home.latestVerifications": "Últimes verificacions",
   "home.verificationsActive": "{count, plural, one {verificació} other {verificacions}} actives",
-  "home.realTime": "En temps real",
+  "home.realTime": "Verifica fets utilitzant fonts en temps real",
   "home.noRecentVerifications": "No hi ha verificacions recents",
 
   "questions_edit.refine_prompt": "Refina les preguntes amb instruccions addicionals",
@@ -223,5 +223,40 @@
   "error.noDataFound": "No s'han trobat dades per a aquesta verificació.",
   "error.createShareLink": "Error en crear l'enllaç compartit: {error}",
 
-  "common.closeModal": "Tanca el modal"
+  "common.closeModal": "Tanca el modal",
+  "verification.delete_button": "Eliminar verificació",
+  "verification.deleted_success": "La verificació s'ha eliminat correctament.",
+  "verification.deleted_error": "No s'ha pogut eliminar la verificació.",
+  "verification.delete_modal.title": "Estàs segur que vols eliminar aquesta verificació?",
+  "verification.delete_modal.message": "Aquesta acció no es pot desfer. S'eliminarà permanentment la verificació i totes les seves dades associades, incloent-hi preguntes i fonts.",
+
+  "verifications.label.true": "Vertader",
+  "admin.users.title": "Gestió d'usuaris",
+  "admin.users.email": "Correu electrònic",
+  "admin.users.name": "Nom",
+  "admin.users.verified": "Verificat",
+  "admin.users.admin": "Administrador",
+  "admin.users.noValue": "-",
+  "admin.users.updateFailed": "L'actualització ha fallat",
+  "admin.users.updateSuccess": "Usuari actualitzat correctament",
+  "admin.users.noUsers": "No hi ha usuaris registrats",
+  "admin.title": "Administració",
+
+  "sources.openInNewTab": "Obrir {domain} en una pestanya nova",
+  "sources.showLessAction": "← Mostrar menys",
+  "sources.readMoreAction": "Llegir més →",
+
+  "auth.continueWithGoogle": "Continua amb Google",
+  "auth.termsAcceptance": "En continuar, acceptes els nostres Termes del Servei.",
+  "auth.orSignUpWith": "O registra’t amb",
+  "auth.googleProvider": "Google",
+
+  "verification.loadingDetails": "Carregant detalls de la verificació...",
+  "verification.questionsGenerated": "Preguntes generades i desades correctament.",
+  "verification.errorSavingQuestions": "Error en desar les preguntes: {error}",
+  "verification.noValidQuestions": "El procés s'ha completat però no s'han rebut preguntes vàlides.",
+  "verification.generationFailed": "El procés de generació de preguntes ha fallat.",
+
+  "result.untitled": "Sense títol",
+  "result.noImage": "Sense imatge"
 }

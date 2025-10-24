@@ -208,7 +208,7 @@
   "home.title": "Egiaztatu Zure Informazioa",
   "home.latestVerifications": "Azken egiaztapenak",
   "home.verificationsActive": "{count, plural, one {egiaztapen #} other {# egiaztapen}} aktibo",
-  "home.realTime": "Denbora errealean",
+  "home.realTime": "Egiaztatu gertakariak denbora errealean iturriak erabiliz",
   "home.noRecentVerifications": "Ez dago azken egiaztapenik",
 
   "questions_edit.refine_prompt": "Findu galderak jarraibide gehigarriekin",
@@ -223,5 +223,40 @@
   "error.noDataFound": "Ez da daturik aurkitu egiaztapen honetarako.",
   "error.createShareLink": "Errorea partekatutako esteka sortzean: {error}",
 
-  "common.closeModal": "Modala itxi"
+  "common.closeModal": "Modala itxi",
+   "verification.delete_button": "Egiaztapena ezabatu",
+  "verification.deleted_success": "Egiaztapena behar bezala ezabatu da.",
+  "verification.deleted_error": "Ezin izan da egiaztapena ezabatu.",
+  "verification.delete_modal.title": "Ziur zaude egiaztapen hau ezabatu nahi duzula?",
+  "verification.delete_modal.message": "Ekintza hau ezin da desegin. Egiaztapena eta bere datu guztiak, galderak eta iturriak barne, betiko ezabatuko dira.",
+
+  "verifications.label.true": "Egiazkoa",
+  "admin.users.title": "Erabiltzaileen kudeaketa",
+  "admin.users.email": "Posta elektronikoa",
+  "admin.users.name": "Izena",
+  "admin.users.verified": "Egiaztatua",
+  "admin.users.admin": "Administratzailea",
+  "admin.users.noValue": "-",
+  "admin.users.updateFailed": "Eguneratzeak huts egin du",
+  "admin.users.updateSuccess": "Erabiltzailea behar bezala eguneratu da",
+  "admin.users.noUsers": "Ez dago erregistratutako erabiltzailerik",
+  "admin.title": "Administrazioa",
+
+  "sources.openInNewTab": "{domain} fitxa berrian ireki",
+  "sources.showLessAction": "← Gutxiago erakutsi",
+  "sources.readMoreAction": "Irakurri gehiago →",
+
+  "auth.continueWithGoogle": "Jarraitu Google-rekin",
+  "auth.termsAcceptance": "Jarraitzean, gure Zerbitzu-baldintzak onartzen dituzu.",
+  "auth.orSignUpWith": "Edo erregistratu honekin",
+  "auth.googleProvider": "Google",
+
+  "verification.loadingDetails": "Egiaztapenaren xehetasunak kargatzen...",
+  "verification.questionsGenerated": "Galderak sortu eta ondo gorde dira.",
+  "verification.errorSavingQuestions": "Errorea galderak gordetzean: {error}",
+  "verification.noValidQuestions": "Prozesua amaitu da baina ez dira galdera baliodunak jaso.",
+  "verification.generationFailed": "Galderak sortzeko prozesuak huts egin du.",
+
+  "result.untitled": "Izenbururik gabe",
+  "result.noImage": "Irudirik gabe"
 }

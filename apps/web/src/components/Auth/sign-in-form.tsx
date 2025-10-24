@@ -91,13 +91,13 @@ export default function SignInForm({ onClose }: SignInFormProps) {
             variant="outline"
           >
             <GoogleIcon />
-            Continuar con Google
+            {t("auth.continueWithGoogle")}
           </Button>
         </div>
 
         <div className="mt-6 text-center">
           <p className="text-muted-foreground text-xs">
-            Al continuar, aceptas nuestros Términos de Servicio.
+            {t("auth.termsAcceptance")}
           </p>
         </div>
       </div>

@@ -99,7 +99,7 @@ export default function SourceCard({
 
           <div className="flex flex-wrap items-center gap-2 text-sm">
             <a
-              aria-label={`Abrir ${source.domain} en nueva pestaña`}
+              aria-label={t("sources.openInNewTab", { domain: source.domain })}
               className="inline-flex items-center gap-1.5 font-medium text-primary transition-colors hover:text-primary/80 hover:underline"
               href={source.url}
               onClick={(e) => e.stopPropagation()}
@@ -152,7 +152,7 @@ export default function SourceCard({
                   tabIndex={isLocked ? -1 : 0}
                   variant="link"
                 >
-                  {isExpanded ? "← Mostrar menos" : "Leer más →"}
+                  {isExpanded ? t("sources.showLessAction") : t("sources.readMoreAction")}
                 </Button>
               )}
             </>
