@@ -1,0 +1,40 @@
+import fs from 'fs/promises';
+import { NextResponse } from 'next/server';
+import path from 'path';
+
+export async function POST(request: Request) {
+  try {
+    const UPLOAD_DIR = path.join(process.cwd(), 'public', 'verifications');
+
+    await fs.mkdir(UPLOAD_DIR, { recursive: true });
+
+    const formData = await request.formData();
+    const file = formData.get('image') as File | null;
+    const fileName = formData.get('fileName') as string | null;
+
+    if (!(file && fileName)) {
+      return NextResponse.json({ error: 'No file or fileName provided.' }, { status: 400 });
+    }
+
+    if (!fileName.match(/^[\w-]+\.webp$/)) {
+      return NextResponse.json({ error: 'Invalid file name.' }, { status: 400 });
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const filePath = path.join(UPLOAD_DIR, fileName);
+    await fs.writeFile(filePath, buffer);
+
+    console.log(`[WEB API] Image successfully saved to: ${filePath}`);
+
+    const publicPath = `/verifications/${fileName}`;
+    return NextResponse.json({ success: true, path: publicPath });
+  } catch (error) {
+    console.error('[WEB API] Error uploading image:', error);
+    return NextResponse.json(
+      { error: 'Image upload failed.', details: (error as Error).message },
+      { status: 500 }
+    );
+  }
+}

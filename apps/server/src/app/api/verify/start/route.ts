@@ -17,110 +17,70 @@ const startVerificationSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  let verificationId: string | null = null;
+
   try {
     const session = await auth.api.getSession({
       headers: request.headers,
     });
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        {
-          error: 'No autorizado',
-          message: 'Token de autenticación requerido',
-        },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
     const userId = session.user.id;
-
     const body = await request.json();
     const validationResult = startVerificationSchema.safeParse(body);
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          error: 'Datos de entrada inválidos',
-          details: validationResult.error.errors.map((err) => ({
-            field: err.path.join('.'),
-            message: err.message,
-          })),
-        },
+        { error: 'Datos de entrada inválidos', details: validationResult.error.flatten() },
         { status: 400 }
       );
     }
 
-    const { text, confirmedQuestions } = validationResult.data;
+    const { text } = validationResult.data;
 
-    const verificationId = await createVerificationRecord(userId, text);
+    verificationId = await createVerificationRecord(userId, text, 'draft');
 
-    try {
-      if (confirmedQuestions && confirmedQuestions.length > 0) {
-        await saveCriticalQuestions(verificationId, confirmedQuestions);
-        await updateVerificationStatus(verificationId, 'questions_saved');
+    await updateVerificationStatus(verificationId, 'processing_questions');
 
-        return NextResponse.json(
-          {
-            success: true,
-            verification_id: verificationId,
-            status: 'questions_saved',
-            message: 'Verification created with questions',
-            questions_count: confirmedQuestions.length,
-          },
-          { status: 201 }
-        );
-      }
+    const questionsJob = await callExternalApiWithLogging(
+      verificationId,
+      'generate_questions',
+      () =>
+        generateQuestions({
+          input: text,
+          model: 'google/gemini-2.5-flash',
+          language: 'es',
+          location: 'es',
+        })
+    );
 
-      const questionsResult = await callExternalApiWithLogging(
-        verificationId,
-        'generate_questions',
-        () =>
-          generateQuestions({
-            verification_id: verificationId,
-            original_text: text,
-            language: 'es',
-            max_questions: 5,
-          })
-      );
-
-      // Save generated questions to database
-      if (questionsResult.questions && questionsResult.questions.length > 0) {
-        await saveCriticalQuestions(verificationId, questionsResult.questions);
-        await updateVerificationStatus(verificationId, 'processing_questions');
-      }
-
-      return NextResponse.json(
-        {
-          success: true,
-          verification_id: verificationId,
-          status: 'processing_questions',
-          message: 'Questions generated and verification created successfully',
-          questions_count: questionsResult.questions?.length || 0,
-        },
-        { status: 201 }
-      );
-    } catch (apiError) {
-      // If external API fails, still create the verification but mark it as error
-      console.error('External API error during question generation:', apiError);
-      await updateVerificationStatus(verificationId, 'error');
-
-      return NextResponse.json(
-        {
-          success: false,
-          verification_id: verificationId,
-          error: 'Question generation failed',
-          message: apiError instanceof Error ? apiError.message : 'Failed to generate questions',
-          status: 'error',
-        },
-        { status: 500 }
-      );
-    }
-  } catch (error) {
-    console.error('Error in /api/verify/start:', error);
     return NextResponse.json(
       {
-        error: 'Error interno del servidor',
-        message: error instanceof Error ? error.message : 'Error desconocido',
+        success: true,
+        verification_id: verificationId,
+        job_id: questionsJob.job_id,
+        status: 'processing_questions',
+        message: 'Job for question generation started successfully.',
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error in /api/verify/start:', error);
+
+    if (verificationId) {
+      await updateVerificationStatus(verificationId, 'error');
+    }
+
+    return NextResponse.json(
+      {
+        success: false,
+        verification_id: verificationId,
+        error: 'Question generation failed',
+        message: error instanceof Error ? error.message : 'Failed to generate questions',
+        status: 'error',
       },
       { status: 500 }
     );

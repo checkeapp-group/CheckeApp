@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
       where: eq(user.id, userId),
       columns: {
         isVerified: true,
+        isAdmin: true,
       },
     });
 
@@ -47,6 +48,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         isVerified: userRecord.isVerified,
+        isAdmin: userRecord.isAdmin,
       },
       { status: 200 }
     );
