@@ -125,7 +125,7 @@ const TextInputForm = ({
                 </Card>
             )}
             <Card
-                className={`p-4 sm:p-6 ${
+                className={`p-4 sm:p-6 rounded-3xl border-2 border-transparent transition-all duration-300 ${
                     isFocused
                         ? "border-primary/50 bg-card/95 shadow-md"
                         : "bg-card/80"

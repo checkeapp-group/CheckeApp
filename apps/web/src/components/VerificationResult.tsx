@@ -277,7 +277,7 @@ export default function VerificationResult({data}: VerificationResultProps) {
     };
 
     return (
-        <div className="relative w-full">
+        <div className="relative w-full fadeIn">
             <div className="absolute top-[-15vw] left-0 z-[-1] h-[40vw] w-full lg:top-[-20vw] xl:top-[-32vw]">
                 <Image
                     alt={
