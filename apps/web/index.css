@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
+
+* {
+  font-family: "Outfit", sans-serif;
+}
 
 @layer base {
   :root {
@@ -38,7 +43,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-zinc-100 text-foreground;
   }
 }
 
@@ -105,7 +110,7 @@
 }
 
 @theme {
-  --color-primary: #0f766e; /* teal-700 */
+  --color-primary: #00a39c; 
   --color-primary-foreground: #ffffff;
   --color-success: #059669; /* emerald-600 */
   --color-success-foreground: #064e3b;
@@ -116,8 +121,7 @@
   --color-neutral: #f3f4f6; /* gray-100 */
   --color-neutral-foreground: #111827;
 
-  --color-background: #f1f1f0;
-  --color-foreground: #0f766e; /* teal-700 for main text */
+  --color-foreground: #00958f;
   --color-card: #ffffff;
   --color-card-foreground: #0f766e;
   --color-popover: #ffffff;
@@ -130,7 +134,7 @@
   --color-destructive-foreground: #ffffff;
   --color-border: #e5e7eb;
   --color-input: #e5e7eb;
-  --color-ring: #0f766e;
+  --color-ring: #00a39c;
   --color-secondary: #f3f4f6;
   --color-secondary-foreground: #111827;
   --color-check: var(--color-success);
@@ -480,4 +484,8 @@ select {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+strong {
+  @apply text-neutral-700
 }
