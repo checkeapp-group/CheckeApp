@@ -58,7 +58,6 @@ const getLabelStyles = (label: string | null) => {
         icon: CheckCircle,
         color: "text-green-800",
         bgColor: "bg-green-100",
-        ringColor: "ring-green-600/20",
       };
     case "fake":
     case "false":
@@ -67,14 +66,12 @@ const getLabelStyles = (label: string | null) => {
         icon: AlertTriangle,
         color: "text-red-800",
         bgColor: "bg-red-100",
-        ringColor: "ring-red-600/20",
       };
     default:
       return {
         icon: AlertTriangle,
         color: "text-orange-800",
         bgColor: "bg-orange-100",
-        ringColor: "ring-orange-600/20",
       };
   }
 };
@@ -143,7 +140,7 @@ export default function UserVerificationCard({
 
               <div
                 className={cn(
-                  "flex items-center gap-1.5 rounded-md px-2 py-0.5 font-bold text-xs uppercase ring-1",
+                  "flex items-center gap-1.5 rounded-md px-2 py-0.5 font-bold text-xs uppercase",
                   displayInfo.bgColor,
                   displayInfo.color,
                 )}

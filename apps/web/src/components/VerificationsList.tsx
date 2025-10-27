@@ -90,21 +90,25 @@ export default function VerificationsList() {
 
   return (
     <div className="m-3 space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="flex w-full gap-2">
         <div className="relative flex-grow">
           <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 text-muted-foreground" />
           <Input
-            className="pl-10"
+            className="h-full w-full pl-10"
             onChange={handleSearchChange}
-            placeholder={t('verifications.search_placeholder')}
+            placeholder={t("verifications.search_placeholder")}
             value={searchTerm}
           />
         </div>
-        <Select
-          onChange={handleSortChange}
-          options={sortOptions}
-          value={`${sortBy}-${sortOrder}`}
-        />
+
+        <div className="flex items-stretch gap-2">
+          <Select
+            className="h-full"
+            onChange={handleSortChange}
+            options={sortOptions}
+            value={`${sortBy}-${sortOrder}`}
+          />
+        </div>
       </div>
 
       {verifications && verifications.length > 0 ? (
@@ -115,16 +119,19 @@ export default function VerificationsList() {
         </div>
       ) : (
         <div className="py-16 text-center text-muted-foreground">
-          <p>{t('verifications.no_results')}</p>
+          <p>{t("verifications.no_results")}</p>
         </div>
       )}
 
       {pagination && pagination.totalPages > 1 && (
         <div className="flex items-center justify-between pt-4">
           <p className="text-muted-foreground text-sm">
-            {t('pagination.showing', {
+            {t("pagination.showing", {
               start: (pagination.currentPage - 1) * pagination.limit + 1,
-              end: Math.min(pagination.currentPage * pagination.limit, pagination.totalCount),
+              end: Math.min(
+                pagination.currentPage * pagination.limit,
+                pagination.totalCount
+              ),
               total: pagination.totalCount,
             })}
           </p>
@@ -133,13 +140,13 @@ export default function VerificationsList() {
               disabled={pagination.currentPage === 1}
               onClick={() => handlePageChange(pagination.currentPage - 1)}
             >
-              {t('pagination.previous')}
+              {t("pagination.previous")}
             </Button>
             <Button
               disabled={pagination.currentPage === pagination.totalPages}
               onClick={() => handlePageChange(pagination.currentPage + 1)}
             >
-              {t('pagination.next')}
+              {t("pagination.next")}
             </Button>
           </div>
         </div>
