@@ -258,5 +258,22 @@
   "verification.generationFailed": "Galderak sortzeko prozesuak huts egin du.",
 
   "result.untitled": "Izenbururik gabe",
-  "result.noImage": "Irudirik gabe"
+  "result.noImage": "Irudirik gabe",
+
+  "meta.home.title": "FactChecker - Egiaztatu zure informazioa",
+  "meta.home.description": "Egiaztatu gertakariak denbora errealean iturriak erabiliz IA eleaniztunekin",
+  "meta.login.title": "Saioa hasi - FactChecker",
+  "meta.login.description": "Hasi saioa FactChecker-en testuak egiaztatzeko IA eleaniztunekin",
+  "meta.verifications.title": "Egiaztapenak arakatu - FactChecker",
+  "meta.verifications.description": "Arakatu FactChecker-en egindako egiaztapen publiko guztiak",
+  "meta.userVerifications.title": "Nire egiaztapenak - FactChecker",
+  "meta.userVerifications.description": "Kudeatu eta ikusi zure egiaztapen pertsonal guztiak",
+  "meta.verifyEdit.title": "Egiaztapena editatu - FactChecker",
+  "meta.verifyEdit.description": "Editatu egiaztapen-galderak eta pertsonalizatu zure analisia",
+  "meta.verifyResult.title": "Egiaztapen -emaitza - FactChecker",
+  "meta.verifyResult.description": "Kontsultatu egiaztapenaren emaitza zehatza iturriak eta analisiarekin",
+  "meta.share.title": "Partekatutako egiaztapena - FactChecker",
+  "meta.share.description": "Kontsultatu beste erabiltzaile batek partekatutako egiaztapen hau",
+  "meta.adminUsers.title": "Erabiltzaileen kudeaketa - FactChecker",
+  "meta.adminUsers.description": "Administrazio-panela sistemako erabiltzaileak kudeatzeko"
 }

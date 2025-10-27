@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import VerificationResult from "@/components/VerificationResult";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
+import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { orpc } from "@/utils/orpc";
 
 function ErrorState({ errorMessage }: { errorMessage: string }) {
@@ -25,6 +26,11 @@ function ErrorState({ errorMessage }: { errorMessage: string }) {
 export default function FinalResultPage() {
   const { id: verificationId } = useParams();
   const { t } = useI18n();
+
+  usePageMetadata(
+    t("meta.verifyResult.title", { id: verificationId || "" }),
+    t("meta.verifyResult.description")
+  );
 
   const { data: statusData, error: statusError } = useQuery({
     queryKey: ["verificationProgress", verificationId],

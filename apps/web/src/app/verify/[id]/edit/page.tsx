@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import VerificationFlow from "@/components/VerificationFlow";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
+import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { orpc } from "@/utils/orpc";
 
 function ErrorState({ errorMessage }: { errorMessage: string }) {
@@ -36,6 +37,11 @@ function PageContent({ verificationId }: { verificationId?: string | null }) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [jobId, setJobId] = useState<string | null>(null);
+
+  usePageMetadata(
+    t("meta.verifyEdit.title", { id: verificationId || "" }),
+    t("meta.verifyEdit.description")
+  );
 
   useEffect(() => {
     const storedJobId = verificationId

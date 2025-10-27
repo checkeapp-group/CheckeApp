@@ -51,7 +51,7 @@
 
   "nav.about": "Acerca de",
   "nav.help": "Axuda",
-  "nav.verify": "Verificar",
+  "nav.verify": "Inicio",
 
   "textInput.loginPlaceholder": "Preme para iniciar sesión e comezar a escribir...",
   "textInput.submitting": "Enviando...",
@@ -258,5 +258,22 @@
   "verification.generationFailed": "O proceso de xeración de preguntas fallou.",
 
   "result.untitled": "Sen título",
-  "result.noImage": "Sen imaxe"
+  "result.noImage": "Sen imaxe",
+
+  "meta.home.title": "FactChecker - Verifica a túa información",
+  "meta.home.description": "Verifica feitos usando fontes en tempo real con IA multilingüe",
+  "meta.login.title": "Iniciar sesión - FactChecker",
+  "meta.login.description": "Inicia sesión en FactChecker para verificar textos con IA multilingüe",
+  "meta.verifications.title": "Explorar verificacións - FactChecker",
+  "meta.verifications.description": "Explora todas as verificacións públicas realizadas en FactChecker",
+  "meta.userVerifications.title": "As miñas verificacións - FactChecker",
+  "meta.userVerifications.description": "Xestiona e visualiza todas as túas verificacións persoais",
+  "meta.verifyEdit.title": "Editar verificación - FactChecker",
+  "meta.verifyEdit.description": "Edita as preguntas de verificación e personaliza a túa análise",
+  "meta.verifyResult.title": "Resultado de verificación - FactChecker",
+  "meta.verifyResult.description": "Consulta o resultado detallado da verificación con fontes e análise",
+  "meta.share.title": "Verificación compartida - FactChecker",
+  "meta.share.description": "Consulta esta verificación compartida por outro usuario",
+  "meta.adminUsers.title": "Xestión de usuarios - FactChecker",
+  "meta.adminUsers.description": "Panel de administración para xestionar usuarios do sistema"
 }

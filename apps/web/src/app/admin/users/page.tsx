@@ -14,19 +14,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
-import { orpc } from "@/utils/orpc";
 import { useI18n } from "@/hooks/use-i18n";
+import { usePageMetadata } from "@/hooks/use-page-metadata";
+import { orpc } from "@/utils/orpc";
 
 function AdminUsersPageContent() {
   const { t } = useI18n();
   const queryClient = useQueryClient();
+
+  usePageMetadata(t("meta.adminUsers.title"), t("meta.adminUsers.description"));
 
   const { data: users, isLoading } = useQuery({
     queryKey: ["admin-all-users"],
     queryFn: () => orpc.getAllUsers.call(),
   });
 
-  useGlobalLoader(isLoading, 'admin-users-list');
+  useGlobalLoader(isLoading, "admin-users-list");
 
   const updateUserMutation = useMutation({
     mutationFn: async (variables: {
@@ -85,12 +88,18 @@ function AdminUsersPageContent() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="min-w-[200px]">{t("admin.users.email")}</TableHead>
-              <TableHead className="min-w-[150px]">{t("admin.users.name")}</TableHead>
+              <TableHead className="min-w-[200px]">
+                {t("admin.users.email")}
+              </TableHead>
+              <TableHead className="min-w-[150px]">
+                {t("admin.users.name")}
+              </TableHead>
               <TableHead className="w-[120px] text-center">
                 {t("admin.users.verified")}
               </TableHead>
-              <TableHead className="w-[120px] text-center">{t("admin.users.admin")}</TableHead>
+              <TableHead className="w-[120px] text-center">
+                {t("admin.users.admin")}
+              </TableHead>
             </TableRow>
           </TableHeader>
 
@@ -146,15 +155,21 @@ function AdminUsersPageContent() {
             key={user.id}
           >
             <div className="mb-3 border-b pb-3">
-              <p className="font-medium text-gray-500 text-sm">{t("admin.users.email")}</p>
+              <p className="font-medium text-gray-500 text-sm">
+                {t("admin.users.email")}
+              </p>
               <p className="mt-1 break-all font-semibold text-gray-900">
                 {user.email}
               </p>
             </div>
 
             <div className="mb-3 border-b pb-3">
-              <p className="font-medium text-gray-500 text-sm">{t("admin.users.name")}</p>
-              <p className="mt-1 text-gray-900">{user.name || t("admin.users.noValue")}</p>
+              <p className="font-medium text-gray-500 text-sm">
+                {t("admin.users.name")}
+              </p>
+              <p className="mt-1 text-gray-900">
+                {user.name || t("admin.users.noValue")}
+              </p>
             </div>
 
             <div className="flex items-center justify-between gap-4">
@@ -172,7 +187,9 @@ function AdminUsersPageContent() {
                 >
                   <Check className="h-4 w-4 text-white opacity-0 transition-opacity group-data-[checked]:opacity-100" />
                 </Checkbox>
-                <span className="text-gray-700 text-sm">{t("admin.users.verified")}</span>
+                <span className="text-gray-700 text-sm">
+                  {t("admin.users.verified")}
+                </span>
               </div>
 
               <div className="flex flex-1 items-center gap-3">
@@ -189,7 +206,9 @@ function AdminUsersPageContent() {
                 >
                   <Check className="h-4 w-4 text-white opacity-0 transition-opacity group-data-[checked]:opacity-100" />
                 </Checkbox>
-                <span className="text-gray-700 text-sm">{t("admin.users.admin")}</span>
+                <span className="text-gray-700 text-sm">
+                  {t("admin.users.admin")}
+                </span>
               </div>
             </div>
           </div>

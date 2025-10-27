@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useGlobalLoader } from '@/hooks/use-global-loader';
 import type { Question } from '@/types/questions';
@@ -14,11 +14,25 @@ type UseQuestionsEditorProps = {
 export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) {
   const queryClient = useQueryClient();
   const queryKey = orpc.getVerificationQuestions.key({ input: { verificationId } });
+  const [retryCount, setRetryCount] = useState(0);
 
   const questionsQuery = useQuery(
     orpc.getVerificationQuestions.queryOptions({
       input: { verificationId },
       enabled: !!verificationId,
+      refetchInterval: (query) => {
+        if (query.state.data?.length || query.state.error || retryCount >= 2) {
+          return false;
+        }
+        return 2000;
+      },
+      onSuccess: (data) => {
+        if (data.length > 0) {
+          setRetryCount(3);
+        } else {
+          setRetryCount((c) => c + 1);
+        }
+      },
     })
   );
 

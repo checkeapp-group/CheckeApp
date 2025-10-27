@@ -73,15 +73,15 @@ export default function VerificationsHome() {
         </div>
       </div>
 
-      {verifications.length > 0 ? (
+      {isLoading ? (
+        <div className="py-16 text-center text-muted-foreground">
+          <p>{t("home.noRecentVerifications")}</p>
+        </div>
+      ) : (
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {verifications.map((v) => (
             <VerificationCard key={v.id} verification={v} />
           ))}
-        </div>
-      ) : (
-        <div className="py-16 text-center text-muted-foreground">
-          <p>{t("home.noRecentVerifications")}</p>
         </div>
       )}
     </div>
