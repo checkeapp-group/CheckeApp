@@ -31,7 +31,7 @@ export const verificationRouter = {
   startVerification: protectedProcedure
     .input(
       z.object({
-        text: z.string().min(50).max(5000).trim(),
+        text: z.string().min(30).max(5000).trim(),
         language: z.enum(['es', 'eu', 'ca', 'gl']).default('es'),
       })
     )
@@ -138,11 +138,11 @@ export const verificationRouter = {
       const { verificationId, questions } = input;
       await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
 
-      const questionsSavedCount = await saveCriticalQuestions(verificationId, questions);
+      //const questionsSavedCount = await saveCriticalQuestions(verificationId, questions);
 
-      if (questionsSavedCount > 0) {
-        await updateVerificationStatus(verificationId, 'sources_ready');
-      }
+      //if (questionsSavedCount > 0) {
+      //  await updateVerificationStatus(verificationId, 'sources_ready');
+      //}
 
       return { success: true, message: 'Questions processed successfully.' };
     }),

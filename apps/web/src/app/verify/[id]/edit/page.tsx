@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,21 +10,6 @@ import VerificationFlow from "@/components/VerificationFlow";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
 import { orpc } from "@/utils/orpc";
-
-function LoadingState() {
-  const { t } = useI18n();
-  return (
-    <Card className="flex flex-col items-center p-8 text-center">
-      <Loader2 className="mb-4 h-12 w-12 animate-spin text-primary" />
-      <h2 className="mb-2 font-bold text-xl">
-        {t("common.loading", { defaultValue: "Cargando..." })}
-      </h2>
-      <p className="text-muted-foreground">
-        {t("verification.loadingDetails")}
-      </p>
-    </Card>
-  );
-}
 
 function ErrorState({ errorMessage }: { errorMessage: string }) {
   const { t } = useI18n();
@@ -43,27 +28,19 @@ export default function VerificationEditPage() {
   const params = useParams();
   const verificationId = Array.isArray(params.id) ? params.id[0] : params.id;
 
-  if (!verificationId) {
-    return (
-      <div className="container mx-auto max-w-4xl px-4 py-12">
-        <LoadingState />
-      </div>
-    );
-  }
-
   return <PageContent verificationId={verificationId} />;
 }
 
-function PageContent({ verificationId }: { verificationId: string }) {
+function PageContent({ verificationId }: { verificationId?: string | null }) {
   const { t } = useI18n();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [jobId, setJobId] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedJobId = sessionStorage.getItem(
-      `verification_job_${verificationId}`
-    );
+    const storedJobId = verificationId
+      ? sessionStorage.getItem(`verification_job_${verificationId}`)
+      : null;
     if (storedJobId) {
       setJobId(storedJobId);
     }
@@ -75,11 +52,11 @@ function PageContent({ verificationId }: { verificationId: string }) {
     error: verificationError,
   } = useQuery({
     queryKey: ["verificationFlowData", verificationId],
-    queryFn: () => orpc.getVerificationDetails.call({ verificationId }),
+    queryFn: () =>
+      orpc.getVerificationDetails.call({ verificationId: verificationId! }),
     enabled: !!verificationId,
   });
 
-  // Mutation for saving generated questions
   const saveQuestionsMutation = useMutation({
     mutationFn: (
       questions: Array<{
@@ -87,7 +64,11 @@ function PageContent({ verificationId }: { verificationId: string }) {
         original_question: string;
         order_index: number;
       }>
-    ) => orpc.saveGeneratedQuestions.call({ verificationId, questions }),
+    ) =>
+      orpc.saveGeneratedQuestions.call({
+        verificationId: verificationId!,
+        questions,
+      }),
     onSuccess: () => {
       toast.success(t("verification.questionsGenerated"));
       queryClient.invalidateQueries({
@@ -102,13 +83,14 @@ function PageContent({ verificationId }: { verificationId: string }) {
       setJobId(null);
     },
     onError: (error) => {
-      toast.error(t("verification.errorSavingQuestions", { error: error.message }));
+      toast.error(
+        t("verification.errorSavingQuestions", { error: error.message })
+      );
       sessionStorage.removeItem(`verification_job_${verificationId}`);
       setJobId(null);
     },
   });
 
-  // Get job result if jobId is set
   const { data: jobResult, isLoading: isPolling } = useQuery({
     queryKey: ["jobResult", jobId],
     queryFn: () => orpc.getJobResult.call({ jobId: jobId! }),
@@ -134,9 +116,7 @@ function PageContent({ verificationId }: { verificationId: string }) {
         );
         saveQuestionsMutation.mutate(formattedQuestions);
       } else {
-        toast.error(
-          t("verification.noValidQuestions")
-        );
+        toast.error(t("verification.noValidQuestions"));
         sessionStorage.removeItem(`verification_job_${verificationId}`);
         setJobId(null);
       }
@@ -150,27 +130,16 @@ function PageContent({ verificationId }: { verificationId: string }) {
     }
   }, [jobResult, saveQuestionsMutation, verificationId]);
 
-  useGlobalLoader(
-    isLoadingVerification || isPolling || saveQuestionsMutation.isPending,
-    "edit-page-loader"
-  );
+  const shouldShowLoader =
+    !verificationId ||
+    isLoadingVerification ||
+    isPolling ||
+    saveQuestionsMutation.isPending;
 
-  if (verificationData && !isPolling && !saveQuestionsMutation.isPending) {
-    const isEditable =
-      verificationData.status === "processing_questions" ||
-      verificationData.status === "sources_ready";
-    if (!isEditable && verificationData.status !== "draft") {
-      router.replace(`/verify/${verificationId}/finalResult`);
-      return null;
-    }
-  }
+  useGlobalLoader(shouldShowLoader, "edit-page-loader");
 
-  if (isLoadingVerification) {
-    return (
-      <div className="container mx-auto max-w-4xl px-4 py-12">
-        <LoadingState />
-      </div>
-    );
+  if (!verificationId) {
+    return null;
   }
 
   if (verificationError) {
@@ -181,7 +150,15 @@ function PageContent({ verificationId }: { verificationId: string }) {
     );
   }
 
-  if (verificationData) {
+  if (verificationData && !isPolling && !saveQuestionsMutation.isPending) {
+    const isEditable =
+      verificationData.status === "processing_questions" ||
+      verificationData.status === "sources_ready";
+    if (!isEditable && verificationData.status !== "draft") {
+      router.replace(`/verify/${verificationId}/finalResult`);
+      return null;
+    }
+
     return (
       <div className="mx-auto my-8 max-w-4xl rounded-lg bg-neutral/80 p-4 shadow-lg backdrop-blur-sm sm:p-6 lg:p-8">
         <VerificationFlow verification={verificationData} />

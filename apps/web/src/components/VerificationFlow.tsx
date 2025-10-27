@@ -181,11 +181,12 @@ export default function VerificationFlow({
   return (
     <>
       <Modal
+        className="relative overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-2xl"
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         title={t("verification.delete_modal.title")}
       >
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white p-4">
           <p className="text-muted-foreground">
             {t("verification.delete_modal.message")}
           </p>

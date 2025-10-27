@@ -91,16 +91,6 @@ export function useAuth() {
     }
   }, [router]);
 
-  const login = useCallback(async (email: string, password: string) => {
-    console.warn('useAuth.login is deprecated, use useAuthNavigation.signIn instead');
-    return { success: false, error: 'Use useAuthNavigation.signIn instead' };
-  }, []);
-
-  const signup = useCallback(async (email: string, password: string, name?: string) => {
-    console.warn('useAuth.signup is deprecated, use useAuthNavigation.signUp instead');
-    return { success: false, error: 'Use useAuthNavigation.signUp instead' };
-  }, []);
-
   const signInWithProvider = useCallback(async (provider: 'github' | 'google' | 'discord') => {
     try {
       await authClient.signIn.social({
@@ -115,38 +105,6 @@ export function useAuth() {
       });
     } catch (error) {
       console.error(`${provider} signin failed:`, error);
-    }
-  }, []);
-
-  const forgotPassword = useCallback(async (email: string) => {
-    try {
-      await authClient.forgetPassword({
-        email,
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      return { success: true };
-    } catch (error) {
-      console.error('Forgot password failed:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
-    }
-  }, []);
-
-  const resetPassword = useCallback(async (token: string, password: string) => {
-    try {
-      await authClient.resetPassword({
-        token,
-        password,
-      });
-      return { success: true };
-    } catch (error) {
-      console.error('Reset password failed:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Network error',
-      };
     }
   }, []);
 
@@ -168,25 +126,11 @@ export function useAuth() {
       ...authState,
       isVerified: authState.user?.isVerified ?? false,
       isAdmin: authState.user?.isAdmin ?? false,
-      login,
       logout,
-      signup,
       signInWithProvider,
-      forgotPassword,
-      resetPassword,
       updateProfile,
       checkAuthStatus,
     }),
-    [
-      authState,
-      login,
-      logout,
-      signup,
-      signInWithProvider,
-      forgotPassword,
-      resetPassword,
-      updateProfile,
-      checkAuthStatus,
-    ]
+    [authState, logout, signInWithProvider, updateProfile, checkAuthStatus]
   );
 }

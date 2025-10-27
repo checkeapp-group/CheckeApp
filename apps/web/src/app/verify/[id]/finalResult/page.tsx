@@ -3,7 +3,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
 import { useParams } from "next/navigation";
-import { FinalAnalysisLoader } from "@/components/FinalAnalysisLoader";
 import { Card } from "@/components/ui/card";
 import VerificationResult from "@/components/VerificationResult";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
@@ -71,7 +70,10 @@ export default function FinalResultPage() {
     enabled: !!verificationId && !resultData,
   });
 
-  useGlobalLoader(isLoadingResult || !statusData, "final-result-loader");
+  useGlobalLoader(
+    !resultData || isLoadingResult || !statusData,
+    "final-result-loader"
+  );
 
   if (statusError) {
     return (
@@ -101,11 +103,4 @@ export default function FinalResultPage() {
     return <VerificationResult data={resultData} />;
   }
 
-  return (
-    <div className="container mx-auto max-w-4xl px-4 py-8 sm:py-12">
-      <FinalAnalysisLoader
-        title={verificationDetails?.originalText || t("common.loading")}
-      />
-    </div>
-  );
 }
