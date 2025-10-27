@@ -70,10 +70,12 @@ export default function FinalResultPage() {
     enabled: !!verificationId && !resultData,
   });
 
-  useGlobalLoader(
-    !resultData || isLoadingResult || !statusData,
-    "final-result-loader"
-  );
+  //useGlobalLoader(
+  // !resultData || isLoadingResult || !statusData,
+  // "final-result-loader"
+  //);
+
+  useGlobalLoader(isLoadingResult || !resultData, "final-result-loader");
 
   if (statusError) {
     return (
@@ -102,5 +104,4 @@ export default function FinalResultPage() {
   if (resultData) {
     return <VerificationResult data={resultData} />;
   }
-
 }

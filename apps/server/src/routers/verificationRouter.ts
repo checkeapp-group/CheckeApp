@@ -138,7 +138,7 @@ export const verificationRouter = {
       const { verificationId, questions } = input;
       await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
 
-      //const questionsSavedCount = await saveCriticalQuestions(verificationId, questions);
+      await saveCriticalQuestions(verificationId, questions);
 
       //if (questionsSavedCount > 0) {
       //  await updateVerificationStatus(verificationId, 'sources_ready');
