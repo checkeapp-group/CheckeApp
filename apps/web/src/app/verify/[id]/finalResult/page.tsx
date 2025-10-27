@@ -61,14 +61,14 @@ export default function FinalResultPage() {
     retry: false,
   });
 
-  const { data: verificationDetails } = useQuery({
-    queryKey: ["verificationDetails", verificationId],
-    queryFn: () =>
-      orpc.getVerificationDetails.call({
-        verificationId: verificationId as string,
-      }),
-    enabled: !!verificationId && !resultData,
-  });
+  //const { data: verificationDetails } = useQuery({
+  // queryKey: ["verificationDetails", verificationId],
+  //  queryFn: () =>
+  // orpc.getVerificationDetails.call({
+  //    verificationId: verificationId as string,
+  //  }),
+  //enabled: !!verificationId && !resultData,
+  //});
 
   //useGlobalLoader(
   // !resultData || isLoadingResult || !statusData,

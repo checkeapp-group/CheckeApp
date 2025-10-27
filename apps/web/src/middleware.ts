@@ -3,8 +3,6 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 const publicRoutes = ['/', '/share/:path*', '/verify/:path*'];
 const homeUrl = '/';
-const guestRoutes = ['/login', '/register', '/recover-password'];
-const loginUrl = '/login';
 
 function matches(pattern: string, pathname: string) {
   if (pattern.endsWith('/:path*')) {
@@ -28,17 +26,9 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
 
   if (sessionCookie) {
-    if (guestRoutes.some((p) => matches(p, pathname))) {
-      return NextResponse.redirect(new URL(homeUrl, request.url));
-    }
-
     return NextResponse.next();
   }
-  if (guestRoutes.some((p) => matches(p, pathname))) {
     return NextResponse.next();
-  }
-
-  return NextResponse.redirect(new URL(loginUrl, request.url));
 }
 
 export const config = {
