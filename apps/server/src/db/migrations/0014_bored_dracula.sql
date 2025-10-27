@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `termsAccepted` boolean DEFAULT false NOT NULL;

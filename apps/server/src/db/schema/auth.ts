@@ -7,6 +7,7 @@ export const user = mysqlTable('user', {
   emailVerified: boolean('emailVerified').notNull().default(false),
   isVerified: boolean('is_verified').notNull().default(false),
   isAdmin: boolean('is_admin').notNull().default(false),
+  termsAccepted: boolean('termsAccepted').notNull().default(false),
   image: text('image'),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
