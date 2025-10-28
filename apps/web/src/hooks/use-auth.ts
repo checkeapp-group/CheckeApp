@@ -11,15 +11,17 @@ type User = {
   image?: string;
   isVerified?: boolean;
   isAdmin?: boolean;
+  termsAccepted?: boolean;
 };
 
 type AuthState = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  termsAccepted: boolean;
 };
 
-async function fetchUserStatus(): Promise<{ isVerified: boolean; isAdmin: boolean }> {
+async function fetchUserStatus(): Promise<{ isVerified: boolean; isAdmin: boolean; termsAccepted: boolean }> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/status`, {
     method: 'GET',
     credentials: 'include',
@@ -30,7 +32,7 @@ async function fetchUserStatus(): Promise<{ isVerified: boolean; isAdmin: boolea
 
   if (!response.ok) {
     if (response.status === 401 || response.status === 404) {
-      return { isVerified: false, isAdmin: false };
+      return { isVerified: false, isAdmin: false , termsAccepted: false};
     }
     throw new Error('Failed to fetch user status');
   }
@@ -62,6 +64,7 @@ export function useAuth() {
             image: session.user.image,
             isVerified: userStatus?.isVerified ?? false,
             isAdmin: userStatus?.isAdmin ?? false,
+            termsAccepted: userStatus?.termsAccepted ?? false,
           }
         : null,
       isAuthenticated: !!session?.user,

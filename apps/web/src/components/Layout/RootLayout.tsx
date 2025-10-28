@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import AuthModal from "@/components/Auth/auth-modal";
+import CookieConsentComponent from "@/components/CookieConsent";
 import GlobalLoader from "@/components/GlobalLoader";
 import UserMenu from "@/components/UserMenu";
 import { LanguageSelector } from "@/components/ui/lenguage-selector";
@@ -13,6 +14,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { useLoading } from "@/providers/LoadingProvider";
 import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 import FooterBanner from "@/public/footer_banner.png";
+import TermsAcceptanceModal from "../Auth/terms-acceptance-modal";
 import { Button } from "../ui/button";
 
 type LayoutProps = {
@@ -21,10 +23,11 @@ type LayoutProps = {
 
 export default function RootLayout({ children }: LayoutProps) {
   const { t } = useI18n();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { isLoading } = useLoading();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const openAuthModal = () => setShowAuthModal(true);
   const closeAuthModal = () => setShowAuthModal(false);
 
@@ -35,6 +38,13 @@ export default function RootLayout({ children }: LayoutProps) {
       openAuthModal();
     }
   }, [pathname, searchParams]);
+  useEffect(() => {
+    if (isAuthenticated && user && !user.termsAccepted) {
+      setShowTermsModal(true);
+    } else {
+      setShowTermsModal(false);
+    }
+  }, [isAuthenticated, user]);
 
   const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
@@ -49,7 +59,11 @@ export default function RootLayout({ children }: LayoutProps) {
     <>
       {isLoading && <GlobalLoader />}
       <AuthModal isOpen={showAuthModal} onClose={closeAuthModal} />
-
+      <TermsAcceptanceModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+      />
+      <CookieConsentComponent />
       <div className="flex min-h-screen flex-col">
         <header className="sticky top-0 z-50 w-full border-border border-b bg-white/95 shadow-sm backdrop-blur-sm">
           <div className="container mx-auto flex h-16 items-center justify-between">
@@ -111,27 +125,39 @@ export default function RootLayout({ children }: LayoutProps) {
 
         <footer className="border-border border-t bg-card">
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
-            <div className="flex flex-col items-center gap-2 sm:items-start">
-              <div className="flex items-center gap-2">
+            <div className="m-2 flex flex-col items-center gap-2 p-2 sm:items-start">
+              <div className="flex items-center justify-center gap-2">
                 <Image
                   alt="Patrocinadores"
-                  className="h-auto max-w-4xl"
+                  className="h-auto w-full max-w-4xl"
                   src={FooterBanner}
                 />
               </div>
             </div>
-            <div className="flex items-center gap-4 text-muted-foreground text-sm">
+            <div className="m-2 flex items-center gap-4 text-muted-foreground text-sm">
               <Link
                 className="transition-colors hover:text-foreground"
-                href="/about"
+                href="/about-us"
               >
                 {t("nav.about")}
               </Link>
               <Link
                 className="transition-colors hover:text-foreground"
-                href="/help"
+                href="/legal-notice"
               >
-                {t("nav.help")}
+                {t("nav.legalAdvice")}
+              </Link>
+              <Link
+                className="transition-colors hover:text-foreground"
+                href="/privacy-policy"
+              >
+                {t("nav.privacyPolicy")}
+              </Link>
+              <Link
+                className="transition-colors hover:text-foreground"
+                href="/cookies-policy"
+              >
+                {t("nav.cookiesPolicy")}
               </Link>
             </div>
           </div>

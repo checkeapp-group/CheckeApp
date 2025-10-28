@@ -27,11 +27,6 @@ export default function FinalResultPage() {
   const { id: verificationId } = useParams();
   const { t } = useI18n();
 
-  usePageMetadata(
-    t("meta.verifyResult.title", { id: verificationId || "" }),
-    t("meta.verifyResult.description")
-  );
-
   const { data: statusData, error: statusError } = useQuery({
     queryKey: ["verificationProgress", verificationId],
     queryFn: () => {
@@ -82,6 +77,14 @@ export default function FinalResultPage() {
   //);
 
   useGlobalLoader(isLoadingResult || !resultData, "final-result-loader");
+
+  // Set page metadata with verification image when data is available
+  const verificationImageUrl = resultData?.finalResult?.imageUrl;
+  usePageMetadata(
+    t("meta.verifyResult.title", { id: verificationId || "" }),
+    t("meta.verifyResult.description"),
+    verificationImageUrl || undefined
+  );
 
   if (statusError) {
     return (

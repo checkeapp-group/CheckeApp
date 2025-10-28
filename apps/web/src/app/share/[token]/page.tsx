@@ -14,8 +14,6 @@ export default function SharePage() {
   const { t } = useI18n();
   const { token: shareToken } = useParams();
 
-  usePageMetadata(t("meta.share.title"), t("meta.share.description"));
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["sharedResult", shareToken],
     queryFn: () => {
@@ -31,6 +29,14 @@ export default function SharePage() {
   });
 
   useGlobalLoader(isLoading, "share-page");
+
+  // Set page metadata with verification image when data is available
+  const verificationImageUrl = data?.finalResult?.imageUrl;
+  usePageMetadata(
+    t("meta.share.title"),
+    t("meta.share.description"),
+    verificationImageUrl || undefined
+  );
 
   if (error) {
     return (
