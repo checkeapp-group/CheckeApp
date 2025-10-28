@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
       columns: {
         isVerified: true,
         isAdmin: true,
+        termsAccepted: true,
       },
     });
 
@@ -49,6 +50,7 @@ export async function GET(request: NextRequest) {
       {
         isVerified: userRecord.isVerified,
         isAdmin: userRecord.isAdmin,
+        termsAccepted: userRecord.termsAccepted,
       },
       { status: 200 }
     );

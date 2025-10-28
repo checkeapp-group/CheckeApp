@@ -23,7 +23,7 @@ type LayoutProps = {
 
 export default function RootLayout({ children }: LayoutProps) {
   const { t } = useI18n();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { isLoading } = useLoading();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -38,11 +38,16 @@ export default function RootLayout({ children }: LayoutProps) {
       openAuthModal();
     }
   }, [pathname, searchParams]);
+
   useEffect(() => {
+    if (isAuthLoading) {
+      return;
+    }
     if (isAuthenticated && user && !user.termsAccepted) {
       setShowTermsModal(true);
     } else {
       setShowTermsModal(false);
+      console.log(user);
     }
   }, [isAuthenticated, user]);
 

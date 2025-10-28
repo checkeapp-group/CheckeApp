@@ -21,7 +21,11 @@ type AuthState = {
   termsAccepted: boolean;
 };
 
-async function fetchUserStatus(): Promise<{ isVerified: boolean; isAdmin: boolean; termsAccepted: boolean }> {
+async function fetchUserStatus(): Promise<{
+  isVerified: boolean;
+  isAdmin: boolean;
+  termsAccepted: boolean;
+}> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/status`, {
     method: 'GET',
     credentials: 'include',
@@ -32,7 +36,7 @@ async function fetchUserStatus(): Promise<{ isVerified: boolean; isAdmin: boolea
 
   if (!response.ok) {
     if (response.status === 401 || response.status === 404) {
-      return { isVerified: false, isAdmin: false , termsAccepted: false};
+      return { isVerified: false, isAdmin: false, termsAccepted: false };
     }
     throw new Error('Failed to fetch user status');
   }
