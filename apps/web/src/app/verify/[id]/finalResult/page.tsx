@@ -79,11 +79,14 @@ export default function FinalResultPage() {
   useGlobalLoader(isLoadingResult || !resultData, "final-result-loader");
 
   // Set page metadata with verification image when data is available
-  const verificationImageUrl = resultData?.finalResult?.imageUrl;
+  const title = resultData?.finalResult?.metadata?.title;
+  const main_claim = resultData?.finalResult?.metadata?.main_claim;
+  const verificationImageUrl = resultData?.finalResult?.imageUrl
+
   usePageMetadata(
-    t("meta.verifyResult.title", { id: verificationId || "" }),
-    t("meta.verifyResult.description"),
-    verificationImageUrl || undefined
+    title || t("result.untitled"),
+    main_claim || t("meta.verifyResult.description"),
+    verificationImageUrl || undefined 
   );
 
   if (statusError) {
