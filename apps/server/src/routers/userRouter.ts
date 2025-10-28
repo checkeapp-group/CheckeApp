@@ -45,4 +45,17 @@ export const userRouter = {
 
     return { isVerified: currentUser.isVerified };
   }),
+
+  acceptTerms: protectedProcedure.input(z.void()).handler(async ({ context }) => {
+    const userId = context.session.user.id;
+    try {
+      await db.update(user).set({ termsAccepted: true }).where(eq(user.id, userId));
+      return { success: true };
+    } catch (error) {
+      console.error(`[acceptTerms] Failed for user ${userId}:`, error);
+      throw new ORPCError('INTERNAL_SERVER_ERROR', {
+        message: 'Could not accept terms. Please try again.',
+      });
+    }
+  }),
 };

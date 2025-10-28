@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @import "tailwindcss";
+@import "vanilla-cookieconsent/dist/cookieconsent.css";
 
 * {
   font-family: "Outfit", sans-serif;
@@ -64,6 +65,7 @@
   --color-positive-foreground: #365314;
   --color-neutral: #f3f4f6; /* gray-100 */
   --color-neutral-foreground: #111827;
+  --color-text: #373c44;
 
   --color-foreground: #00958f;
   --color-card: #ffffff;
@@ -180,4 +182,13 @@ strong {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+#cc-main {
+
+  --cc-btn-primary-bg: var(--color-primary);
+  --cc-btn-primary-border-color: transparent;
+  --cc-btn-primary-hover-bg: black;
+  --cc-btn-primary-hover-border-color: transparent;
+
 }

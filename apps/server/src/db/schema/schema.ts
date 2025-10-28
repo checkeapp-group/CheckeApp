@@ -17,7 +17,7 @@ import { user } from './auth';
 /**
  * Database Schema for Fact Verification System
  *
- * Defines the complete MySQL schema for the FactCheckerProject using Drizzle ORM.
+ * Defines the complete MySQL schema for the CheckeApp using Drizzle ORM.
  * Users submit claims for verification, which are processed through multiple stages:
  * verification → critical questions → source collection → final results with citations.
  *

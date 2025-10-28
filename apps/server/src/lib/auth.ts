@@ -30,7 +30,7 @@ export const auth = betterAuth({
       if (userCount === 1) {
         await db
           .update(schema.user)
-          .set({ isAdmin: true, isVerified: true })
+          .set({ isAdmin: true, isVerified: true, termsAccepted: true })
           .where(eq(schema.user.id, user.id));
         console.log(`[Auth] Primer usuario ${user.email} ha sido promovido a Administrador.`);
       }
