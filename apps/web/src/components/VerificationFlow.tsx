@@ -143,7 +143,7 @@ export default function VerificationFlow({
       });
     },
     onError: (error) => {
-      toast.error(error.message || "Error al guardar las fuentes.");
+      toast.error(error.message || t("verification.save_sources_error"));
       setPollingJobId(null);
       setPollingStartTime(null);
     },
@@ -202,13 +202,13 @@ export default function VerificationFlow({
 
         saveSourcesMutation.mutate(formattedSources);
       } else {
-        toast.error("La búsqueda de fuentes no produjo resultados.");
+        toast.error(t("verification.sources_no_results"));
       }
     } else if (
       jobResult?.status === "failed" ||
       jobResult?.status === "error"
     ) {
-      toast.error("El proceso de búsqueda de fuentes ha fallado.");
+      toast.error(t("verification.sources_search_failed"));
       setPollingJobId(null);
       setPollingStartTime(null);
     }

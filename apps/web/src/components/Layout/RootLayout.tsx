@@ -47,7 +47,6 @@ export default function RootLayout({ children }: LayoutProps) {
       setShowTermsModal(true);
     } else {
       setShowTermsModal(false);
-      console.log(user);
     }
   }, [isAuthenticated, user]);
 
@@ -112,9 +111,6 @@ export default function RootLayout({ children }: LayoutProps) {
                   <UserMenu />
                 ) : (
                   <div className="hidden items-center gap-2 sm:flex">
-                    <Button onClick={openAuthModal} variant="ghost">
-                      {t("auth.signIn")}
-                    </Button>
                     <Button onClick={openAuthModal}>
                       {t("auth.getStarted")}
                     </Button>

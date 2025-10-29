@@ -62,7 +62,7 @@ export const verificationRouter = {
           () =>
             generateQuestions({
               input: text,
-              model: 'Latxa70B',
+              model: process.env.MODEL,
               language,
               location: 'es',
             })
@@ -110,7 +110,6 @@ export const verificationRouter = {
         const result = await getVerificationsList({
           ...input,
           userId,
-          status: 'completed' || 'processing_questions' || 'sources_ready' || 'generating_article' || 'generating_image',
         });
         return result;
       } catch (error) {

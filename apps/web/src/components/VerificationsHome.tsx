@@ -1,15 +1,19 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Clock, Sparkles, Zap } from "lucide-react";
+import { Clock, HelpCircle, Sparkles, Zap } from "lucide-react";
+import { useState } from "react";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
 import { orpc } from "@/utils/orpc";
+import { ExplanationModal } from "./ExplanationModal";
+import { Button } from "./ui/button";
 import VerificationCard from "./VerificationCard";
 
 export default function VerificationsHome() {
   const { t } = useI18n();
   const limit = 6;
+  const [isExplanationModalOpen, setIsExplanationModalOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: orpc.getVerificationsHome.key({ input: { page: 1, limit } }),
@@ -22,6 +26,10 @@ export default function VerificationsHome() {
 
   return (
     <div className="space-y-6">
+      <ExplanationModal
+        isOpen={isExplanationModalOpen}
+        onClose={() => setIsExplanationModalOpen(false)}
+      />
       {/* Header */}
       <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#83d59a] via-[#2fbe9a] to-[#04abd0] p-6 shadow-lg transition-all duration-700 hover:shadow-teal-500/30 sm:p-8">
         <div className="wave-container">
@@ -63,12 +71,26 @@ export default function VerificationsHome() {
             </div>
           </div>
 
-          {/* Indicator */}
-          <div className="hidden items-center gap-2 rounded-full bg-black/10 px-4 py-2 backdrop-blur-sm transition-all duration-500 hover:bg-white/20 sm:flex">
-            <Zap className="h-4 w-4 animate-pulse text-white" />
-            <span className="font-medium text-shadow-md text-shadow-neutral-800/20 text-sm text-white">
-              {t("home.realTime")}
-            </span>
+          {/* Indicators */}
+          <div className="flex items-center gap-3">
+            <Button
+              className="group/btn flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
+              onClick={() => setIsExplanationModalOpen(true)}
+              size="sm"
+              variant="ghost"
+            >
+              <HelpCircle className="h-4 w-4 text-white transition-transform duration-300 group-hover/btn:rotate-12" />
+              <span className="font-medium text-shadow-md text-shadow-neutral-800/20 text-sm text-white">
+                {t("home.howItWorks")}
+              </span>
+            </Button>
+
+            <div className="hidden items-center gap-2 rounded-full bg-black/10 px-4 py-2 backdrop-blur-sm transition-all duration-500 hover:bg-white/20 sm:flex">
+              <Zap className="h-4 w-4 animate-pulse text-white" />
+              <span className="font-medium text-shadow-md text-shadow-neutral-800/20 text-sm text-white">
+                {t("home.realTime")}
+              </span>
+            </div>
           </div>
         </div>
       </div>

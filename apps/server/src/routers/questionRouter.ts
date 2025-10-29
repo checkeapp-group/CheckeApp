@@ -92,7 +92,7 @@ export const questionsRouter = {
             input: verification.originalText,
             language: verification.language,
             location: 'es',
-            model: 'Latxa70B',
+            model: process.env.MODEL,
           })
         );
 

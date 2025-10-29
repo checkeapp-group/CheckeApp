@@ -29,6 +29,7 @@
     "@formatjs/intl-numberformat": "^8.15.6",
     "@formkit/auto-animate": "github:formkit/auto-animate",
     "@headlessui/react": "^2.2.7",
+    "@lottiefiles/dotlottie-react": "^0.17.6",
     "@orpc/tanstack-query": "^1.9.0",
     "@tanstack/react-query": "^5.90.2",
     "bcrypt": "^6.0.0",

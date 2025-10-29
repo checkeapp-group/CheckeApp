@@ -24,7 +24,6 @@ export async function saveCriticalQuestions(
   questions: ReceivedQuestion[]
 ): Promise<number> {
   if (!questions || questions.length === 0) {
-    console.log(`No questions to save for verification: ${verificationId}`);
     return 0;
   }
 

@@ -41,8 +41,6 @@ export async function extractArticleData(targetUrl: string): Promise<ArticleData
       throw new Error('No relevant information could be extracted from the article.');
     }
 
-    console.log(`[ArticleExtractor] Data extracted successfully from ${targetUrl}`);
-
     return {
       url: data.url,
       title: data.title,

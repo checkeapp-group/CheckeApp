@@ -252,7 +252,6 @@ export default function VerificationResult({ data }: VerificationResultProps) {
 
   const { label, main_claim, title } = metadata ?? {};
   const fullImageUrl = imageUrl;
-  console.log("Full Image URL:", fullImageUrl);
   // Determine label styling
   const getLabelStyles = (labelValue?: string) => {
     const normalizedLabel = labelValue?.toLowerCase();

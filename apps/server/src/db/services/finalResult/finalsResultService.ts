@@ -69,7 +69,7 @@ export async function generateAndSaveFinalAnalysis(verificationId: string): Prom
         language: verificationDetails.language,
         location: 'es',
         sources: sourcesForApi,
-        model: 'Latxa70B',
+        model: process.env.MODEL,
       })
     );
 
@@ -88,7 +88,7 @@ export async function generateAndSaveFinalAnalysis(verificationId: string): Prom
       const imageJob = await callExternalApiWithLogging(verificationId, 'generate_image', () =>
         generateImage({
           input: articleTitle,
-          model: 'google/gemini-2.5-flash',
+          model: process.env.MODEL,
           size: '1920x1080',
         })
       );

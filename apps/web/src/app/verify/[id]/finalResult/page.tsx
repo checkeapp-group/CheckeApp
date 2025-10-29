@@ -3,9 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import FinalVerificationLoader from "@/components/FinalVerificationLoader";
+import GlobalLoader from "@/components/GlobalLoader";
 import { Card } from "@/components/ui/card";
 import VerificationResult from "@/components/VerificationResult";
-import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { orpc } from "@/utils/orpc";
@@ -26,8 +28,13 @@ function ErrorState({ errorMessage }: { errorMessage: string }) {
 export default function FinalResultPage() {
   const { id: verificationId } = useParams();
   const { t } = useI18n();
+  const [showResult, setShowResult] = useState(false);
 
-  const { data: statusData, error: statusError } = useQuery({
+  const {
+    data: statusData,
+    isLoading: isLoadingStatus,
+    error: statusError,
+  } = useQuery({
     queryKey: ["verificationProgress", verificationId],
     queryFn: () => {
       if (!verificationId || typeof verificationId !== "string") {
@@ -35,7 +42,7 @@ export default function FinalResultPage() {
       }
       return orpc.getVerificationProgress.call({ verificationId });
     },
-    enabled: !!verificationId,
+    enabled: !!verificationId && !showResult,
     refetchInterval: (query) => {
       const data = query.state.data;
       if (data?.status === "completed" || data?.status === "error") {
@@ -62,58 +69,76 @@ export default function FinalResultPage() {
     retry: false,
   });
 
-  //const { data: verificationDetails } = useQuery({
-  // queryKey: ["verificationDetails", verificationId],
-  //  queryFn: () =>
-  // orpc.getVerificationDetails.call({
-  //    verificationId: verificationId as string,
-  //  }),
-  //enabled: !!verificationId && !resultData,
-  //});
+  const { data: verificationDetails, isLoading: isLoadingDetails } = useQuery({
+    queryKey: ["verificationDetails", verificationId],
+    queryFn: () => {
+      if (!verificationId || typeof verificationId !== "string") {
+        return null;
+      }
+      return orpc.getVerificationDetails.call({ verificationId });
+    },
+    enabled: !!verificationId,
+  });
 
-  //useGlobalLoader(
-  // !resultData || isLoadingResult || !statusData,
-  // "final-result-loader"
-  //);
-
-  useGlobalLoader(isLoadingResult || !resultData, "final-result-loader");
-
-  // Set page metadata with verification image when data is available
-  const title = resultData?.finalResult?.metadata?.title;
+  const title =
+    resultData?.finalResult?.metadata?.title ??
+    resultData?.originalText ??
+    t("result.untitled");
   const main_claim = resultData?.finalResult?.metadata?.main_claim;
-  const verificationImageUrl = resultData?.finalResult?.imageUrl
+  const verificationImageUrl = resultData?.finalResult?.imageUrl;
 
   usePageMetadata(
-    title || t("result.untitled"),
+    title,
     main_claim || t("meta.verifyResult.description"),
-    verificationImageUrl || undefined 
+    verificationImageUrl || undefined
   );
 
   if (statusError) {
-    return (
-      <div className="container mx-auto max-w-2xl px-4 py-8 sm:py-12">
-        <ErrorState errorMessage={statusError.message} />
-      </div>
-    );
+    return <ErrorState errorMessage={statusError.message} />;
   }
-
   if (resultError) {
-    return (
-      <div className="container mx-auto max-w-2xl px-4 py-8 sm:py-12">
-        <ErrorState errorMessage={resultError.message} />
-      </div>
-    );
+    return <ErrorState errorMessage={resultError.message} />;
   }
-
   if (statusData?.status === "error") {
-    return (
-      <div className="container mx-auto max-w-2xl px-4 py-8 sm:py-12">
-        <ErrorState errorMessage={t("finalResult.analysis_failed")} />
-      </div>
-    );
+    return <ErrorState errorMessage={t("finalResult.analysis_failed")} />;
   }
-
-  if (resultData) {
+  if (showResult && resultData) {
     return <VerificationResult data={resultData} />;
   }
+
+  if (statusData?.status === "completed") {
+    if (resultData) {
+      return <VerificationResult data={resultData} />;
+    }
+    return (
+      <div className="container mx-auto flex min-h-[70vh] items-center justify-center">
+        <GlobalLoader />
+      </div>
+    );
+  }
+
+  if (
+    verificationId &&
+    typeof verificationId === "string" &&
+    !isLoadingStatus &&
+    statusData?.status !== "completed"
+  ) {
+    const isProcessing =
+      statusData?.status !== "completed" && statusData?.status !== "error";
+    return (
+      <div className="container mx-auto flex min-h-[70vh] items-center justify-center">
+        <FinalVerificationLoader
+          isProcessing={isProcessing}
+          onComplete={() => setShowResult(true)}
+          question={verificationDetails?.originalText || ""}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto flex min-h-[70vh] items-center justify-center">
+      <GlobalLoader />
+    </div>
+  );
 }
