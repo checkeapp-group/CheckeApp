@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useGlobalLoader } from '@/hooks/use-global-loader';
 import type { Question } from '@/types/questions';
@@ -11,30 +11,76 @@ type UseQuestionsEditorProps = {
   verificationId: string;
 };
 
+const POLLING_TIMEOUT = process.env.EXTERNAL_API_TIMEOUT;
+
 export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) {
   const queryClient = useQueryClient();
   const queryKey = orpc.getVerificationQuestions.key({ input: { verificationId } });
   const [retryCount, setRetryCount] = useState(0);
+  const [pollingStartTime, setPollingStartTime] = useState<number | null>(null);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
 
   const questionsQuery = useQuery(
     orpc.getVerificationQuestions.queryOptions({
       input: { verificationId },
       enabled: !!verificationId,
       refetchInterval: (query) => {
-        if (query.state.data?.length || query.state.error || retryCount >= 2) {
+        const hasData = query.state.data && query.state.data.length > 0;
+        const hasError = query.state.error;
+        const maxRetriesReached = retryCount >= 60;
+
+        if (hasData || hasError || maxRetriesReached || hasTimedOut) {
           return false;
         }
-        return 2000;
-      },
-      onSuccess: (data) => {
-        if (data.length > 0) {
-          setRetryCount(3);
-        } else {
-          setRetryCount((c) => c + 1);
-        }
+        return process.env.RETRY_DELAY;
       },
     })
   );
+
+  useEffect(() => {
+    const shouldStartPolling =
+      !pollingStartTime &&
+      (!questionsQuery.data || questionsQuery.data.length === 0) &&
+      !hasTimedOut &&
+      !questionsQuery.error &&
+      (questionsQuery.isLoading || questionsQuery.isFetching);
+
+    if (shouldStartPolling) {
+      setPollingStartTime(Date.now());
+    }
+  }, [pollingStartTime, questionsQuery.data, hasTimedOut, questionsQuery.error, questionsQuery.isLoading, questionsQuery.isFetching]);
+
+  useEffect(() => {
+    if (!pollingStartTime || hasTimedOut) {
+      return;
+    }
+
+    const checkTimeout = () => {
+      const elapsed = Date.now() - pollingStartTime;
+      if (
+        elapsed >= POLLING_TIMEOUT &&
+        (!questionsQuery.data || questionsQuery.data.length === 0)
+      ) {
+        setHasTimedOut(true);
+        toast.error(
+          'Tiempo de espera agotado al generar preguntas. Por favor, inténtalo de nuevo.'
+        );
+      }
+    };
+
+    const timeoutId = setTimeout(checkTimeout, POLLING_TIMEOUT);
+    return () => clearTimeout(timeoutId);
+  }, [pollingStartTime, hasTimedOut, questionsQuery.data]);
+
+  // Actualizar retry count
+  useEffect(() => {
+    if (questionsQuery.data && questionsQuery.data.length > 0) {
+      setRetryCount(30);
+      setPollingStartTime(null);
+    } else if (questionsQuery.isFetching) {
+      setRetryCount((c) => c + 1);
+    }
+  }, [questionsQuery.data, questionsQuery.isFetching]);
 
   const updateQuestionMutation = useMutation({
     mutationFn: (variables: { questionId: string; questionText: string }) =>
@@ -184,6 +230,12 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
 
   const questions = useMemo(() => questionsQuery.data || [], [questionsQuery.data]);
 
+  const isPollingForQuestions =
+    pollingStartTime !== null &&
+    questions.length === 0 &&
+    !hasTimedOut &&
+    !questionsQuery.error;
+
   const canContinue =
     !questionsQuery.isLoading &&
     questions.length > 0 &&
@@ -194,14 +246,16 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
     deleteQuestionMutation.isPending ||
     addQuestionMutation.isPending ||
     reorderQuestionsMutation.isPending;
-  useGlobalLoader(questionsQuery.isLoading, 'questions-initial-load');
+
   useGlobalLoader(isMutating, 'questions-mutation');
 
   return {
     questions,
     isLoading: questionsQuery.isLoading,
+    isPollingForQuestions,
     isMutating,
     error: questionsQuery.error,
+    hasTimedOut,
     updateQuestion,
     deleteQuestion,
     addQuestion,

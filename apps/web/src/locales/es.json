@@ -145,6 +145,9 @@
   "questions.confirmed_description": "Este paso ha sido completado. Las preguntas han sido guardadas y confirmadas.",
   "questions.confirm_and_continue": "Confirmar Preguntas y Continuar",
   "questions.confirmed_and_saved": "Las preguntas han sido confirmadas y guardadas",
+  "questions.generating": "Generando preguntas críticas...",
+  "questions.generating_description": "Estamos analizando el texto y generando preguntas relevantes. Esto puede tardar hasta un minuto.",
+  "questions.timeout_error": "Tiempo de espera agotado. No se pudieron generar las preguntas. Por favor, inténtalo de nuevo.",
 
   "sources.scraped": "Obtenido",
   "sources.showLess": "Ver menos",
@@ -161,9 +164,12 @@
   "sources.selected_count": "{count} seleccionada(s)",
   "sources.starting": "Iniciando...",
   "sources.continue_analysis": "Continuar con el Análisis",
+  "sources.searching": "Buscando fuentes...",
+  "sources.searching_description": "Estamos buscando fuentes relevantes para verificar las afirmaciones. Esto puede tardar hasta un minuto.",
 
   "verification.sources_found": "¡Éxito! Se encontraron {count} fuentes.",
   "verification.search_sources_error": "Ocurrió un error al buscar fuentes.",
+  "verification.sources_timeout_error": "Tiempo de espera agotado al buscar fuentes. Por favor, inténtalo de nuevo.",
   "verification.ready_for_analysis": "¡Listo para el análisis final!",
   "verification.continue_error": "Error al continuar",
   "verification.step1.title": "Paso 1: Envía tu texto a verificar",

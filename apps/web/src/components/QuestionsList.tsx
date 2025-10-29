@@ -21,6 +21,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   CheckCircle2,
+  Loader2,
   Lock,
   Plus,
   RefreshCw,
@@ -117,6 +118,7 @@ export default function QuestionsList({
     questions,
     error,
     isLoading,
+    isPollingForQuestions,
     isMutating,
     updateQuestion,
     deleteQuestion,
@@ -124,6 +126,7 @@ export default function QuestionsList({
     reorderQuestions,
     canContinue,
     refetch,
+    hasTimedOut,
   } = useQuestionsEditor({ verificationId });
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -131,8 +134,6 @@ export default function QuestionsList({
   const [showAddForm, setShowAddForm] = useState(false);
   const [refinementText, setRefinementText] = useState("");
 
-  useGlobalLoader(isLoading, `questions-loading-${verificationId}`);
-  useGlobalLoader(isMutating, `questions-mutating-${verificationId}`);
   useGlobalLoader(isContinuing, `questions-continuing-${verificationId}`);
 
   const sensors = useSensors(
@@ -191,10 +192,40 @@ export default function QuestionsList({
     }
   };
 
-  if (isLoading) {
+  // Show loading when polling for questions
+  if (isPollingForQuestions) {
+    return (
+      <Card className="border-primary/30 bg-primary/5 p-12 text-center">
+        <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-primary" />
+        <p className="mb-2 font-semibold text-lg text-primary">
+          {t("questions.generating")}
+        </p>
+        <p className="text-muted-foreground text-sm">
+          {t("questions.generating_description")}
+        </p>
+      </Card>
+    );
+  }
+
+  if (hasTimedOut && questions.length === 0) {
+    return (
+      <Card className="border-destructive/30 bg-destructive/5 p-8 text-center">
+        <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
+        <p className="mb-4 font-semibold text-destructive">
+          {t("questions.timeout_error")}
+        </p>
+        <Button onClick={() => refetch()} variant="destructive">
+          <RefreshCw className="mr-2 h-4 w-4" /> {t("common.retry")}
+        </Button>
+      </Card>
+    );
+  }
+
+  if (isLoading && questions.length === 0 && !isPollingForQuestions) {
     return <QuestionsListSkeleton />;
   }
 
+  // Mostrar error
   if (error) {
     return (
       <Card className="border-destructive/30 bg-destructive/5 p-8 text-center">
@@ -332,6 +363,7 @@ export default function QuestionsList({
         <div className="flex justify-end border-border border-t pt-6">
           <Button
             disabled={!canContinue || isLocked}
+            loading={isContinuing}
             onClick={handleConfirm}
             size="lg"
           >
