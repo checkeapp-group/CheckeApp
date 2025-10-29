@@ -84,7 +84,7 @@ export function QuestionCard({
         !isTextValid && isEditing && !isLocked && 'border-destructive/50 ring-destructive/20'
       )}
     >
-      <div className="flex w-full items-center gap-3">
+      <div className="flex w-full items-center gap-2">
         <div
           className={cn(
             'flex flex-shrink-0 items-center text-muted-foreground transition-colors',
@@ -144,12 +144,12 @@ export function QuestionCard({
               </div>
             </div>
           ) : (
-            <div className="group flex w-full items-center justify-between gap-4">
+            <div className="group flex w-full items-center justify-between gap-2">
               <p className="flex-1 font-medium text-base text-foreground">
                 {question.questionText}
               </p>
               {!isLocked && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center">
                   <Button
                     aria-label={t('question.edit.ariaLabel')}
                     onClick={() => onEdit(question.id)}

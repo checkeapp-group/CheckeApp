@@ -66,12 +66,12 @@ export default function SourcesList({
 
   if (isPollingForSources && !sources.length) {
     return (
-      <Card className="border-primary/30 bg-primary/5 p-12 text-center">
-        <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-primary" />
-        <p className="mb-2 font-semibold text-lg text-primary">
+      <Card className="border-primary/30 bg-primary/5 p-6 text-center sm:p-12">
+        <Loader2 className="mx-auto mb-4 h-10 w-10 animate-spin text-primary sm:h-12 sm:w-12" />
+        <p className="mb-2 font-semibold text-base text-primary sm:text-lg">
           {t("sources.searching")}
         </p>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-xs sm:text-sm">
           {t("sources.searching_description")}
         </p>
       </Card>
@@ -84,7 +84,7 @@ export default function SourcesList({
 
   if (error) {
     return (
-      <p className="text-destructive">
+      <p className="text-destructive text-sm sm:text-base">
         {t("sources.error_loading")}: {error.message}
       </p>
     );
@@ -92,12 +92,13 @@ export default function SourcesList({
 
   return (
     <div
-      className={`space-y-6 bg-gray-100 ${
+      className={`space-y-4 bg-gray-100 sm:space-y-6 ${
         isLocked ? "pointer-events-none opacity-70" : ""
       }`}
     >
-      <div className="grid grid-cols-1 gap-4 rounded-lg border bg-gray-100 p-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 rounded-lg border bg-gray-100 p-3 sm:grid-cols-2 sm:gap-4 sm:p-4 lg:grid-cols-3">
         <Input
+          className="w-full"
           disabled={isLocked}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={t("sources.search_placeholder")}
@@ -119,6 +120,7 @@ export default function SourcesList({
           value={filters.domain || "all"}
         />
         <UiSelect
+          className="sm:col-span-2 lg:col-span-1"
           disabled={isLocked}
           onChange={(sortBy) => setFilters((prev) => ({ ...prev, sortBy }))}
           options={[
@@ -130,12 +132,14 @@ export default function SourcesList({
         />
       </div>
 
-      <div className="flex items-center justify-between">
-        <h4 className="font-semibold">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h4 className="font-semibold text-sm sm:text-base">
           {t("sources.found_title", { count: sources.length })}
         </h4>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
           <Button
+            className="h-auto p-0 text-xs sm:text-sm"
             disabled={isLocked}
             onClick={selectAll}
             size="sm"
@@ -144,6 +148,7 @@ export default function SourcesList({
             {t("sources.select_all")}
           </Button>
           <Button
+            className="h-auto p-0 text-xs sm:text-sm"
             disabled={isLocked}
             onClick={deselectAll}
             size="sm"
@@ -151,12 +156,13 @@ export default function SourcesList({
           >
             {t("sources.deselect_all")}
           </Button>
-          <p className="font-medium text-sm">
+          <p className="font-medium text-xs sm:text-sm">
             {t("sources.selected_count", { count: selectedSourcesCount })}
           </p>
         </div>
       </div>
-      <div className="space-y-4">
+
+      <div className="space-y-3 sm:space-y-4">
         {sources.map((source) => (
           <SourceCard
             isLocked={isLocked}
@@ -169,10 +175,12 @@ export default function SourcesList({
         ))}
       </div>
 
-      <div className="flex justify-end border-t pt-4">
+      <div className="flex justify-end border-t pt-3 sm:pt-4">
         <Button
+          className="w-full sm:w-auto"
           disabled={!canContinue || isContinuing || isLocked}
           onClick={onComplete}
+          size="default"
         >
           {isContinuing
             ? t("sources.starting")
