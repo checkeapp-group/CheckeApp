@@ -205,8 +205,8 @@ export async function pollForResult<T>(
   stepName: string,
   verificationId: string
 ): Promise<T> {
-  const maxAttempts = 20; 
-  const delay = 3000;
+  const maxAttempts = 50; 
+  const delay = 4000;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     console.log(`[Polling] Attempt ${attempt}/${maxAttempts} for job ${jobId} (${stepName})`);

@@ -126,7 +126,6 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
     return [...new Set(domains)];
   }, [allDomainsQuery.data]);
 
-  useGlobalLoader(sourcesQuery.isLoading, `sources-loading-${verificationId}`);
   useGlobalLoader(updateSelectionMutation.isPending, `source-update-${verificationId}`);
   useGlobalLoader(batchUpdateSelectionMutation.isPending, `source-batch-update-${verificationId}`);
 

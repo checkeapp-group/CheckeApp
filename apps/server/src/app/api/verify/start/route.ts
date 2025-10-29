@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       () =>
         generateQuestions({
           input: text,
-          model: 'google/gemini-2.5-flash',
+          model: 'Latxa70B',
           language: 'es',
           location: 'es',
         })

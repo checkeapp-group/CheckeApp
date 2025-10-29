@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://placehold.co/800x200/1e293b/ffffff?text=FactCheckerProject" alt="FactCheckerProject Banner" />
+  <img src="./public/FactCheckerLogo.webp" alt="CheckeApp Banner" />
   <br>
-  <h1 align="center">FactCheckerProject : Empowering people with verified truth</h1>
+  <h1 align="center">CheckeApp : Empowering people with verified truth</h1>
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
 
 <p align="center">
     <!-- Project Status and License -->
-    <a href="https://github.com/YOUR_USERNAME/FactCheckerProject/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/YOUR_USERNAME/FactCheckerProject?style=for-the-badge&color=007ec6"></a>
+    <a href="https://github.com/YOUR_USERNAME/CheckeApp/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/YOUR_USERNAME/CheckeApp?style=for-the-badge&color=007ec6"></a>
     <a href="#"><img alt="Project Status" src="https://img.shields.io/badge/status-in%20development-yellowgreen?style=for-the-badge"></a>
     <br>
     <!-- Additional Supporters and Collaborators -->
@@ -29,7 +29,7 @@
 
 ## About The Project
 
-In an age of information overload, FactCheckerProject provides a powerful tool to help you distinguish fact from fiction. Our mission is to empower users by providing a clear, guided process to verify claims, news articles, or any piece of text.
+In an age of information overload, CheckeApp provides a powerful tool to help you distinguish fact from fiction. Our mission is to empower users by providing a clear, guided process to verify claims, news articles, or any piece of text.
 
 By leveraging advanced technology, our platform breaks down complex information, identifies key questions, gathers relevant sources, and produces a final, easy-to-understand report, helping you make informed decisions with confidence.
 

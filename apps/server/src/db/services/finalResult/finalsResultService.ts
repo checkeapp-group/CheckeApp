@@ -32,20 +32,6 @@ type ImageJobResult = {
   cost: number;
 };
 
-type FinalApiResponse = {
-  answer: string;
-  metadata: {
-    categories: string[];
-    title?: string;
-    label?: string;
-    main_claim?: string;
-    language?: string;
-    location?: string;
-  };
-  sources: Record<string, { url: string; source: string; favicon: string }>;
-  related_questions: Record<string, string>;
-};
-
 export async function generateAndSaveFinalAnalysis(verificationId: string): Promise<void> {
   try {
     await updateVerificationStatus(verificationId, 'generating_summary');
@@ -83,7 +69,7 @@ export async function generateAndSaveFinalAnalysis(verificationId: string): Prom
         language: verificationDetails.language,
         location: 'es',
         sources: sourcesForApi,
-        model: 'google/gemini-2.5-flash',
+        model: 'Latxa70B',
       })
     );
 

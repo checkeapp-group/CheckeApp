@@ -1,12 +1,12 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import SourceCard from "@/components/SourceCards";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { UiSelect } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
 import { useSourcesEditor } from "@/hooks/use-sources-editor";
 
@@ -37,6 +37,7 @@ type SourcesListProps = {
   onComplete: () => void;
   isContinuing?: boolean;
   isLocked?: boolean;
+  isPollingForSources?: boolean;
 };
 
 export default function SourcesList({
@@ -44,6 +45,7 @@ export default function SourcesList({
   onComplete,
   isContinuing,
   isLocked = false,
+  isPollingForSources = false,
 }: SourcesListProps) {
   const { t } = useI18n();
   const {
@@ -60,8 +62,21 @@ export default function SourcesList({
     selectAll,
     deselectAll,
     availableDomains,
-    isUpdating,
   } = useSourcesEditor({ verificationId });
+
+  if (isPollingForSources && !sources.length) {
+    return (
+      <Card className="border-primary/30 bg-primary/5 p-12 text-center">
+        <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-primary" />
+        <p className="mb-2 font-semibold text-lg text-primary">
+          {t("sources.searching")}
+        </p>
+        <p className="text-muted-foreground text-sm">
+          {t("sources.searching_description")}
+        </p>
+      </Card>
+    );
+  }
 
   if (isLoading && !sources.length) {
     return <SourcesListSkeleton />;

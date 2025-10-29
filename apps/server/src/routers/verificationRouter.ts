@@ -26,7 +26,6 @@ const paginationSchema = z.object({
   search: z.string().optional(),
 });
 
-
 export const verificationRouter = {
   startVerification: protectedProcedure
     .input(
@@ -63,7 +62,7 @@ export const verificationRouter = {
           () =>
             generateQuestions({
               input: text,
-              model: 'google/gemini-2.5-flash',
+              model: 'Latxa70B',
               language,
               location: 'es',
             })
@@ -111,6 +110,7 @@ export const verificationRouter = {
         const result = await getVerificationsList({
           ...input,
           userId,
+          status: 'completed' || 'processing_questions' || 'sources_ready' || 'generating_article' || 'generating_image',
         });
         return result;
       } catch (error) {

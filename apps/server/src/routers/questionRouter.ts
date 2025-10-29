@@ -92,7 +92,7 @@ export const questionsRouter = {
             input: verification.originalText,
             language: verification.language,
             location: 'es',
-            model: 'google/gemini-2.5-flash',
+            model: 'Latxa70B',
           })
         );
 

@@ -56,17 +56,63 @@ export default function VerificationFlow({
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [pollingJobId, setPollingJobId] = useState<string | null>(null);
+  const [pollingStartTime, setPollingStartTime] = useState<number | null>(null);
+  const [sourcesPollingTimedOut, setSourcesPollingTimedOut] = useState(false);
+
+  const SOURCES_POLLING_TIMEOUT = 180_000;
 
   const { id: verificationId, originalText: verificationText } = verification;
 
-  const { data: jobResult, isLoading: isPolling } = useQuery({
+  const jobResultQuery = useQuery({
     queryKey: ["jobResult", pollingJobId],
     queryFn: () => orpc.getJobResult.call({ jobId: pollingJobId! }),
-    enabled: !!pollingJobId,
-    refetchInterval: (query) =>
-      query.state.data?.status === "completed" ? false : 3000,
+    enabled: !!pollingJobId && !sourcesPollingTimedOut,
+    refetchInterval: (query) => {
+      if (query.state.data?.status === "completed" || sourcesPollingTimedOut) {
+        return false;
+      }
+      return 3000;
+    },
     retry: false,
   });
+
+  const jobResult = jobResultQuery.data;
+  const isPollingForSources = !!pollingJobId && !sourcesPollingTimedOut;
+
+  useEffect(() => {
+    if (pollingJobId && !pollingStartTime) {
+      setPollingStartTime(Date.now());
+      setSourcesPollingTimedOut(false);
+    }
+  }, [pollingJobId, pollingStartTime]);
+
+  useEffect(() => {
+    if (!(pollingStartTime && pollingJobId) || sourcesPollingTimedOut) {
+      return;
+    }
+    const checkTimeout = () => {
+      const elapsed = Date.now() - pollingStartTime;
+      if (
+        elapsed >= SOURCES_POLLING_TIMEOUT &&
+        jobResult?.status !== "completed"
+      ) {
+        setSourcesPollingTimedOut(true);
+        setPollingJobId(null);
+        setPollingStartTime(null);
+        toast.error(t("verification.sources_timeout_error"));
+      }
+    };
+
+    const timeoutId = setTimeout(checkTimeout, SOURCES_POLLING_TIMEOUT);
+    return () => clearTimeout(timeoutId);
+  }, [
+    pollingStartTime,
+    pollingJobId,
+    sourcesPollingTimedOut,
+    jobResult,
+    SOURCES_POLLING_TIMEOUT,
+    t,
+  ]);
 
   const deleteVerificationMutation = useMutation({
     mutationFn: () => orpc.deleteVerification.call({ verificationId }),
@@ -90,9 +136,8 @@ export default function VerificationFlow({
           count: jobResult?.result?.sources?.length || 0,
         })
       );
-      setCompletedSteps((prev) => [...new Set([...prev, "step-2"])]);
-      setActiveStep("step-3");
       setPollingJobId(null);
+      setPollingStartTime(null);
       queryClient.invalidateQueries({
         queryKey: orpc.getSources.key({ input: { verificationId } }),
       });
@@ -100,6 +145,7 @@ export default function VerificationFlow({
     onError: (error) => {
       toast.error(error.message || "Error al guardar las fuentes.");
       setPollingJobId(null);
+      setPollingStartTime(null);
     },
   });
 
@@ -107,6 +153,8 @@ export default function VerificationFlow({
     mutationFn: async () =>
       await orpc.confirmQuestionsAndSearchSources.call({ verificationId }),
     onSuccess: (result) => {
+      setCompletedSteps((prev) => [...new Set([...prev, "step-2"])]);
+      setActiveStep("step-3");
       setPollingJobId(result.jobId);
     },
     onError: (error) => {
@@ -130,7 +178,6 @@ export default function VerificationFlow({
 
   const isStepProcessing =
     searchSourcesMutation.isPending ||
-    isPolling ||
     saveSourcesMutation.isPending ||
     continueToAnalysisMutation.isPending ||
     deleteVerificationMutation.isPending;
@@ -140,6 +187,8 @@ export default function VerificationFlow({
   useEffect(() => {
     if (jobResult?.status === "completed") {
       setPollingJobId(null);
+      setPollingStartTime(null);
+      setSourcesPollingTimedOut(false);
       const sourcesFromApi = jobResult.result?.sources;
       if (sourcesFromApi && Array.isArray(sourcesFromApi)) {
         const formattedSources = sourcesFromApi.map((source) => ({
@@ -154,7 +203,6 @@ export default function VerificationFlow({
         saveSourcesMutation.mutate(formattedSources);
       } else {
         toast.error("La búsqueda de fuentes no produjo resultados.");
-        setPollingJobId(null);
       }
     } else if (
       jobResult?.status === "failed" ||
@@ -162,6 +210,7 @@ export default function VerificationFlow({
     ) {
       toast.error("El proceso de búsqueda de fuentes ha fallado.");
       setPollingJobId(null);
+      setPollingStartTime(null);
     }
   }, [jobResult, saveSourcesMutation]);
 
@@ -255,6 +304,7 @@ export default function VerificationFlow({
         >
           <SourcesList
             isContinuing={isStepProcessing}
+            isPollingForSources={isPollingForSources}
             onComplete={handleSourcesConfirmed}
             verificationId={verificationId}
           />
