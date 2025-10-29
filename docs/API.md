@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the two primary API interfaces in the FactCheckerProject:
+This document describes the two primary API interfaces in the CheckeApp:
 
 1.  **Internal API (oRPC)**: A type-safe API used for all communication between the frontend (`web`) and the backend (`server`).
 2.  **External API (REST)**: A RESTful API provided by an external AI service, which the backend calls to perform long-running tasks like generating questions and analyzing sources.

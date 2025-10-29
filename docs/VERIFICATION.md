@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the complete, asynchronous, multi-step flow for a fact-checking request in the FactCheckerProject. The architecture is designed to handle long-running AI tasks without blocking the user interface.
+This document describes the complete, asynchronous, multi-step flow for a fact-checking request in the CheckeApp. The architecture is designed to handle long-running AI tasks without blocking the user interface.
 
 The process is orchestrated by the frontend, which initiates jobs on the backend and polls for their results.
 

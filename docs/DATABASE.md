@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides a comprehensive overview of the FactChecker database architecture, designed to support a robust fact-checking application with user authentication, verification processes, and detailed audit trails.
+This document provides a comprehensive overview of the CheckeApp database architecture, designed to support a robust fact-checking application with user authentication, verification processes, and detailed audit trails.
 
 ## 🏗️ Architecture Principles
 

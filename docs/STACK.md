@@ -1,6 +1,6 @@
 # 🛠️ Technology Stack
 
-This document outlines the technologies, frameworks, and libraries used in the FactCheckerProject.
+This document outlines the technologies, frameworks, and libraries used in the CheckeApp.
 
 ---
 

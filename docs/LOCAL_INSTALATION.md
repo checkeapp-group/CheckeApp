@@ -1,6 +1,6 @@
 # 🚀 Local Installation Guide
 
-This guide provides step-by-step instructions to set up and run the FactCheckerProject on your local machine for development purposes.
+This guide provides step-by-step instructions to set up and run the CheckeApp on your local machine for development purposes.
 
 ## 📋 Prerequisites
 
@@ -21,7 +21,7 @@ First, clone the project from your Git repository to your local machine.
 
 ```bash
 git clone <your-repository-url>
-cd FactCheckerProject
+cd CheckeApp
 ```
 
 ### 2. Install Dependencies
