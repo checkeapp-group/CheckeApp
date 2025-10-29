@@ -74,7 +74,7 @@
   --color-popover-foreground: #0f766e;
   --color-muted: #f3f4f6;
   --color-muted-foreground: #6b7280;
-  --color-accent: #34d399;
+  --color-accent: #b5ecea;
   --color-accent-foreground: #064e3b;
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
@@ -173,6 +173,23 @@ strong {
   opacity:0;
 }
 
+.gradient-button {
+  @apply bg-gradient-to-br  from-[#83d59a] via-[#2fbe9a] to-[#04abd0] relative overflow-hidden duration-300;
+}
+
+.gradient-button:hover {
+  transform: scale(1.03);
+}
+
+.gradient-button::before {
+  @apply bg-gradient-to-br  from-[#2fbe9a] via-[#2fbe9a] to-[#83d59a] absolute top-0 left-0 w-full h-full opacity-0 transition-all duration-300;
+  content: "";
+  z-index:-1;
+}
+
+.gradient-button:hover::before {
+  @apply opacity-100;
+}
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -183,6 +200,7 @@ strong {
     transform: scale(1);
   }
 }
+
 
 #cc-main {
 
