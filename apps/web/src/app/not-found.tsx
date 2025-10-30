@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import AboutUsClient from "./about-us-client";
+import NotFoundClient from "./not-found-client";
 
-export default function AboutUsPage() {
+export default function NotFoundPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <AboutUsClient />
+      <NotFoundClient />
     </Suspense>
   );
 }
