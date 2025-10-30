@@ -38,7 +38,7 @@ function AppHeader() {
       <div className="flex items-center gap-4">
         <nav className="hidden items-center gap-1 md:flex">
           <Link
-            className="rounded-lg p-3 transition-all hover:bg-neutral-200/60"
+            className="rounded-lg p-3 transition-all hover:bg-neutral-200/60 text-neutral-600"
             href="/"
           >
             {t("nav.verify")}
@@ -46,13 +46,13 @@ function AppHeader() {
           {isAuthenticated && (
             <>
               <Link
-                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
+                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 text-neutral-600"
                 href="/verifications"
               >
                 {t("verifications.title")}
               </Link>
               <Link
-                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 text-nowrap"
+                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 text-nowrap text-neutral-600"
                 href="/user-verifications"
               >
                 {t("user_verifications.title")}
