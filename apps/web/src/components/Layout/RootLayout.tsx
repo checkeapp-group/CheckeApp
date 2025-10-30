@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -23,54 +24,58 @@ function AppHeader() {
   const { openAuthModal } = useAuthModal();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-border border-b bg-white/95 shadow-sm backdrop-blur-sm">
-      <div className="container mx-auto flex h-16 items-center justify-between">
-        <Link className="flex items-center gap-2" href="/">
-          <Image
-            alt="CheckeApp Logo"
-            className="h-auto w-64"
-            priority
-            src={FactCheckerLogo}
-          />
-        </Link>
-        <div className="flex items-center gap-4">
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link
-              className="rounded-lg p-3 transition-all hover:bg-neutral-200/60"
-              href="/"
-            >
-              {t("nav.verify")}
-            </Link>
-            {isAuthenticated && (
-              <>
-                <Link
-                  className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
-                  href="/verifications"
-                >
-                  {t("verifications.title")}
-                </Link>
-                <Link
-                  className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
-                  href="/user-verifications"
-                >
-                  {t("user_verifications.title")}
-                </Link>
-              </>
-            )}
-          </nav>
-          <div className="flex items-center gap-2">
-            {isAuthenticated ? (
-              <UserMenu />
-            ) : (
-              <div className="hidden items-center gap-2 sm:flex">
-                <Button onClick={openAuthModal}>{t("auth.getStarted")}</Button>
-              </div>
-            )}
-            <LanguageSelector />
-          </div>
+    <header className="sticky top-0 z-50 w-full border-border border-b bg-white/95 shadow-sm backdrop-blur-sm px-3 lg:px-0">
+    <div className="lg:container mx-auto flex h-16 items-center justify-between gap-4">
+      <Link className="flex items-center gap-2" href="/">
+        <Image
+          alt="CheckeApp Logo"
+          className="h-auto w-64"
+          priority
+          src={FactCheckerLogo}
+        />
+      </Link>
+
+      <div className="flex items-center gap-4">
+        <nav className="hidden items-center gap-1 md:flex">
+          <Link
+            className="rounded-lg p-3 transition-all hover:bg-neutral-200/60"
+            href="/"
+          >
+            {t("nav.verify")}
+          </Link>
+          {isAuthenticated && (
+            <>
+              <Link
+                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
+                href="/verifications"
+              >
+                {t("verifications.title")}
+              </Link>
+              <Link
+                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 text-nowrap"
+                href="/user-verifications"
+              >
+                {t("user_verifications.title")}
+              </Link>
+            </>
+          )}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            <UserMenu />
+          ) : (
+            <div className="hidden items-center gap-2 sm:flex">
+              <Button onClick={openAuthModal}>
+                {t("auth.getStarted")}
+              </Button>
+            </div>
+          )}
+          <LanguageSelector />
         </div>
       </div>
-    </header>
+    </div>
+  </header>
   );
 }
 
@@ -119,8 +124,8 @@ export default function RootLayout({
         <AppHeader />
         <main className="flex-1">{children}</main>
         <footer className="border-border border-t bg-card">
-          <div className="container mx-auto flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
-            <div className="m-2 flex flex-col items-center gap-2 p-2 sm:items-start">
+          <div className="container py-5 mx-auto xl:grid grid-cols-2 flex flex-col">
+            <div className="flex flex-col items-center gap-2 p-2 xl:items-start">
               <div className="flex items-center justify-center gap-2">
                 <Image
                   alt="Patrocinadores"
@@ -129,7 +134,7 @@ export default function RootLayout({
                 />
               </div>
             </div>
-            <div className="m-2 flex items-center gap-4 text-muted-foreground text-sm">
+            <div className="flex xl:flex-row flex-col items-center justify-center xl:justify-end gap-4 text-muted-foreground text-sm">
               <Link
                 className="transition-colors hover:text-foreground"
                 href="/about-us"

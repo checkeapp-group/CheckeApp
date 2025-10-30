@@ -379,6 +379,7 @@ export default function VerificationResult({ data }) {
                   disabled={createShareLinkMutation.isPending}
                   onClick={() => createShareLinkMutation.mutate()}
                   size="icon"
+                  variant="ghost"
                 >
                   <Share2 className="h-5 w-5" />
                 </Button>

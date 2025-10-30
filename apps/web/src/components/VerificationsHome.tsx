@@ -30,6 +30,28 @@ export default function VerificationsHome() {
         isOpen={isExplanationModalOpen}
         onClose={() => setIsExplanationModalOpen(false)}
       />
+	  <div className="flex gap-2 justify-center w-full">
+
+	  <Button
+              className="group/btn rounded-3xl bg-neutral-200/50 flex justify-start items-center gap-2 border border-neutral-300  hover:bg-neutral-200 px-2 py-3 h-max"
+              onClick={() => setIsExplanationModalOpen(true)}
+              size="sm"
+              variant="ghost"
+            >
+              <div className="flex gap-2 w-full">
+			  <HelpCircle className="h-12 w-12 text-neutral-500 transition-transform duration-300 group-hover/btn:rotate-12" />
+
+				<div className="flex flex-col items-start">
+              <span className="font-semibold text-base text-neutral-500">
+                {t("home.howItWorks")}
+              </span>
+			  <span className="font-light text-sm/tight text-neutral-500 text-wrap text-start">
+                Aprende a verificar información en 3 sencillos pasos
+              </span>
+				</div>
+			  </div>
+            </Button>
+		</div>
       {/* Header */}
       <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#83d59a] via-[#2fbe9a] to-[#04abd0] p-6 shadow-lg transition-all duration-700 hover:shadow-teal-500/30 sm:p-8">
         <div className="wave-container">
@@ -73,17 +95,7 @@ export default function VerificationsHome() {
 
           {/* Indicators */}
           <div className="flex items-center gap-3">
-            <Button
-              className="group/btn flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
-              onClick={() => setIsExplanationModalOpen(true)}
-              size="sm"
-              variant="ghost"
-            >
-              <HelpCircle className="h-4 w-4 text-white transition-transform duration-300 group-hover/btn:rotate-12" />
-              <span className="font-medium text-shadow-md text-shadow-neutral-800/20 text-sm text-white">
-                {t("home.howItWorks")}
-              </span>
-            </Button>
+            
 
             <div className="hidden items-center gap-2 rounded-full bg-black/10 px-4 py-2 backdrop-blur-sm transition-all duration-500 hover:bg-white/20 sm:flex">
               <Zap className="h-4 w-4 animate-pulse text-white" />

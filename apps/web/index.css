@@ -210,3 +210,10 @@ strong {
   --cc-btn-primary-hover-border-color: transparent;
 
 }
+
+.gradient-title-green {
+  @apply bg-gradient-to-br from-[#83d59a] via-[#2fbe9a] to-[#04abd0];
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
