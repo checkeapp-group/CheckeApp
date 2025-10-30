@@ -2,7 +2,7 @@ node_modules
 */node_modules
 
 *.log
-.env
+# Keep .env files for build, but exclude local/dev versions
 .env.local
 .env.development.local
 .env.test.local

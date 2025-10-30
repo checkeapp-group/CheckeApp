@@ -5,7 +5,17 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**", "out/**"]
+    },
+    "server#build": {
+      "dependsOn": ["^build", "server#build:types"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "server#build:types": {
+      "inputs": ["src/**/*.ts", "src/**/*.tsx"],
+      "outputs": ["dist/**"],
+      "cache": true
     },
     "lint": {
       "dependsOn": ["^lint"]

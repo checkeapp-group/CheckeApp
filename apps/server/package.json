@@ -2,9 +2,12 @@
   "name": "server",
   "version": "0.1.0",
   "private": true,
+  "main": "./dist/routers/index.js",
+  "types": "./dist/routers/index.d.ts",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:types": "tsc --project tsconfig.json",
     "start": "next start",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
