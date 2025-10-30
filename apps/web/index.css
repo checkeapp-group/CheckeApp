@@ -217,3 +217,7 @@ strong {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+p {
+  max-width: 75ch;
+}
