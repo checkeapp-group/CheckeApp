@@ -2,10 +2,10 @@ import { ORPCError } from '@orpc/server';
 import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
-import { db } from '@/db';
-import { source, verification } from '@/db/schema/schema';
-import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
-import { protectedProcedure, publicProcedure } from '@/lib/orpc';
+import { db } from '../db';
+import { source, verification } from '../db/schema/schema';
+import { validateVerificationAccess } from '../db/services/verifications/verificationsPermissionsService';
+import { protectedProcedure, publicProcedure } from '../lib/orpc';
 
 export const shareRouter = {
   // This is a PROTECTED procedure because only the owner can create a share link

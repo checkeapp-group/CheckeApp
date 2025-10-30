@@ -1,8 +1,8 @@
 import { and, asc, desc, eq, like, or, type SQL } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '@/db';
-import type { NewSource, Source } from '@/db/schema/schema';
-import { source } from '@/db/schema/schema';
+import { db } from '../..';
+import type { NewSource, Source } from '../../schema/schema';
+import { source } from '../../schema/schema';
 
 type ApiSourceData = {
   url: string;

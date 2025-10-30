@@ -1,13 +1,13 @@
 import { and, eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '@/db';
-import { finalResult, type NewFinalResult, source, verification } from '@/db/schema/schema';
 import {
   callExternalApiWithLogging,
   generateArticle,
   generateImage,
   pollForResult,
-} from '@/lib/externalApiClient';
+} from '../../../lib/externalApiClient';
+import { db } from '../..';
+import { finalResult, type NewFinalResult, source, verification } from '../../schema/schema';
 import { getCriticalQuestions } from '../criticalQuestions/criticalQuestionService';
 import { processAndDelegateImage } from '../images/imageService';
 import { updateVerificationStatus } from '../verifications/verificationService';
@@ -180,11 +180,6 @@ async function _saveImageResult(
   imageResult: ImageJobResult
 ): Promise<void> {
   try {
-    const imageData = {
-      url: imageResult.image_url,
-      description: imageResult.image_description,
-    };
-
     await db
       .update(finalResult)
       .set({ imageUrl: imageResult.image_url })

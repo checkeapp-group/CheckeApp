@@ -1,8 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '@/db';
-import { criticalQuestion, type NewCriticalQuestion } from '@/db/schema/schema';
-import { generateQuestions } from '@/lib/externalApiClient';
+import { db } from '../..';
+import { criticalQuestion, type NewCriticalQuestion } from '../../schema/schema';
 
 /**
  * Type for questions received from external API

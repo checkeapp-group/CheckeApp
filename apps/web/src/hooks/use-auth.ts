@@ -73,6 +73,7 @@ export function useAuth() {
         : null,
       isAuthenticated: !!session?.user,
       isLoading,
+      termsAccepted: userStatus?.termsAccepted ?? false,
     }),
     [session?.user, isLoading, userStatus]
   );

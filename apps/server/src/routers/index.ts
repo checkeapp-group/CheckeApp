@@ -1,5 +1,5 @@
 import type { RouterClient } from '@orpc/server';
-import { publicProcedure } from '@/lib/orpc';
+import { publicProcedure } from '../lib/orpc';
 import { adminRouter } from './adminRouter';
 import { questionsRouter } from './questionRouter';
 import { shareRouter } from './shareRouter';

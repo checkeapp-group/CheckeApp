@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import bcrypt from 'bcryptjs';
-import { closeDB, executeRawQuery, initDB, withTransaction } from '@/lib/dbHelper';
+import { closeDB, executeRawQuery, initDB, withTransaction } from './dbHelper';
 
 // biome-ignore lint/nursery/useConsistentTypeDefinitions: <explanation>
 interface SeedData {

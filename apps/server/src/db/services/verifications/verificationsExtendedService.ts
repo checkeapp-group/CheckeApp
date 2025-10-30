@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, like, sql } from 'drizzle-orm';
-import { db } from '@/db';
-import { user } from '@/db/schema/auth';
-import { finalResult, verification, type verificationtatusType } from '@/db/schema/schema';
+import { db } from '../..';
+import { user } from '../../schema/auth';
+import { finalResult, verification, type verificationtatusType } from '../../schema/schema';
 
 type GetVerificationsListParams = {
   userId?: string;

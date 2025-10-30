@@ -11,7 +11,24 @@ type UseSourcesEditorProps = {
   verificationId: string;
 };
 
-export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
+type UseSourcesEditorReturn = {
+  sources: Source[];
+  isLoading: boolean;
+  error: Error | null;
+  selectedSourcesCount: number;
+  toggleSourceSelection: (sourceId: string, isSelected: boolean) => void;
+  canContinue: boolean;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  filters: { domain?: string; sortBy?: string };
+  setFilters: (filters: { domain?: string; sortBy?: string }) => void;
+  selectAll: () => void;
+  deselectAll: () => void;
+  availableDomains: string[];
+  isUpdating: boolean;
+};
+
+export function useSourcesEditor({ verificationId }: UseSourcesEditorProps): UseSourcesEditorReturn {
   const queryClient = useQueryClient();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,11 +55,7 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
     mutationFn: (variables: { sourceId: string; isSelected: boolean }) =>
       orpc.updateSourceSelection.call({ ...variables, verificationId }),
 
-    onMutate: async (variables: {
-      previousSources: any;
-      sourceId: string;
-      isSelected: boolean;
-    }) => {
+    onMutate: async (variables: { sourceId: string; isSelected: boolean }) => {
       await queryClient.cancelQueries({ queryKey });
       const previousSources = queryClient.getQueryData<Source[]>(queryKey);
 
@@ -56,7 +69,7 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps) {
 
       return { previousSources };
     },
-    onError: (context) => {
+    onError: (_error, _variables, context) => {
       if (context?.previousSources) {
         queryClient.setQueryData(queryKey, context.previousSources);
       }

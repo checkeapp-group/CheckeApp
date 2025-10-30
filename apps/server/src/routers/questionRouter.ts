@@ -1,21 +1,21 @@
 import { ORPCError } from '@orpc/server';
 import z from 'zod';
-import { getCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
+import { getCriticalQuestions } from '../db/services/criticalQuestions/criticalQuestionService';
 import {
   createNewQuestion,
   deleteQuestionWithValidation,
   reorderVerificationQuestions,
   updateQuestionWithValidation,
   validateVerificationReadyToContinue,
-} from '@/db/services/criticalQuestions/criticalQuestionsExtendedService';
-import { saveSourcesFromAPI } from '@/db/services/sources/sourcesService';
+} from '../db/services/criticalQuestions/criticalQuestionsExtendedService';
+import { saveSourcesFromAPI } from '../db/services/sources/sourcesService';
 import {
   getVerificationById,
   updateVerificationStatus,
-} from '@/db/services/verifications/verificationService';
-import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
-import { callExternalApiWithLogging, searchSources } from '@/lib/externalApiClient';
-import { protectedProcedure } from '@/lib/orpc';
+} from '../db/services/verifications/verificationService';
+import { validateVerificationAccess } from '../db/services/verifications/verificationsPermissionsService';
+import { callExternalApiWithLogging, searchSources } from '../lib/externalApiClient';
+import { protectedProcedure } from '../lib/orpc';
 import {
   addQuestionSchema,
   continueVerificationSchema,
@@ -23,7 +23,7 @@ import {
   getQuestionsSchema,
   reorderQuestionsSchema,
   updateQuestionSchema,
-} from '@/lib/questionsSchemas';
+} from '../lib/questionsSchemas';
 
 export const questionsRouter = {
   getVerificationQuestions: protectedProcedure

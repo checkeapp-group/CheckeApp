@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '@/db';
-import { type NewVerification, verification, type verificationtatusType } from '@/db/schema/schema';
+import { db } from '../..';
+import { type NewVerification, verification, type verificationtatusType } from '../../schema/schema';
 
 /**
  * Creates a new verification record in the database

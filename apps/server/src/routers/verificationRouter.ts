@@ -1,22 +1,22 @@
 import { ORPCError } from '@orpc/server';
 import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
-import { db } from '@/db';
-import { user } from '@/db/schema/auth';
-import { verification } from '@/db/schema/schema';
-import { saveCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
+import { db } from '../db';
+import { user } from '../db/schema/auth';
+import { verification } from '../db/schema/schema';
+import { saveCriticalQuestions } from '../db/services/criticalQuestions/criticalQuestionService';
 import {
   createVerificationRecord,
   updateVerificationStatus,
-} from '@/db/services/verifications/verificationService';
-import { getVerificationsList } from '@/db/services/verifications/verificationsExtendedService';
-import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
+} from '../db/services/verifications/verificationService';
+import { getVerificationsList } from '../db/services/verifications/verificationsExtendedService';
+import { validateVerificationAccess } from '../db/services/verifications/verificationsPermissionsService';
 import {
   callExternalApiWithLogging,
   generateQuestions,
   getJobResult,
-} from '@/lib/externalApiClient';
-import { protectedProcedure, publicProcedure } from '@/lib/orpc';
+} from '../lib/externalApiClient';
+import { protectedProcedure, publicProcedure } from '../lib/orpc';
 
 type FinalResultMetadata = {
   main_claim?: string;

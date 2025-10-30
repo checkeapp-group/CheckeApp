@@ -1,12 +1,12 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { getCriticalQuestions } from '../../../../db/services/criticalQuestions/criticalQuestionService';
 import {
-  getCriticalQuestions,
-} from '@/db/services/criticalQuestions/criticalQuestionService';
-import { getVerificationById, updateVerificationStatus } from '@/db/services/verifications/verificationService';
-import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
-import { auth } from '@/lib/auth';
-import { callExternalApiWithLogging, searchSources } from '@/lib/externalApiClient';
-
+  getVerificationById,
+  updateVerificationStatus,
+} from '../../../../db/services/verifications/verificationService';
+import { validateVerificationAccess } from '../../../../db/services/verifications/verificationsPermissionsService';
+import { auth } from '../../../../lib/auth';
+import { callExternalApiWithLogging, searchSources } from '../../../../lib/externalApiClient';
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -44,10 +44,10 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
       const sourcesJob = await callExternalApiWithLogging(verificationId, 'search_sources', () =>
         searchSources({
-          questions: criticalQuestions.map((q) => q.questionText),
+          questions: criticalQuestions.map((q: { questionText: any }) => q.questionText),
           input: verification.originalText,
           language: verification.language,
-          location: 'es', 
+          location: 'es',
           model: process.env.MODEL || '',
         })
       );
@@ -60,7 +60,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         },
         { status: 200 }
       );
-
     } catch (error) {
       console.error('Error in confirm-questions processing:', error);
       await updateVerificationStatus(verificationId, 'error');

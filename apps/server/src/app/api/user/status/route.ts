@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
 import { type NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { user } from '@/db/schema/auth';
-import { auth } from '@/lib/auth';
+import { db } from '../../../../db/index';
+import { user } from '../../../../db/schema/auth';
+import { auth } from '../../../../lib/auth';
 
 export async function GET(request: NextRequest) {
   try {

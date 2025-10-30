@@ -2,15 +2,19 @@ import { createORPCClient } from '@orpc/client';
 import { RPCLink } from '@orpc/client/fetch';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 import { QueryCache, QueryClient } from '@tanstack/react-query';
+import type { AppRouterClient } from 'server';
 import { toast } from 'sonner';
-import type { AppRouterClient } from '../../../server/src/routers/index';
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 console.log(`[oRPC Client] Initializing with server URL: ${serverUrl}`);
 
 if (!serverUrl) {
-  console.error("[oRPC Client] CRITICAL: NEXT_PUBLIC_SERVER_URL is not defined! API calls will fail.");
-  toast.error("Error de configuración: La URL del servidor no está definida.", { duration: Infinity });
+  console.error(
+    '[oRPC Client] CRITICAL: NEXT_PUBLIC_SERVER_URL is not defined! API calls will fail.'
+  );
+  toast.error('Error de configuración: La URL del servidor no está definida.', {
+    duration: Number.POSITIVE_INFINITY,
+  });
 }
 
 export const queryClient = new QueryClient({

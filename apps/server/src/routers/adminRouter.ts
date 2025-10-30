@@ -1,23 +1,22 @@
 import { ORPCError } from '@orpc/server';
 import { eq, not } from 'drizzle-orm';
 import { z } from 'zod';
-import { db } from '@/db';
-import { user } from '@/db/schema/auth';
-import { protectedProcedure } from '@/lib/orpc';
+import { db } from './../db';
+import { user } from '../db/schema/auth';
+import { protectedProcedure } from './../lib/orpc';
 
-const requireAdmin = protectedProcedure.middleware(async ({ context, next }) => {
+const adminProcedure = protectedProcedure.use(async ({ context, next }) => {
   const currentUser = await db.query.user.findFirst({
     where: eq(user.id, context.session.user.id),
-    columns: { isAdmin: true, isVerified: true },
+    columns: { isAdmin: true },
   });
 
   if (!currentUser?.isAdmin) {
     throw new ORPCError('FORBIDDEN', { message: 'Administrator access required.' });
   }
+
   return next({ context });
 });
-
-const adminProcedure = protectedProcedure.use(requireAdmin);
 
 export const adminRouter = {
   getAllUsers: adminProcedure.input(z.void()).handler(async ({ context }) => {

@@ -1,7 +1,7 @@
 import { RPCHandler } from '@orpc/server/fetch';
 import type { NextRequest } from 'next/server';
-import { createContext } from '@/lib/context';
-import { appRouter } from '@/routers';
+import { createContext } from '../../../lib/context';
+import { appRouter } from '../../../routers';
 
 const handler = new RPCHandler(appRouter);
 

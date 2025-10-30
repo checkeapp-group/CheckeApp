@@ -3,9 +3,9 @@ import { z } from 'zod';
 import {
   createVerificationRecord,
   updateVerificationStatus,
-} from '@/db/services/verifications/verificationService';
-import { auth } from '@/lib/auth';
-import { callExternalApiWithLogging, generateQuestions } from '@/lib/externalApiClient';
+} from '../../../../db/services/verifications/verificationService';
+import { auth } from '../../../../lib/auth';
+import { callExternalApiWithLogging, generateQuestions } from '../../../../lib/externalApiClient';
 
 const startVerificationSchema = z.object({
   text: z

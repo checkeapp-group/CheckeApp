@@ -11,9 +11,25 @@ type UseQuestionsEditorProps = {
   verificationId: string;
 };
 
-const POLLING_TIMEOUT = process.env.EXTERNAL_API_TIMEOUT;
+const POLLING_TIMEOUT = Number(process.env.EXTERNAL_API_TIMEOUT) || 60000;
 
-export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) {
+type UseQuestionsEditorReturn = {
+  questions: Question[];
+  isLoading: boolean;
+  isPollingForQuestions: boolean;
+  isMutating: boolean;
+  error: Error | null;
+  hasTimedOut: boolean;
+  updateQuestion: (questionId: string, questionText: string) => void;
+  deleteQuestion: (questionId: string) => void;
+  addQuestion: (questionText: string) => void;
+  reorderQuestions: (newOrder: Question[]) => void;
+  canContinue: boolean;
+  refetch: () => void;
+  pendingChanges: boolean;
+};
+
+export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps): UseQuestionsEditorReturn {
   const queryClient = useQueryClient();
   const queryKey = orpc.getVerificationQuestions.key({ input: { verificationId } });
   const [retryCount, setRetryCount] = useState(0);
@@ -24,7 +40,7 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
     orpc.getVerificationQuestions.queryOptions({
       input: { verificationId },
       enabled: !!verificationId,
-      refetchInterval: (query) => {
+      refetchInterval: (query: { state: { data?: Question[]; error: any } }) => {
         const hasData = query.state.data && query.state.data.length > 0;
         const hasError = query.state.error;
         const maxRetriesReached = retryCount >= 60;
@@ -32,15 +48,16 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
         if (hasData || hasError || maxRetriesReached || hasTimedOut) {
           return false;
         }
-        return process.env.RETRY_DELAY;
+        return Number(process.env.RETRY_DELAY) || 1000;
       },
     })
   );
 
   useEffect(() => {
+    const data = questionsQuery.data as Question[] | undefined;
     const shouldStartPolling =
       !pollingStartTime &&
-      (!questionsQuery.data || questionsQuery.data.length === 0) &&
+      (!data || data.length === 0) &&
       !hasTimedOut &&
       !questionsQuery.error &&
       (questionsQuery.isLoading || questionsQuery.isFetching);
@@ -57,9 +74,10 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
 
     const checkTimeout = () => {
       const elapsed = Date.now() - pollingStartTime;
+      const data = questionsQuery.data as Question[] | undefined;
       if (
         elapsed >= POLLING_TIMEOUT &&
-        (!questionsQuery.data || questionsQuery.data.length === 0)
+        (!data || data.length === 0)
       ) {
         setHasTimedOut(true);
         toast.error(
@@ -74,7 +92,8 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
 
   // Actualizar retry count
   useEffect(() => {
-    if (questionsQuery.data && questionsQuery.data.length > 0) {
+    const data = questionsQuery.data as Question[] | undefined;
+    if (data && data.length > 0) {
       setRetryCount(30);
       setPollingStartTime(null);
     } else if (questionsQuery.isFetching) {
@@ -228,7 +247,7 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
     [reorderQuestionsMutation]
   );
 
-  const questions = useMemo(() => questionsQuery.data || [], [questionsQuery.data]);
+  const questions = useMemo(() => (questionsQuery.data as Question[] | undefined) || [], [questionsQuery.data]);
 
   const isPollingForQuestions =
     pollingStartTime !== null &&
@@ -239,7 +258,7 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps) 
   const canContinue =
     !questionsQuery.isLoading &&
     questions.length > 0 &&
-    questions.every((q) => q.questionText.trim().length >= 5);
+    questions.every((q: Question) => q.questionText.trim().length >= 5);
 
   const isMutating =
     updateQuestionMutation.isPending ||

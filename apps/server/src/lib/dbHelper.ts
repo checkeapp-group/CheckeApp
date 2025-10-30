@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { drizzle, type MySql2Database } from 'drizzle-orm/mysql2';
 import mysql12 from 'mysql2/promise';
-import type * as schema from '@/db/schema/schema';
+import type * as schema from '../db/schema/schema';
 
 dotenv.config();
 

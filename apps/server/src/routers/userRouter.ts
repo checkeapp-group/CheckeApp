@@ -1,9 +1,9 @@
 import { ORPCError } from '@orpc/server';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { db } from '@/db';
-import { user } from '@/db/schema/auth';
-import { protectedProcedure } from '@/lib/orpc';
+import { db } from '../db';
+import { user } from '../db/schema/auth';
+import { protectedProcedure } from '../lib/orpc';
 
 export const userRouter = {
   // Procedure to get the current authenticated user's details

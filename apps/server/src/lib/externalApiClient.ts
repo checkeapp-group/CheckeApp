@@ -2,11 +2,12 @@ import {
   logProcessCompleted,
   logProcessError,
   logProcessStart,
-} from '@/db/services/processLogs/processLogsService';
+} from './../db/services/processLogs/processLogsService';
 
 // API configuration from environment variables
 const apiMode = process.env.API_MODE || 'development';
 const isDevelopment = apiMode === 'development';
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build';
 
 const config = {
   baseUrl: process.env.EXTERNAL_API_BASE_URL,
@@ -17,21 +18,23 @@ const config = {
   mode: apiMode,
 };
 
-// Validate configuration
-if (!config.baseUrl) {
-  throw new Error('EXTERNAL_API_BASE_URL must be configured for production mode');
-}
+// Validate configuration (skip during build time)
+if (!isBuildTime) {
+  if (!config.baseUrl) {
+    throw new Error('EXTERNAL_API_BASE_URL must be configured for production mode');
+  }
 
-if (!config.apiKey) {
-  throw new Error('EXTERNAL_API_KEY must be configured for production mode');
-}
+  if (!config.apiKey) {
+    throw new Error('EXTERNAL_API_KEY must be configured for production mode');
+  }
 
-// Log configuration on startup (only in development)
-if (isDevelopment) {
-  console.log(`🔧 External API Client initialized in ${config.mode} mode`);
-  console.log(`📡 Base URL: ${config.baseUrl}`);
-  console.log(`🔑 API Key: ${config.apiKey.substring(0, 10)}...`);
-  console.log(`⏱️  Timeout: ${config.timeout}ms, Retries: ${config.maxRetries}`);
+  // Log configuration on startup (only in development)
+  if (isDevelopment) {
+    console.log(`🔧 External API Client initialized in ${config.mode} mode`);
+    console.log(`📡 Base URL: ${config.baseUrl}`);
+    console.log(`🔑 API Key: ${config.apiKey?.substring(0, 10)}...`);
+    console.log(`⏱️  Timeout: ${config.timeout}ms, Retries: ${config.maxRetries}`);
+  }
 }
 
 // Helper function to construct URL
@@ -182,11 +185,14 @@ export async function getJobResult<T>(
 ): Promise<{ status: string; result: T }> {
   const url = `${config.baseUrl}/result/${jobId}`;
 
+  if (!config.apiKey) {
+    throw new Error("CRITICAL: EXTERNAL_API_KEY is not defined at the time of API call.");
+  }
   const response = await fetch(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-API-Key': config.apiKey!,
+      'X-API-Key': config.apiKey || '',
     },
   });
 

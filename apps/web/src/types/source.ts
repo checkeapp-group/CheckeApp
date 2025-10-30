@@ -5,9 +5,10 @@ export type Source = {
   title?: string | null;
   summary?: string | null;
   domain?: string | null;
+  favicon?: string | null;
   isSelected: boolean;
   scrapingDate?: string | null;
-  createdAt: string; 
+  createdAt: string;
 }
 
 export type NewSource = {

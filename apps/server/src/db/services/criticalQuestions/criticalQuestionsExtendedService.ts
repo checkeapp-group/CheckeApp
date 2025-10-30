@@ -1,7 +1,7 @@
 import { eq, inArray, max, sql } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import { db } from '@/db';
-import { criticalQuestion, type NewCriticalQuestion } from '@/db/schema/schema';
+import { db } from '../..';
+import { criticalQuestion, type NewCriticalQuestion } from '../../schema/schema';
 import { updateVerificationStatus } from '../verifications/verificationService';
 import {
   deleteCriticalQuestion,

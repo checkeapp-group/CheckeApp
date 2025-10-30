@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { db } from '@/db';
-import { verification } from '@/db/schema/schema';
+import { db } from '../..';
+import { verification } from '../../schema/schema';
 
 export type VerificationPermissionCheck = {
   exists: boolean;

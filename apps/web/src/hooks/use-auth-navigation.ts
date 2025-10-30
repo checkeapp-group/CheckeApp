@@ -93,15 +93,17 @@ export function useAuthNavigation() {
 
       try {
         await authClient.signOut({
-          onSuccess: () => {
-            navigate(redirectTo);
-            toast.success(t('auth.loggedOut'));
-            onSuccess?.();
-          },
-          onError: (error) => {
-            console.error('SignOut error:', error);
-            toast.error(t('auth.signOut.error') || 'Sign out failed');
-            onError?.(error);
+          fetchOptions: {
+            onSuccess: () => {
+              navigate(redirectTo);
+              toast.success(t('auth.loggedOut'));
+              onSuccess?.();
+            },
+            onError: (ctx: { error: any }) => {
+              console.error('SignOut error:', ctx.error);
+              toast.error(t('auth.signOut.error') || 'Sign out failed');
+              onError?.(ctx.error);
+            },
           },
         });
       } catch (error) {

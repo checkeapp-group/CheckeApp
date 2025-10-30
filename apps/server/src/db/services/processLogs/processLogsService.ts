@@ -1,7 +1,7 @@
-import { db } from '@/db';
-import { processLog, type NewProcessLog } from '@/db/schema/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '../..';
+import { type NewProcessLog, processLog } from '../../schema/schema';
 
 export type ProcessLogStatus = 'started' | 'completed' | 'error';
 
@@ -85,7 +85,7 @@ export async function logProcessStart(
  */
 
 // biome-ignore lint/suspicious/useAwait: <explanation>
-export  async function logProcessCompleted(
+export async function logProcessCompleted(
   verificationId: string,
   step: string,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -105,7 +105,7 @@ export  async function logProcessCompleted(
 // biome-ignore lint/nursery/useMaxParams: Error logging requires all parameters for proper troubleshooting
 
 // biome-ignore lint/suspicious/useAwait: <explanation>
-export  async function logProcessError(
+export async function logProcessError(
   verificationId: string,
   step: string,
   errorMessage: string,
@@ -278,9 +278,7 @@ export async function cleanupOldProcessLogs(daysOld = 30): Promise<number> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
-    const result = await db.delete(processLog).where(
-      eq(processLog.createdAt, cutoffDate)
-    );
+    const result = await db.delete(processLog).where(eq(processLog.createdAt, cutoffDate));
 
     console.log(`🧹 Cleaned up old process logs older than ${daysOld} days`);
     return result.length || 0;
