@@ -1,14 +1,15 @@
 "use client";
+"use client";
 
 import { useEffect } from "react";
-import { type CookieConsentAPI, run } from "vanilla-cookieconsent";
+import { run } from "vanilla-cookieconsent";
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 import { useI18n } from "@/hooks/use-i18n";
 
 declare global {
-  type Window = {
-    cc: CookieConsentAPI;
-  };
+  interface Window {
+    cc: any;
+  }
 }
 
 export default function CookieConsentComponent() {
@@ -26,27 +27,12 @@ export default function CookieConsentComponent() {
           position: "bottom left",
           equalWeightButtons: true,
           flipButtons: false,
-          styling: {
-            // aplica variables CSS que definiste en :root
-            background: "var(--cc-bg)",
-            text: "var(--cc-text)",
-            font: "var(--cc-font-family)",
-            borderRadius: "var(--cc-border-radius)",
-            boxShadow: "var(--cc-box-shadow)",
-          },
         },
         preferencesModal: {
           layout: "box",
           position: "right",
           equalWeightButtons: true,
           flipButtons: false,
-          styling: {
-            background: "var(--cc-bg)",
-            text: "var(--cc-text)",
-            font: "var(--cc-font-family)",
-            borderRadius: "var(--cc-border-radius)",
-            boxShadow: "var(--cc-box-shadow)",
-          },
         },
       },
       categories: {

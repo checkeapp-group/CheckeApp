@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, Calendar, CheckCircle, Clock } from "lucide-react";
+import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/hooks/use-i18n";
@@ -81,6 +82,15 @@ export default function UserVerificationCard({
 }: UserVerificationCardProps) {
   const { t } = useI18n();
 
+  const isFinalState =
+    verification.status === "completed" || verification.status === "error";
+
+  const hrefPath = (
+    isFinalState
+      ? `/verify/${verification.id}/finalResult`
+      : `/verify/${verification.id}/edit`
+  ) as Route;
+
   const getHref = () => {
     if (
       verification.status === "completed" ||
@@ -112,7 +122,7 @@ export default function UserVerificationCard({
   const StatusIcon = displayInfo.icon;
 
   return (
-    <Link className="group block h-full" href={getHref()}>
+    <Link className="group block h-full" href={hrefPath}>
       <div className="relative flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-md ring-1 ring-border/50 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl hover:ring-primary/50">
         <div className="absolute inset-0 overflow-hidden rounded-2xl">
           {verification.imageUrl ? (
@@ -142,7 +152,7 @@ export default function UserVerificationCard({
                 className={cn(
                   "flex items-center gap-1.5 rounded-md px-2 py-0.5 font-bold text-xs uppercase",
                   displayInfo.bgColor,
-                  displayInfo.color,
+                  displayInfo.color
                 )}
               >
                 <StatusIcon className="h-3 w-3" />

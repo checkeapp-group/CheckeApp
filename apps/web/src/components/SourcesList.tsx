@@ -91,108 +91,113 @@ export default function SourcesList({
     }
 
     return (
-        <div
-            className={`space-y-4 sm:space-y-6 ${
-                isLocked ? "pointer-events-none opacity-70" : ""
-            }`}>
-            <div className="grid grid-cols-1 gap-3 rounded-lg border bg-gray-100 p-3 sm:grid-cols-2 sm:gap-4 sm:p-4 lg:grid-cols-3">
-                <Input
-                    className="w-full"
-                    disabled={isLocked}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={t("sources.search_placeholder")}
-                    value={searchQuery}
-                />
-                <UiSelect
-                    disabled={isLocked}
-                    onChange={(domain) =>
-                        setFilters((prev) => ({
-                            ...prev,
-                            domain: domain === "all" ? undefined : domain,
-                        }))
-                    }
-                    options={[
-                        {value: "all", label: t("sources.all_domains")},
-                        ...availableDomains.map((d) => ({value: d, label: d})),
-                    ]}
-                    placeholder={t("sources.filter_by_domain")}
-                    value={filters.domain || "all"}
-                />
-                <UiSelect
-                    className="sm:col-span-2 lg:col-span-1"
-                    disabled={isLocked}
-                    onChange={(sortBy) =>
-                        setFilters((prev) => ({...prev, sortBy}))
-                    }
-                    options={[
-                        {
-                            value: "date_desc",
-                            label: t("sources.sort_newest_first"),
-                        },
-                        {
-                            value: "date_asc",
-                            label: t("sources.sort_oldest_first"),
-                        },
-                    ]}
-                    placeholder={t("sources.sort_by")}
-                    value={filters.sortBy}
-                />
-            </div>
-
-            {/* Header */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h4 className="font-semibold text-sm sm:text-base">
-                    {t("sources.found_title", {count: sources.length})}
-                </h4>
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-                    <Button
-                        className="h-auto p-0 text-xs sm:text-sm"
-                        disabled={isLocked}
-                        onClick={selectAll}
-                        size="sm"
-                        variant="link">
-                        {t("sources.select_all")}
-                    </Button>
-                    <Button
-                        className="h-auto p-0 text-xs sm:text-sm"
-                        disabled={isLocked}
-                        onClick={deselectAll}
-                        size="sm"
-                        variant="link">
-                        {t("sources.deselect_all")}
-                    </Button>
-                    <p className="font-medium text-xs sm:text-sm">
-                        {t("sources.selected_count", {
-                            count: selectedSourcesCount,
-                        })}
-                    </p>
-                </div>
-            </div>
-
-            <div className="space-y-3 sm:space-y-4">
-                {sources.map((source) => (
-                    <SourceCard
-                        isLocked={isLocked}
-                        key={source.id}
-                        onSelectionChange={(isSelected) =>
-                            toggleSourceSelection(source.id, isSelected)
-                        }
-                        source={source}
-                    />
-                ))}
-            </div>
-
-            <div className="flex justify-end border-t pt-3 sm:pt-4">
-                <Button
-                    className="w-full sm:w-auto"
-                    disabled={!canContinue || isContinuing || isLocked}
-                    onClick={onComplete}
-                    size="default">
-                    {isContinuing
-                        ? t("sources.starting")
-                        : t("sources.continue_analysis")}
-                </Button>
-            </div>
+      <div
+        className={`space-y-4 sm:space-y-6 ${
+          isLocked ? "pointer-events-none opacity-70" : ""
+        }`}
+      >
+        <div className="grid grid-cols-1 gap-3 rounded-lg border bg-gray-100 p-3 sm:grid-cols-2 sm:gap-4 sm:p-4 lg:grid-cols-3">
+          <Input
+            className="w-full"
+            disabled={isLocked}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t("sources.search_placeholder")}
+            value={searchQuery}
+          />
+          <UiSelect
+            disabled={isLocked}
+            onChange={(domain) =>
+              setFilters({
+                ...filters,
+                domain: domain === "all" ? undefined : domain,
+              })
+            }
+            options={[
+              { value: "all", label: t("sources.all_domains") },
+              ...availableDomains.map((d) => ({ value: d, label: d })),
+            ]}
+            placeholder={t("sources.filter_by_domain")}
+            value={filters.domain || "all"}
+          />
+          <UiSelect
+            className="sm:col-span-2 lg:col-span-1"
+            disabled={isLocked}
+            onChange={(domain) => setFilters({
+              ...filters,
+              domain: domain === "all" ? undefined : domain,
+            })}
+            options={[
+              {
+                value: "date_desc",
+                label: t("sources.sort_newest_first"),
+              },
+              {
+                value: "date_asc",
+                label: t("sources.sort_oldest_first"),
+              },
+            ]}
+            placeholder={t("sources.sort_by")}
+            value={filters.sortBy}
+          />
         </div>
+
+        {/* Header */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h4 className="font-semibold text-sm sm:text-base">
+            {t("sources.found_title", { count: sources.length })}
+          </h4>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+            <Button
+              className="h-auto p-0 text-xs sm:text-sm"
+              disabled={isLocked}
+              onClick={selectAll}
+              size="sm"
+              variant="link"
+            >
+              {t("sources.select_all")}
+            </Button>
+            <Button
+              className="h-auto p-0 text-xs sm:text-sm"
+              disabled={isLocked}
+              onClick={deselectAll}
+              size="sm"
+              variant="link"
+            >
+              {t("sources.deselect_all")}
+            </Button>
+            <p className="font-medium text-xs sm:text-sm">
+              {t("sources.selected_count", {
+                count: selectedSourcesCount,
+              })}
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3 sm:space-y-4">
+          {sources.map((source) => (
+            <SourceCard
+              isLocked={isLocked}
+              key={source.id}
+              onSelectionChange={(isSelected) =>
+                toggleSourceSelection(source.id, isSelected)
+              }
+              source={source}
+            />
+          ))}
+        </div>
+
+        <div className="flex justify-end border-t pt-3 sm:pt-4">
+          <Button
+            className="w-full sm:w-auto"
+            disabled={!canContinue || isContinuing || isLocked}
+            onClick={onComplete}
+            size="default"
+          >
+            {isContinuing
+              ? t("sources.starting")
+              : t("sources.continue_analysis")}
+          </Button>
+        </div>
+      </div>
     );
 }

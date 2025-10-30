@@ -31,7 +31,7 @@ const GoogleIcon = () => (
 );
 
 type SignInFormProps = {
-  onClose: () => void;
+  onClose?: () => void;
 };
 
 export default function SignInForm({ onClose }: SignInFormProps) {

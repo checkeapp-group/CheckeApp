@@ -20,10 +20,13 @@ export default function UserMenu() {
 
   const handleLogout = async () => {
     await authClient.signOut({
-      redirect: true,
-      redirectTo: "/",
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+          toast.success(t("auth.loggedOut") || "Successfully logged out");
+        },
+      },
     });
-    toast.success(t("auth.loggedOut") || "Successfully logged out");
   };
 
   if (!user) {

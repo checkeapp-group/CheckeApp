@@ -1,6 +1,5 @@
 "use client";
 
-import type { RouterClient } from "@orpc/server";
 import { useMutation } from "@tanstack/react-query";
 import { FileText, MessageSquareQuote, Search, Share2 } from "lucide-react";
 import Image from "next/image";
@@ -13,14 +12,6 @@ import { useI18n } from "@/hooks/use-i18n";
 import { orpc } from "@/utils/orpc";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
-
-type VerificationResultData = RouterClient<
-  typeof appRouter
->["getVerificationResultData"]["_def"]["_output"];
-
-type VerificationResultProps = {
-  data: VerificationResultData;
-};
 
 const SectionHeader = ({
   icon: Icon,
@@ -58,7 +49,11 @@ const ContentWithCitations = ({
     <ReactMarkdown
       components={{
         a: ({ node, href, children, title, ...props }) => {
-          if (typeof children === "object" && children?.[0]?.startsWith("[")) {
+          if (
+            Array.isArray(children) &&
+            typeof children[0] === "string" &&
+            children[0].startsWith("[[")
+          ) {
             return (
               <a
                 className="reference-link"
@@ -166,7 +161,7 @@ const FaviconImage = ({
   );
 };
 
-export default function VerificationResult({ data }: VerificationResultProps) {
+export default function VerificationResult({ data }) {
   const { t } = useI18n();
   const createShareLinkMutation = useMutation({
     mutationFn: () => {
@@ -434,7 +429,7 @@ export default function VerificationResult({ data }: VerificationResultProps) {
                   title={t("result.sources.title")}
                 />
                 <div className="flex flex-col gap-2">
-                  {source.map((sourceItem, index) => {
+                  {source.map((sourceItem: any, index: number) => {
                     const sourceDomain =
                       sourceItem.domain || new URL(sourceItem.url).hostname;
                     const sourceTitle = sourceItem.title || sourceDomain;

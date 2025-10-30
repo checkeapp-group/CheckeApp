@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import * as Select from '@radix-ui/react-select';
-import { Check, ChevronDown } from 'lucide-react';
+import * as Select from "@radix-ui/react-select";
+import { Check, ChevronDown } from "lucide-react";
 
 type Option = {
   label: string;
@@ -13,18 +13,29 @@ type SelectProps = {
   placeholder?: string;
   value?: string;
   onChange?: (value: string) => void;
+  disabled?: boolean;
+  className?: string;
 };
 
-export function UiSelect({ options, placeholder, value, onChange }: SelectProps) {
+export function UiSelect({
+  options,
+  placeholder,
+  value,
+  onChange,
+  disabled,
+  className,
+}: SelectProps) {
   return (
-    <Select.Root onValueChange={onChange} value={value}>
-      <Select.Trigger className="inline-flex w-[200px] items-center justify-between rounded-md border border-input bg-white px-3 py-2 text-foreground text-sm shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground">
-        <Select.Value placeholder={placeholder || 'Selecciona una opción'} />
+    <Select.Root disabled={disabled} onValueChange={onChange} value={value}>
+      {" "}
+      <Select.Trigger
+        className={`inline-flex w-[200px] items-center justify-between rounded-md border border-input bg-white px-3 py-2 text-foreground text-sm shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground ${className}`}
+      >
+        <Select.Value placeholder={placeholder || "Selecciona una opción"} />
         <Select.Icon>
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
         </Select.Icon>
       </Select.Trigger>
-
       <Select.Portal>
         <Select.Content className="z-50 rounded-md border border-input bg-popover text-popover-foreground shadow-md">
           <Select.Viewport className="p-1">

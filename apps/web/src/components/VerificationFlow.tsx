@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import type { Verification } from "@/../../server/src/db/schema/schema";
 import QuestionsList from "@/components/QuestionsList";
 import SourcesList from "@/components/SourcesList";
 import Step from "@/components/Step";
@@ -16,7 +15,22 @@ import { useAppRouter } from "@/lib/router";
 import { orpc, queryClient } from "@/utils/orpc";
 import { Button } from "./ui/button";
 
-const determineInitialState = (status: Verification["status"]) => {
+type VerificationStatus =
+  | "draft"
+  | "processing_questions"
+  | "sources_ready"
+  | "generating_summary"
+  | "generating_image"
+  | "completed"
+  | "error";
+
+type Verification = {
+  status: VerificationStatus;
+  id: string;
+  originalText: string;
+};
+
+const determineInitialState = (status: VerificationStatus) => {
   const state = { activeStep: "step-1", completedSteps: [] as string[] };
   switch (status) {
     case "processing_questions":

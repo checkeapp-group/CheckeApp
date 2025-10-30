@@ -14,6 +14,7 @@ type ModalProps = {
   description?: string;
   size?: "sm" | "md" | "lg" | "xl";
   backgroundColor?: string;
+  className?: string;
 };
 
 export function Modal({
@@ -24,6 +25,7 @@ export function Modal({
   children,
   size = "md",
   backgroundColor = "bg-background",
+  className,
 }: ModalProps) {
   const sizeClasses = {
     sm: "max-w-sm",
@@ -60,7 +62,7 @@ export function Modal({
             >
               <Dialog.Panel>
                 <Card
-                  className={`w-full ${sizeClasses[size]} ${backgroundColor} transform overflow-hidden bg-white p-4 text-left align-middle shadow-xl transition-all sm:p-6`}
+                  className={`w-full ${sizeClasses[size]} ${backgroundColor} transform overflow-hidden bg-white p-4 text-left align-middle shadow-xl transition-all sm:p-6 ${className}`}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">

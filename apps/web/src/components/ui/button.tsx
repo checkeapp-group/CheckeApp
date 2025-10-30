@@ -1,99 +1,88 @@
-import {Slot} from "@radix-ui/react-slot";
-import {cva, type VariantProps} from "class-variance-authority";
-import {Loader2} from "lucide-react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 import React from "react";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-    "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg font-semibold text-sm ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-    {
-        variants: {
-            variant: {
-                default: "text-primary-foreground shadow-sm gradient-button",
-                destructive:
-                    "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-                outline:
-                    "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-                secondary:
-                    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-                ghost: "hover:bg-accent hover:text-accent-foreground",
-                link: "text-primary underline-offset-4 hover:underline",
-                cancel: "bg-red-200 text-red-900 hover:bg-red-300",
-                glass: "border border-white/20 bg-white/10 text-white backdrop-blur-[var(--lg-blur-sm)] transition-transform hover:bg-white/20 active:scale-[.99]",
-            },
-            size: {
-                default: "h-10 px-4 py-2",
-                sm: "h-9 rounded-md px-3",
-                lg: "h-11 rounded-lg px-8",
-                icon: "h-10 w-10",
-            },
-        },
-        defaultVariants: {
-            variant: "default",
-            size: "default",
-        },
-    }
+  "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg font-semibold text-sm ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "gradient-button text-primary-foreground shadow-sm",
+        destructive:
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        cancel: "bg-red-200 text-red-900 hover:bg-red-300",
+        glass:
+          "border border-white/20 bg-white/10 text-white backdrop-blur-[var(--lg-blur-sm)] transition-transform hover:bg-white/20 active:scale-[.99]",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-lg px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
 );
 
 export interface ButtonProps
-    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-        VariantProps<typeof buttonVariants> {
-    asChild?: boolean;
-    loading?: boolean;
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+  loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    (
-        {
-            className,
-            variant,
-            size,
-            asChild = false,
-            loading = false,
-            children,
-            ...props
-        },
-        ref
-    ) => {
-        if (asChild) {
-            return (
-                <Slot
-                    className={cn(buttonVariants({variant, size, className}))}
-                    disabled={loading || props.disabled}
-                    ref={ref}
-                    {...props}>
-                    {React.cloneElement(
-                        React.Children.only(children) as React.ReactElement,
-                        {
-                            children: (
-                                <>
-                                    {loading && (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    )}
-                                    {
-                                        (children as React.ReactElement).props
-                                            .children
-                                    }
-                                </>
-                            ),
-                        }
-                    )}
-                </Slot>
-            );
-        }
-
-        return (
-            <button
-                className={cn(buttonVariants({variant, size, className}))}
-                disabled={loading || props.disabled}
-                ref={ref}
-                {...props}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {children}
-            </button>
-        );
+  (
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      loading = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }))}
+          disabled={loading || props.disabled}
+          ref={ref}
+          {...props}
+        >
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {children}
+        </Slot>
+      );
     }
+
+    return (
+      <button
+        className={cn(buttonVariants({ variant, size, className }))}
+        disabled={loading || props.disabled}
+        ref={ref}
+        {...props}
+      >
+        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {children}
+      </button>
+    );
+  }
 );
 Button.displayName = "Button";
 
-export {Button, buttonVariants};
+export { Button, buttonVariants };

@@ -113,7 +113,7 @@ export default function VerificationsList() {
 
       {verifications && verifications.length > 0 ? (
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-          {verifications.map((v) => (
+          {verifications.map((v: any) => (
             <VerificationCard key={v.id} verification={v} />
           ))}
         </div>

@@ -2,10 +2,10 @@
 
 import { Check, ExternalLink } from "lucide-react";
 import { useState } from "react";
-import type { Source } from "@/../server/src/db/schema/schema";
 import { Card } from "@/components/ui/card";
 import { useI18n } from "@/hooks/use-i18n";
 import { cn } from "@/lib/utils";
+import type { Source } from "@/types/source";
 import { Button } from "./ui/button";
 
 type SourceCardProps = {
@@ -99,7 +99,7 @@ export default function SourceCard({
 
           <div className="flex flex-wrap items-center gap-2 text-sm">
             <a
-              aria-label={t("sources.openInNewTab", { domain: source.domain })}
+              aria-label={t("sources.openInNewTab", { domain: source.domain || source.url })}
               className="inline-flex items-center gap-1.5 font-medium text-primary transition-colors hover:text-primary/80 hover:underline"
               href={source.url}
               onClick={(e) => e.stopPropagation()}
@@ -152,7 +152,9 @@ export default function SourceCard({
                   tabIndex={isLocked ? -1 : 0}
                   variant="link"
                 >
-                  {isExpanded ? t("sources.showLessAction") : t("sources.readMoreAction")}
+                  {isExpanded
+                    ? t("sources.showLessAction")
+                    : t("sources.readMoreAction")}
                 </Button>
               )}
             </>

@@ -2,128 +2,122 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import AuthModal from "@/components/Auth/auth-modal";
+import { useSearchParams } from "next/navigation";
+import React, { Suspense, useEffect } from "react";
 import CookieConsentComponent from "@/components/CookieConsent";
 import GlobalLoader from "@/components/GlobalLoader";
 import UserMenu from "@/components/UserMenu";
 import { LanguageSelector } from "@/components/ui/lenguage-selector";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
+import { AuthModalProvider, useAuthModal } from "@/providers/AuthModalProvider";
 import { useLoading } from "@/providers/LoadingProvider";
 import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 import FooterBanner from "@/public/footer_banner.png";
 import TermsAcceptanceModal from "../Auth/terms-acceptance-modal";
 import { Button } from "../ui/button";
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
+function AppHeader() {
+  const { t } = useI18n();
+  const { isAuthenticated } = useAuth();
+  const { openAuthModal } = useAuthModal();
 
-export default function RootLayout({ children }: LayoutProps) {
+  return (
+    <header className="sticky top-0 z-50 w-full border-border border-b bg-white/95 shadow-sm backdrop-blur-sm">
+      <div className="container mx-auto flex h-16 items-center justify-between">
+        <Link className="flex items-center gap-2" href="/">
+          <Image
+            alt="CheckeApp Logo"
+            className="h-auto w-64"
+            priority
+            src={FactCheckerLogo}
+          />
+        </Link>
+        <div className="flex items-center gap-4">
+          <nav className="hidden items-center gap-1 md:flex">
+            <Link
+              className="rounded-lg p-3 transition-all hover:bg-neutral-200/60"
+              href="/"
+            >
+              {t("nav.verify")}
+            </Link>
+            {isAuthenticated && (
+              <>
+                <Link
+                  className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
+                  href="/verifications"
+                >
+                  {t("verifications.title")}
+                </Link>
+                <Link
+                  className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
+                  href="/user-verifications"
+                >
+                  {t("user_verifications.title")}
+                </Link>
+              </>
+            )}
+          </nav>
+          <div className="flex items-center gap-2">
+            {isAuthenticated ? (
+              <UserMenu />
+            ) : (
+              <div className="hidden items-center gap-2 sm:flex">
+                <Button onClick={openAuthModal}>{t("auth.getStarted")}</Button>
+              </div>
+            )}
+            <LanguageSelector />
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { t } = useI18n();
   const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { isLoading } = useLoading();
+  const [showTermsModal, setShowTermsModal] = React.useState(false);
 
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showTermsModal, setShowTermsModal] = useState(false);
-  const openAuthModal = () => setShowAuthModal(true);
-  const closeAuthModal = () => setShowAuthModal(false);
-
-  const pathname = usePathname();
   const searchParams = useSearchParams();
-  useEffect(() => {
-    if (searchParams.get("login") === "true") {
-      openAuthModal();
-    }
-  }, [pathname, searchParams]);
+  const LoginModalTrigger = () => {
+    const { openAuthModal } = useAuthModal();
+    useEffect(() => {
+      if (searchParams.get("login") === "true") {
+        openAuthModal();
+      }
+    }, [searchParams, openAuthModal]);
+    return null;
+  };
 
   useEffect(() => {
-    if (isAuthLoading) {
-      return;
-    }
+    if (isAuthLoading) return;
     if (isAuthenticated && user && !user.termsAccepted) {
       setShowTermsModal(true);
     } else {
       setShowTermsModal(false);
     }
-  }, [isAuthenticated, user]);
-
-  const childrenWithProps = React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child, { openAuthModal } as {
-        openAuthModal: () => void;
-      });
-    }
-    return child;
-  });
+  }, [isAuthenticated, user, isAuthLoading]);
 
   return (
-    <>
+    <AuthModalProvider>
       {isLoading && <GlobalLoader />}
-      <AuthModal isOpen={showAuthModal} onClose={closeAuthModal} />
+      <Suspense fallback={null}>
+        <LoginModalTrigger />
+      </Suspense>
       <TermsAcceptanceModal
         isOpen={showTermsModal}
         onClose={() => setShowTermsModal(false)}
       />
       <CookieConsentComponent />
       <div className="flex min-h-screen flex-col">
-        <header className="sticky top-0 z-50 w-full border-border border-b bg-white/95 shadow-sm backdrop-blur-sm">
-          <div className="container mx-auto flex h-16 items-center justify-between">
-            <Link className="flex items-center gap-2" href="/">
-              <Image
-                alt="CheckeApp Logo"
-                className="h-auto w-64"
-                priority
-                src={FactCheckerLogo}
-              />
-            </Link>
-
-            <div className="flex items-center gap-4">
-              <nav className="hidden items-center gap-1 md:flex">
-                <Link
-                  className="rounded-lg p-3 transition-all hover:bg-neutral-200/60"
-                  href="/"
-                >
-                  {t("nav.verify")}
-                </Link>
-                {isAuthenticated && (
-                  <>
-                    <Link
-                      className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
-                      href="/verifications"
-                    >
-                      {t("verifications.title")}
-                    </Link>
-                    <Link
-                      className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60"
-                      href="/user-verifications"
-                    >
-                      {t("user_verifications.title")}
-                    </Link>
-                  </>
-                )}
-              </nav>
-
-              <div className="flex items-center gap-2">
-                {isAuthenticated ? (
-                  <UserMenu />
-                ) : (
-                  <div className="hidden items-center gap-2 sm:flex">
-                    <Button onClick={openAuthModal}>
-                      {t("auth.getStarted")}
-                    </Button>
-                  </div>
-                )}
-                <LanguageSelector />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1">{childrenWithProps}</main>
-
+        <AppHeader />
+        <main className="flex-1">{children}</main>
         <footer className="border-border border-t bg-card">
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
             <div className="m-2 flex flex-col items-center gap-2 p-2 sm:items-start">
@@ -171,6 +165,6 @@ export default function RootLayout({ children }: LayoutProps) {
           </div>
         </footer>
       </div>
-    </>
+    </AuthModalProvider>
   );
 }
