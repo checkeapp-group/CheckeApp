@@ -54,7 +54,7 @@ export async function getConnection(): Promise<mysql12.PoolConnection> {
   try {
     return await pool.getConnection();
   } catch (error) {
-    throw new Error('Database connection failed: ' + error.message);
+    throw new Error((error instanceof Error ? error.message : 'Unknown error'));
   }
 }
 
@@ -64,8 +64,7 @@ export async function closeDB(): Promise<void> {
       await pool.end();
     }
   } catch (error) {
-    // biome-ignore lint/style/useTemplate: <explanation>
-    throw new Error('Error closing database pool: ' + error.message);
+    throw new Error(error instanceof Error ? error.message : 'Unknown error');
   }
 }
 

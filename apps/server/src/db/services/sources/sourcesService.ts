@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, like, or } from 'drizzle-orm';
+import { and, asc, desc, eq, like, or, type SQL } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
 import type { NewSource, Source } from '@/db/schema/schema';
@@ -64,7 +64,7 @@ export async function getSources(
   searchQuery?: string
 ): Promise<Source[]> {
   try {
-    const conditions = [eq(source.verificationId, verificationId)];
+    const conditions: (SQL<unknown> | undefined)[] = [eq(source.verificationId, verificationId)];
 
     if (filters?.domain) {
       conditions.push(eq(source.domain, filters.domain));

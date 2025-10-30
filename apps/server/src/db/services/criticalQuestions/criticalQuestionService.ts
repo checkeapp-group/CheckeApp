@@ -200,27 +200,24 @@ export async function getCriticalQuestionById(questionId: string) {
   }
 }
 
-export async function getGeneratedQuestions(verificationId: string) {
-  try {
-    // This function will now call your fake API
-    const response = await generateQuestions({
-      verification_id: verificationId,
-      original_text: 'This is a placeholder, you might want to fetch the real text from the DB',
-      language: 'es',
-      max_questions: 5,
-    });
+//export async function getGeneratedQuestions(verificationId: string) {
+// try {
+// This function will now call your fake API
+// const response = await generateQuestions({
+//   verification_id: verificationId, original_text;: 'This is a placeholder, you might want to fetch the real text from the DB',
+//  language: 'es', max_questions;: 5,
+// });
 
-    if (response.success) {
-      return response.questions;
-    }
-    throw new Error(response.message || 'Failed to generate questions');
-  } catch (error) {
-    console.error('Error fetching generated questions:', error);
-    throw new Error(
-      `Failed to fetch generated questions: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
-  }
-}
+//  return response.questions;
+//  }
+//  throw new Error(response.message || 'Failed to generate questions');
+// } catch (error) {
+//   console.error('Error fetching generated questions:', error);
+//   throw new Error(
+//    `Failed to fetch generated questions: ${error instanceof Error ? error.message : 'Unknown error'}`;
+//  );
+// }
+//}
 
 /** Send critical questions to external API for source finding
  * Sends critical questions to an external API for source finding
@@ -228,26 +225,25 @@ export async function getGeneratedQuestions(verificationId: string) {
  * @param questions - The critical questions to send
  */
 
-export async function sendCriticalQuestions(
-  verificationId: string,
-  questions: ReceivedQuestion[]
-): Promise<void> {
-  try {
-    // This function will now call your API
-    const response = await sendCriticalQuestionsToAPI({
-      verification_id: verificationId,
-      questions,
-    });
+//export async function sendCriticalQuestions(
+// verificationId: string,
+// questions: ReceivedQuestion[]
+//): Promise<void> {
+// try {
+//   // This function will now call your API
+//  const response = await sendCriticalQuestionsToAPI({
+//    verification_id: verificationId,
+//   questions,
+// });
 
-    if (response.success) {
-      console.log(`Successfully sent questions for verification: ${verificationId}`);
-    } else {
-      throw new Error(response.message || 'Failed to send questions');
-    }
-  } catch (error) {
-    console.error('Error sending critical questions:', error);
-    throw new Error(
-      `Failed to send critical questions: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
-  }
-}
+//   console.log(`Successfully sent questions for verification: ${verificationId}`);
+//  } else {
+//    throw new Error(response.message || 'Failed to send questions');
+// }
+//  } catch (error) {
+// console.error('Error sending critical questions:', error);
+// throw new Error(
+//   `Failed to send critical questions: ${error instanceof Error ? error.message : 'Unknown error'}`;
+//  );
+//}
+//}

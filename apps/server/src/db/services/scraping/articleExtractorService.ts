@@ -35,7 +35,7 @@ export async function extractArticleData(targetUrl: string): Promise<ArticleData
       },
     };
 
-    const data = await extract(targetUrl, null, fetchOptions);
+    const data = await extract(targetUrl, undefined, fetchOptions);
 
     if (!(data && (data.title || data.description || data.content))) {
       throw new Error('No relevant information could be extracted from the article.');

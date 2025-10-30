@@ -1,8 +1,8 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { eq, type SQLWrapper, sql } from 'drizzle-orm';
-import * as schema from '@/db/schema/auth';
 import { db } from '../db';
+import * as schema from './../db/schema/auth';
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -19,8 +19,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [process.env.CORS_ORIGIN || 'http://localhost:3001', 'http://localhost:3000'],
   emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: false,
+    enabled: false,
   },
   events: {
     onSignUp: async (user: { id: string | SQLWrapper; email: string }) => {
@@ -36,9 +35,7 @@ export const auth = betterAuth({
       }
     },
   },
-  session: {
-    maxAge: 60 * 60 * 24 * 30,
-  },
+  session: {},
   advanced: {
     defaultCookieAttributes: {
       sameSite: 'none',

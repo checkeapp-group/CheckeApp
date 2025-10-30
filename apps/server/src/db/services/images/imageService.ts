@@ -1,3 +1,5 @@
+import { Blob } from 'fetch-blob';
+import { FormData } from 'formdata-node';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,21 +11,27 @@ export async function processAndDelegateImage(imageUrl: string): Promise<string>
     if (!response.ok) {
       throw new Error(`Failed to fetch image: ${response.statusText}`);
     }
-    const imageBuffer = Buffer.from(await response.arrayBuffer());
+
+    const arrayBuffer = await response.arrayBuffer();
+    const imageBuffer = Buffer.from(arrayBuffer);
 
     const processedImageBuffer = await sharp(imageBuffer)
       .resize({ width: 1920, height: 1080, fit: 'cover' })
       .webp({ quality: 90 })
       .toBuffer();
 
+    const uint8Array = new Uint8Array(processedImageBuffer);
+
     const fileName = `${uuidv4()}.webp`;
+    const blob = new Blob([uint8Array], { type: 'image/webp' });
+
     const formData = new FormData();
-    formData.append('image', new Blob([processedImageBuffer]), fileName);
+    formData.append('image', blob, fileName);
     formData.append('fileName', fileName);
 
     const uploadResponse = await fetch(FRONTEND_UPLOAD_URL, {
       method: 'POST',
-      body: formData,
+      body: formData as any,
     });
 
     if (!uploadResponse.ok) {

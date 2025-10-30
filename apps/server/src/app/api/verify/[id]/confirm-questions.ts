@@ -1,26 +1,12 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import {
   getCriticalQuestions,
-  sendCriticalQuestions,
 } from '@/db/services/criticalQuestions/criticalQuestionService';
-import { makeSourcesReady } from '@/db/services/processLogs/processLogsService';
-import { saveSourcesFromAPI } from '@/db/services/sources/sourcesService';
-import { updateVerificationStatus } from '@/db/services/verifications/verificationService';
+import { getVerificationById, updateVerificationStatus } from '@/db/services/verifications/verificationService';
 import { validateVerificationAccess } from '@/db/services/verifications/verificationsPermissionsService';
 import { auth } from '@/lib/auth';
+import { callExternalApiWithLogging, searchSources } from '@/lib/externalApiClient';
 
-const confirmQuestionsSchema = z.object({
-  questions: z
-    .array(
-      z.object({
-        question_text: z.string().min(5).max(200),
-        original_question: z.string().min(5).max(200),
-        order_index: z.number().min(0),
-      })
-    )
-    .min(1, 'Debe haber al menos una pregunta'),
-});
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -45,43 +31,44 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     // Validate user owns this verification
     await validateVerificationAccess(verificationId, userId);
 
-    // Validate input
-    const body = await request.json();
-    const validationResult = confirmQuestionsSchema.safeParse(body);
+    try {
+      const criticalQuestions = await getCriticalQuestions(verificationId);
+      const verification = await getVerificationById(verificationId);
 
-    if (!validationResult.success) {
+      if (!verification) {
+        throw new Error('Verification not found');
+      }
+      if (criticalQuestions.length === 0) {
+        throw new Error('Cannot proceed without critical questions.');
+      }
+
+      const sourcesJob = await callExternalApiWithLogging(verificationId, 'search_sources', () =>
+        searchSources({
+          questions: criticalQuestions.map((q) => q.questionText),
+          input: verification.originalText,
+          language: verification.language,
+          location: 'es', 
+          model: process.env.MODEL || '',
+        })
+      );
+
       return NextResponse.json(
         {
-          error: 'Datos de entrada inválidos',
-          details: validationResult.error.errors.map((err) => ({
-            field: err.path.join('.'),
-            message: err.message,
-          })),
+          success: true,
+          jobId: sourcesJob.job_id,
+          message: 'Job for source searching started successfully.',
         },
-        { status: 400 }
+        { status: 200 }
       );
-    }
 
-    try {
-      await validateVerificationAccess(verificationId, userId);
-
-      const criticalQuestions = await getCriticalQuestions(verificationId);
-
-      const sourcesResponse = await sendCriticalQuestions(verificationId, criticalQuestions);
-
-      await updateVerificationStatus(verificationId, 'sources_ready');
-
-      await makeSourcesReady(verificationId);
-
-      await saveSourcesFromAPI(verificationId, sourcesResponse.sources);
     } catch (error) {
-      console.error('Error saving confirmed questions:', error);
-
+      console.error('Error in confirm-questions processing:', error);
+      await updateVerificationStatus(verificationId, 'error');
       return NextResponse.json(
         {
           success: false,
-          error: 'SAVE_FAILED',
-          message: 'Error al guardar las preguntas confirmadas',
+          error: 'PROCESSING_FAILED',
+          message: 'Error al iniciar la búsqueda de fuentes',
           details: error instanceof Error ? error.message : 'Error desconocido',
         },
         { status: 500 }
@@ -89,7 +76,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     }
   } catch (error) {
     console.error('Error in confirm-questions route:', error);
-
     return NextResponse.json(
       {
         error: 'Error interno del servidor',

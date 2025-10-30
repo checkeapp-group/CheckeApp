@@ -92,7 +92,7 @@ export const questionsRouter = {
             input: verification.originalText,
             language: verification.language,
             location: 'es',
-            model: process.env.MODEL,
+            model: process.env.MODEL || '',
           })
         );
 

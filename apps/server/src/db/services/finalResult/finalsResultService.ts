@@ -69,7 +69,7 @@ export async function generateAndSaveFinalAnalysis(verificationId: string): Prom
         language: verificationDetails.language,
         location: 'es',
         sources: sourcesForApi,
-        model: process.env.MODEL,
+        model: process.env.MODEL || '',
       })
     );
 
@@ -88,7 +88,7 @@ export async function generateAndSaveFinalAnalysis(verificationId: string): Prom
       const imageJob = await callExternalApiWithLogging(verificationId, 'generate_image', () =>
         generateImage({
           input: articleTitle,
-          model: process.env.MODEL,
+          model: process.env.MODEL || '',
           size: '1920x1080',
         })
       );
@@ -187,7 +187,7 @@ async function _saveImageResult(
 
     await db
       .update(finalResult)
-      .set({ imageJson: imageData })
+      .set({ imageUrl: imageResult.image_url })
       .where(eq(finalResult.verificationId, verificationId));
 
     console.log(`Resultado de la imagen guardado para la verificación: ${verificationId}`);

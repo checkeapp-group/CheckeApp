@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { saveCriticalQuestions } from '@/db/services/criticalQuestions/criticalQuestionService';
 import {
   createVerificationRecord,
   updateVerificationStatus,
@@ -14,6 +13,7 @@ const startVerificationSchema = z.object({
     .min(50, 'El texto debe tener al menos 50 caracteres')
     .max(5000, 'El texto no puede exceder 5000 caracteres')
     .trim(),
+  language: z.enum(['es', 'eu', 'ca', 'gl']).default('es'),
 });
 
 export async function POST(request: NextRequest) {
@@ -39,11 +39,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { text } = validationResult.data;
+    const { text, language } = validationResult.data;
 
-    verificationId = await createVerificationRecord(userId, text, 'draft');
+    verificationId = await createVerificationRecord(userId, text, language, 'draft');
 
     await updateVerificationStatus(verificationId, 'processing_questions');
+
+    const model = process.env.MODEL;
+    if (!model) {
+      throw new Error("La variable de entorno 'MODEL' no está configurada en el servidor.");
+    }
 
     const questionsJob = await callExternalApiWithLogging(
       verificationId,
@@ -51,8 +56,8 @@ export async function POST(request: NextRequest) {
       () =>
         generateQuestions({
           input: text,
-          model: 'google/gemini-2.5-flash',
-          language: 'es',
+          model: process.env.MODEL || '',
+          language,
           location: 'es',
         })
     );

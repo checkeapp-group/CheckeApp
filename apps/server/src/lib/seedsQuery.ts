@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { closeDB, executeRawQuery, initDB, withTransaction } from '@/lib/dbHelper';
 
 // biome-ignore lint/nursery/useConsistentTypeDefinitions: <explanation>

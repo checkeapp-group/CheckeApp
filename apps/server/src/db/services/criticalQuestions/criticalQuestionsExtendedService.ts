@@ -1,4 +1,4 @@
-import { eq, inArray, sql } from 'drizzle-orm';
+import { eq, inArray, max, sql } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
 import { criticalQuestion, type NewCriticalQuestion } from '@/db/schema/schema';
@@ -86,10 +86,13 @@ export async function createNewQuestion(data: QuestionCreateData): Promise<any> 
   }
 
   try {
-    // Obtener el siguiente order_index
-    const existingQuestions = await getCriticalQuestions(data.verificationId);
-    const nextOrderIndex = existingQuestions.length;
+    const maxOrderResult = await db
+      .select({ maxValue: max(criticalQuestion.orderIndex) })
+      .from(criticalQuestion)
+      .where(eq(criticalQuestion.verificationId, data.verificationId));
 
+    const maxOrder = maxOrderResult[0]?.maxValue;
+    const nextOrderIndex = maxOrder === null || maxOrder === undefined ? 0 : maxOrder + 1;
     // Crear nueva pregunta
     const newQuestionRecord: NewCriticalQuestion = {
       id: uuidv4(),

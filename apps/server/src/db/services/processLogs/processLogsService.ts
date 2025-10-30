@@ -291,18 +291,3 @@ export async function cleanupOldProcessLogs(daysOld = 30): Promise<number> {
     );
   }
 }
-
-export async function makeSourcesReady(verificationId: string) {
-  try {
-    await db
-      .update(processLog)
-      .set({ status: 'sources_ready' })
-      .where(eq(processLog.verificationId, verificationId));
-    console.log(`Updated process logs to sources_ready for verification: ${verificationId}`);
-  } catch (error) {
-    console.error('Error updating process logs to sources_ready:', error);
-    throw new Error(
-      `Failed to update process logs: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
-  }
-}

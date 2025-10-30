@@ -18,6 +18,11 @@ import {
 } from '@/lib/externalApiClient';
 import { protectedProcedure, publicProcedure } from '@/lib/orpc';
 
+type FinalResultMetadata = {
+  main_claim?: string;
+  label?: string;
+};
+
 const paginationSchema = z.object({
   page: z.number().min(1).default(1),
   limit: z.number().min(1).max(100).default(20),
@@ -62,7 +67,7 @@ export const verificationRouter = {
           () =>
             generateQuestions({
               input: text,
-              model: process.env.MODEL,
+              model: process.env.MODEL || '',
               language,
               location: 'es',
             })
@@ -216,14 +221,18 @@ export const verificationRouter = {
           },
         });
 
-        const formattedVerifications = publicVerifications.map((v) => ({
-          id: v.id,
-          createdAt: v.createdAt,
-          originalText: v.originalText,
-          userName: v.user?.name ?? null,
-          claim: v.finalResult?.metadata?.main_claim ?? null,
-          label: v.finalResult?.metadata?.label ?? null,
-        }));
+        const formattedVerifications = publicVerifications.map((v) => {
+          const metadata = v.finalResult?.metadata as FinalResultMetadata | undefined;
+
+          return {
+            id: v.id,
+            createdAt: v.createdAt,
+            originalText: v.originalText,
+            userName: v.user?.name ?? null,
+            claim: metadata?.main_claim ?? null,
+            label: metadata?.label ?? null,
+          };
+        });
 
         const totalCountResult = await db
           .select({ count: sql<number>`count(*)` })
