@@ -5,3 +5,4 @@ node_modules
 PROJECT_MAP.md
 .bmad-core
 .claude
+apps/web/public/verifications/*

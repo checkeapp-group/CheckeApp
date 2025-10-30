@@ -58,7 +58,7 @@ export function Modal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel asChild>
+              <Dialog.Panel>
                 <Card
                   className={`w-full ${sizeClasses[size]} ${backgroundColor} transform overflow-hidden bg-white p-4 text-left align-middle shadow-xl transition-all sm:p-6`}
                 >
