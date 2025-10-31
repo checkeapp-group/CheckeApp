@@ -8,7 +8,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "build:types": "tsc --project tsconfig.json",
-    "start": "next start",
+    "start": "next start -H 0.0.0.0 --port=3000",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
