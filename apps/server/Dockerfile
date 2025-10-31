@@ -31,7 +31,6 @@ ENV NODE_ENV=production
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/apps/server/package.json /app/apps/server/package.json
 COPY --from=builder /app/apps/server/.next /app/apps/server/.next
-COPY --from=builder /app/apps/server/public /app/apps/server/public
 
 # Copy .env file for runtime
 COPY --from=builder /app/apps/server/.env /app/apps/server/.env
