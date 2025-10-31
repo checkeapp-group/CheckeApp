@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { appRouter } from "server/src/routers";
 import { toast } from "sonner";
 import { useI18n } from "@/hooks/use-i18n";
 import { orpc } from "@/utils/orpc";
