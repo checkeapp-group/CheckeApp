@@ -218,11 +218,14 @@
   "verifications.sort.newest": "Máis recentes primeiro",
   "verifications.sort.oldest": "Máis antigos primeiro",
 
-  "pagination.showing": "Mostrando {start} a {end} de {total} resultados",
-  "pagination.previous": "Anterior",
-  "pagination.next": "Seguinte",
 
   "home.title": "Verifica a Túa Información",
+  "home.performVerification": "REALIZA UNHA VERIFICACIÓN",
+  "home.loadingVerifications": "Cargando verificacións...",
+  "home.aboutTitle": "Sobre CheckeApp",
+  "home.aboutParagraph1": "CheckeApp é unha plataforma web española de verificación de información e de código aberto baseada en intelixencia artificial.",
+  "home.aboutParagraph2": "O seu obxectivo é ofrecer unha ferramenta transparente, ética e accesible para combater a desinformación sen depender de infraestruturas ou tecnoloxías externas.",
+  "home.aboutParagraph3": "CheckeApp forma parte do marco estratéxico do proxecto ILENIA (Impulso das Linguas en Intelixencia Artificial), unha iniciativa nacional cuxa misión é fortalecer as linguas oficiais de España no ámbito dixital e da IA.",
   "home.latestVerifications": "Últimas verificacións",
   "home.verificationsActive": "{count, plural, one {verificación} other {verificacións}} activas",
   "home.realTime": "Verifica feitos usando fontes en tempo real",
@@ -246,11 +249,6 @@
   "error.createShareLink": "Erro ao crear a ligazón compartida: {error}",
 
   "common.closeModal": "Pechar modal",
-    "verification.delete_button": "Eliminar verificación",
-  "verification.deleted_success": "A verificación foi eliminada correctamente.",
-  "verification.deleted_error": "Non se puido eliminar a verificación.",
-  "verification.delete_modal.title": "Estás seguro de que queres eliminar esta verificación?",
-  "verification.delete_modal.message": "Esta acción non se pode desfacer. Eliminarase permanentemente a verificación e todos os seus datos asociados, incluíndo preguntas e fontes.",
 
   "verifications.label.true": "Verdadeiro",
   "admin.users.title": "Xestión de usuarios",
@@ -337,7 +335,7 @@
   "legal.meta.title": "Aviso legal - {title}",
   "legal.meta.description": "Aviso Legal de CheckeApp",
   "legal.ownerData.title": "1. Datos do Titular",
-  "legal.ownerData.intro": "checkeapp.com é un proxecto creado polo Doutor",
+  "legal.ownerData.intro": "Checkeapp é un proxecto creado polo Doutor",
   "legal.ownerData.ikerName": "Iker García Ferrero",
   "legal.ownerData.and": "e",
   "legal.ownerData.surlabs": "SURLABS",
@@ -432,5 +430,48 @@
   "about.paragraph1End": ", o noso proxecto busca combatir a desinformación mediante o uso de intelixencia artificial e tecnoloxías de análise automatizada.",
   "about.paragraph2": "A nosa misión é proporcionar unha plataforma confiable que permita aos usuarios analizar a veracidade de noticias, identificar posibles sesgos e avaliar a credibilidade das fontes. Cremos que nun mundo saturado de información, contar con ferramentas que faciliten o acceso a datos verificados é fundamental para unha sociedade mellor informada.",
   "about.paragraph3": "En CheckeApp combinamos innovación tecnolóxica cun profundo compromiso coa transparencia e a obxectividade. A nosa plataforma está deseñada para facilitar o fact-checking de maneira accesible e eficiente, brindando a xornalistas, investigadores e cidadáns unha solución robusta contra a manipulación informativa.",
-  "about.paragraph4": "Cun equipo multidisciplinar e un enfoque centrado na calidade e a precisión, en CheckeApp seguimos evolucionando para ofrecer novas funcionalidades e mellorar os nosos algoritmos. O noso obxectivo é consolidarnos como un referente na loita contra a desinformación, promovendo un acceso á información baseado en feitos verificables e análise rigorosas."
+  "about.paragraph4": "Cun equipo multidisciplinar e un enfoque centrado na calidade e a precisión, en CheckeApp seguimos evolucionando para ofrecer novas funcionalidades e mellorar os nosos algoritmos. O noso obxectivo é consolidarnos como un referente na loita contra a desinformación, promovendo un acceso á información baseado en feitos verificables e análise rigorosas.",
+
+  "cookies.modalTitle": "Aviso de cookies",
+  "cookies.modalDescription": "Utilizamos cookies para mellorar a túa experiencia. As cookies estrictamente necesarias aseguran que o sitio funcione correctamente. As cookies de análise axúdannos a entender como interactúas co sitio, permitíndonos mellorar os nosos servizos. Podes aceptar todas ou xestionar as túas preferencias.",
+  "cookies.acceptAll": "Aceptar todo",
+  "cookies.acceptNecessary": "Aceptar necesarias",
+  "cookies.showPreferences": "Xestionar preferencias",
+  "cookies.preferencesTitle": "Preferencias de Consentimento de Cookies",
+  "cookies.savePreferences": "Gardar preferencias",
+  "cookies.usageTitle": "Uso de Cookies",
+  "cookies.usageDescription": "Utilizamos cookies para optimizar a funcionalidade do sitio e ofrecerche a mellor experiencia posible. A continuación, podes xestionar as túas preferencias.",
+  "cookies.necessaryTitle": "Cookies Estrictamente Necesarias",
+  "cookies.necessaryDescription": "Estas cookies son esenciais para o funcionamento do sitio web e non se poden desactivar. Utilízanse para funcións básicas como a navegación de páxinas e a xestión das túas preferencias de idioma e consentimento.",
+  "cookies.analyticsTitle": "Cookies de Análise (Google Analytics)",
+  "cookies.analyticsDescription": "Estas cookies permítennos recopilar datos anónimos sobre como os visitantes utilizan o noso sitio. A información axúdanos a analizar o tráfico, identificar páxinas populares e mellorar a experiencia xeral do usuario.",
+  "cookies.moreInfoTitle": "Máis información",
+  "cookies.moreInfoDescription": "Para calquera pregunta sobre a nosa política de cookies e as túas opcións, por favor consulta a nosa",
+
+  "questions.generating": "Xerando preguntas críticas...",
+  "questions.generating_description": "Estamos analizando o texto e xerando preguntas relevantes. Isto pode tardar ata un minuto.",
+  "questions.timeout_error": "Tempo de espera esgotado. Non se puideron xerar as preguntas. Por favor, téntao de novo.",
+
+  "sources.searching": "Buscando fontes...",
+  "sources.searching_description": "Estamos buscando fontes relevantes para verificar as afirmacións. Isto pode tardar ata un minuto.",
+
+  "verification.sources_timeout_error": "Tempo de espera esgotado ao buscar fontes. Por favor, téntao de novo.",
+  "verification.delete_button": "Eliminar Verificación",
+  "verification.deleted_success": "A verificación foi eliminada.",
+  "verification.deleted_error": "Non se puido eliminar a verificación.",
+  "verification.delete_modal.title": "Estás seguro de que queres eliminar esta verificación?",
+  "verification.delete_modal.message": "Esta acción non se pode desfacer. Borrarase permanentemente a verificación e todos os seus datos asociados, incluíndo preguntas e fontes.",
+
+  "terms.modalTitle": "Aceptación de Termos",
+  "terms.modalDescription": "Para continuar, por favor, le e acepta os nosos termos de servizo e política de privacidade.",
+  "terms.checkboxLabel": "Lin e acepto os",
+  "terms.acceptedSuccess": "Termos aceptados. Benvido!",
+  "terms.acceptedError": "Non se puideron gardar as túas preferencias. Por favor, téntao de novo.",
+
+  "pagination.showing": "Mostrando {start} a {end} de {total} resultados",
+  "pagination.previous": "Anterior",
+  "pagination.next": "Seguinte",
+
+  "common.acceptAndContinue": "Aceptar e Continuar",
+  "common.and": "e"
 }

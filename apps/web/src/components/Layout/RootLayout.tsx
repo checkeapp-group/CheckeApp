@@ -1,16 +1,18 @@
-
 "use client";
 
+import { LogOutIcon, Menu, ShieldCheckIcon, UserIcon, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect } from "react";
+import { toast } from "sonner";
 import CookieConsentComponent from "@/components/CookieConsent";
 import GlobalLoader from "@/components/GlobalLoader";
 import UserMenu from "@/components/UserMenu";
 import { LanguageSelector } from "@/components/ui/lenguage-selector";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
+import { authClient } from "@/lib/auth-client";
 import { AuthModalProvider, useAuthModal } from "@/providers/AuthModalProvider";
 import { useLoading } from "@/providers/LoadingProvider";
 import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
@@ -20,62 +22,176 @@ import { Button } from "../ui/button";
 
 function AppHeader() {
   const { t } = useI18n();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { openAuthModal } = useAuthModal();
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+          toast.success(t("auth.loggedOut") || "Successfully logged out");
+        },
+      },
+    });
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-border border-b bg-white/95 shadow-sm backdrop-blur-sm px-3 lg:px-0">
-    <div className="lg:container mx-auto flex h-16 items-center justify-between gap-4">
-      <Link className="flex items-center gap-2" href="/">
-        <Image
-          alt="CheckeApp Logo"
-          className="h-auto w-64"
-          priority
-          src={FactCheckerLogo}
-        />
-      </Link>
+    <header className="sticky top-0 z-50 w-full border-border border-b bg-white/95 px-3 shadow-sm backdrop-blur-sm lg:px-0">
+      <div className="mx-auto flex h-16 items-center justify-between gap-4 lg:container">
+        <Link className="flex items-center gap-2" href="/">
+          <Image
+            alt="CheckeApp Logo"
+            className="h-auto w-64"
+            priority
+            src={FactCheckerLogo}
+          />
+        </Link>
 
-      <div className="flex items-center gap-4">
-        <nav className="hidden items-center gap-1 md:flex">
-          <Link
-            className="rounded-lg p-3 transition-all hover:bg-neutral-200/60 text-neutral-600"
-            href="/"
-          >
-            {t("nav.verify")}
-          </Link>
-          {isAuthenticated && (
-            <>
-              <Link
-                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 text-neutral-600"
-                href="/verifications"
-              >
-                {t("verifications.title")}
-              </Link>
-              <Link
-                className="rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 text-nowrap text-neutral-600"
-                href="/user-verifications"
-              >
-                {t("user_verifications.title")}
-              </Link>
-            </>
-          )}
-        </nav>
+        <div className="flex items-center gap-4">
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-1 md:flex">
+            <Link
+              className="rounded-lg p-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+              href="/"
+            >
+              {t("nav.verify")}
+            </Link>
+            {isAuthenticated && (
+              <>
+                <Link
+                  className="rounded-lg px-2 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  href="/verifications"
+                >
+                  {t("verifications.title")}
+                </Link>
+                <Link
+                  className="text-nowrap rounded-lg px-2 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  href="/user-verifications"
+                >
+                  {t("user_verifications.title")}
+                </Link>
+              </>
+            )}
+          </nav>
 
-        <div className="flex items-center gap-2">
-          {isAuthenticated ? (
-            <UserMenu />
-          ) : (
-            <div className="hidden items-center gap-2 sm:flex">
-              <Button onClick={openAuthModal}>
-                {t("auth.getStarted")}
-              </Button>
-            </div>
-          )}
-          <LanguageSelector />
+          <div className="flex items-center gap-2">
+            {isAuthenticated ? (
+              <div className="hidden md:block">
+                <UserMenu />
+              </div>
+            ) : (
+              <div className="hidden items-center gap-2 sm:flex">
+                <Button onClick={openAuthModal}>{t("auth.getStarted")}</Button>
+              </div>
+            )}
+            <LanguageSelector />
+
+            {/* Mobile Menu Button */}
+            <button
+              aria-label="Toggle mobile menu"
+              className="flex items-center justify-center p-2 text-neutral-600 md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </header>
+
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="border-border border-t bg-white md:hidden">
+          <nav className="container mx-auto flex flex-col py-4">
+            {/* User Info Section (Mobile) */}
+            {isAuthenticated && user && (
+              <div className="mb-3 border-border border-b px-4 pb-3">
+                <div className="flex items-center gap-2 text-neutral-700">
+                  <UserIcon className="h-5 w-5" />
+                  <div className="flex-1 overflow-hidden">
+                    <p className="truncate font-medium text-sm">
+                      {user.name || t("auth.guest")}
+                    </p>
+                    <p className="truncate text-muted-foreground text-xs">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <Link
+              className="rounded-lg px-4 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {t("nav.verify")}
+            </Link>
+            {isAuthenticated && (
+              <>
+                <Link
+                  className="rounded-lg px-4 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  href="/verifications"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t("verifications.title")}
+                </Link>
+                <Link
+                  className="rounded-lg px-4 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  href="/user-verifications"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t("user_verifications.title")}
+                </Link>
+
+                {/* Admin Link (Mobile) */}
+                {user?.isAdmin && (
+                  <Link
+                    className="flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-primary transition-all hover:bg-neutral-200/60"
+                    href="/admin/users"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <ShieldCheckIcon className="h-4 w-4" />
+                    {t("admin.title")}
+                  </Link>
+                )}
+
+                {/* Logout Button (Mobile) */}
+                <div className="mt-2 border-border border-t pt-2">
+                  <button
+                    className="flex w-full items-center gap-2 rounded-lg px-4 py-3 text-left text-destructive transition-all hover:bg-destructive/10"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    type="button"
+                  >
+                    <LogOutIcon className="h-4 w-4" />
+                    {t("auth.signOut") || "Sign Out"}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Get Started Button (Mobile - Non-authenticated) */}
+            {!isAuthenticated && (
+              <div className="mt-2 px-4">
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuthModal();
+                  }}
+                >
+                  {t("auth.getStarted")}
+                </Button>
+              </div>
+            )}
+          </nav>
+        </div>
+      )}
+    </header>
   );
 }
 
@@ -124,7 +240,7 @@ export default function RootLayout({
         <AppHeader />
         <main className="flex-1">{children}</main>
         <footer className="border-border border-t bg-card">
-          <div className="container py-5 mx-auto xl:grid grid-cols-2 flex flex-col">
+          <div className="container mx-auto flex grid-cols-2 flex-col py-5 xl:grid">
             <div className="flex flex-col items-center gap-2 p-2 xl:items-start">
               <div className="flex items-center justify-center gap-2">
                 <Image
@@ -134,7 +250,7 @@ export default function RootLayout({
                 />
               </div>
             </div>
-            <div className="flex xl:flex-row flex-col items-center justify-center xl:justify-end gap-4 text-muted-foreground text-sm">
+            <div className="flex flex-col items-center justify-center gap-4 text-muted-foreground text-sm xl:flex-row xl:justify-end">
               <Link
                 className="transition-colors hover:text-foreground"
                 href="/about-us"

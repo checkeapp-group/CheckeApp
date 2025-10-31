@@ -140,9 +140,6 @@
   "questions.confirmed_description": "Aquest pas s'ha completat. Les preguntes han estat desades i confirmades.",
   "questions.confirm_and_continue": "Confirmar Preguntes i Continuar",
   "questions.confirmed_and_saved": "Les preguntes han estat confirmades i desades",
-  "questions.generating": "Generant preguntes crítiques...",
-  "questions.generating_description": "Estem analitzant el text i generant preguntes rellevants. Això pot trigar fins a un minut.",
-  "questions.timeout_error": "Temps d'espera esgotat. No s'han pogut generar les preguntes. Si us plau, torna-ho a intentar.",
 
   "sources.scraped": "Obtingut",
   "sources.showLess": "Veure menys",
@@ -159,14 +156,11 @@
   "sources.selected_count": "{count} seleccionada(es)",
   "sources.starting": "Iniciant...",
   "sources.continue_analysis": "Continuar amb l'Anàlisi",
-  "sources.searching": "Cercant fonts...",
-  "sources.searching_description": "Estem cercant fonts rellevants per verificar les afirmacions. Això pot trigar fins a un minut.",
   "sources.clickToSelect": "Fes clic per seleccionar",
   "sources.all_domains": "Tots els dominis",
 
   "verification.sources_found": "Èxit! S'han trobat {count} fonts.",
   "verification.search_sources_error": "S'ha produït un error en cercar fonts.",
-  "verification.sources_timeout_error": "Temps d'espera esgotat en cercar fonts. Si us plau, torna-ho a intentar.",
   "verification.ready_for_analysis": "Llest per a l'anàlisi final!",
   "verification.continue_error": "Error en continuar",
   "verification.step1.title": "Pas 1: Envia el teu text a verificar",
@@ -229,6 +223,12 @@
   "pagination.next": "Següent",
 
   "home.title": "Verifica la Teva Informació",
+  "home.performVerification": "REALITZA UNA VERIFICACIÓ",
+  "home.loadingVerifications": "Carregant verificacions...",
+  "home.aboutTitle": "Sobre CheckeApp",
+  "home.aboutParagraph1": "CheckeApp és una plataforma web espanyola de verificació d'informació i de codi obert basada en intel·ligència artificial.",
+  "home.aboutParagraph2": "El seu objectiu és oferir una eina transparent, ètica i accessible per combatre la desinformació sense dependre d'infraestructures o tecnologies externes.",
+  "home.aboutParagraph3": "CheckeApp forma part del marc estratègic del projecte ILENIA (Impuls de les Llengües en Intel·ligència Artificial), una iniciativa nacional la missió de la qual és enfortir les llengües oficials d'Espanya en l'àmbit digital i de la IA.",
   "home.latestVerifications": "Últimes verificacions",
   "home.verificationsActive": "{count, plural, one {verificació} other {verificacions}} actives",
   "home.realTime": "Verifica fets utilitzant fonts en temps real",
@@ -343,7 +343,7 @@
   "legal.meta.title": "Avís legal - {title}",
   "legal.meta.description": "Avís Legal de CheckeApp",
   "legal.ownerData.title": "1. Dades del Titular",
-  "legal.ownerData.intro": "checkeapp.com és un projecte creat pel Doctor",
+  "legal.ownerData.intro": "Checkeapp és un projecte creat pel Doctor",
   "legal.ownerData.ikerName": "Iker García Ferrero",
   "legal.ownerData.and": "i",
   "legal.ownerData.surlabs": "SURLABS",
@@ -438,5 +438,39 @@
   "about.paragraph1End": ", el nostre projecte busca combatre la desinformació mitjançant l'ús d'intel·ligència artificial i tecnologies d'anàlisi automatitzada.",
   "about.paragraph2": "La nostra missió és proporcionar una plataforma confiable que permeti als usuaris analitzar la veracitat de notícies, identificar possibles biaixos i avaluar la credibilitat de les fonts. Creiem que en un món saturat d'informació, comptar amb eines que facilitin l'accés a dades verificades és fonamental per a una societat millor informada.",
   "about.paragraph3": "A CheckeApp combinem innovació tecnològica amb un profund compromís amb la transparència i l'objectivitat. La nostra plataforma està dissenyada per facilitar el fact-checking de manera accessible i eficient, brindant a periodistes, investigadors i ciutadans una solució robusta contra la manipulació informativa.",
-  "about.paragraph4": "Amb un equip multidisciplinari i un enfocament centrat en la qualitat i la precisió, a CheckeApp seguim evolucionant per oferir noves funcionalitats i millorar els nostres algorismes. El nostre objectiu és consolidar-nos com un referent en la lluita contra la desinformació, promovent un accés a la informació basat en fets verificables i anàlisis rigoroses."
+  "about.paragraph4": "Amb un equip multidisciplinari i un enfocament centrat en la qualitat i la precisió, a CheckeApp seguim evolucionant per oferir noves funcionalitats i millorar els nostres algorismes. El nostre objectiu és consolidar-nos com un referent en la lluita contra la desinformació, promovent un accés a la informació basat en fets verificables i anàlisis rigoroses.",
+
+  "cookies.modalTitle": "Avís de cookies",
+  "cookies.modalDescription": "Utilitzem cookies per millorar la teva experiència. Les cookies estrictament necessàries asseguren que el lloc funcioni correctament. Les cookies d'anàlisi ens ajuden a entendre com interactues amb el lloc, permetent-nos millorar els nostres serveis. Pots acceptar totes o gestionar les teves preferències.",
+  "cookies.acceptAll": "Acceptar tot",
+  "cookies.acceptNecessary": "Acceptar necessàries",
+  "cookies.showPreferences": "Gestionar preferències",
+  "cookies.preferencesTitle": "Preferències de Consentiment de Cookies",
+  "cookies.savePreferences": "Desar preferències",
+  "cookies.usageTitle": "Ús de Cookies",
+  "cookies.usageDescription": "Utilitzem cookies per optimitzar la funcionalitat del lloc i oferir-te la millor experiència possible. A continuació, pots gestionar les teves preferències.",
+  "cookies.necessaryTitle": "Cookies Estrictament Necessàries",
+  "cookies.necessaryDescription": "Aquestes cookies són essencials per al funcionament del lloc web i no es poden desactivar. S'utilitzen per a funcions bàsiques com la navegació de pàgines i la gestió de les teves preferències d'idioma i consentiment.",
+  "cookies.analyticsTitle": "Cookies d'Anàlisi (Google Analytics)",
+  "cookies.analyticsDescription": "Aquestes cookies ens permeten recopilar dades anònimes sobre com els visitants utilitzen el nostre lloc. La informació ens ajuda a analitzar el trànsit, identificar pàgines populars i millorar l'experiència general de l'usuari.",
+  "cookies.moreInfoTitle": "Més informació",
+  "cookies.moreInfoDescription": "Per a qualsevol pregunta sobre la nostra política de cookies i les teves opcions, si us plau consulta la nostra",
+
+  "questions.generating": "Generant preguntes crítiques...",
+  "questions.generating_description": "Estem analitzant el text i generant preguntes rellevants. Això pot trigar fins a un minut.",
+  "questions.timeout_error": "Temps d'espera exhaurit. No s'han pogut generar les preguntes. Si us plau, torna-ho a intentar.",
+
+  "sources.searching": "Buscant fonts...",
+  "sources.searching_description": "Estem buscant fonts rellevants per verificar les afirmacions. Això pot trigar fins a un minut.",
+
+  "verification.sources_timeout_error": "Temps d'espera exhaurit en buscar fonts. Si us plau, torna-ho a intentar.",
+
+  "terms.modalTitle": "Acceptació de Termes",
+  "terms.modalDescription": "Per continuar, si us plau, llegeix i accepta els nostres termes de servei i política de privacitat.",
+  "terms.checkboxLabel": "He llegit i accepto els",
+  "terms.acceptedSuccess": "Termes acceptats. Benvingut!",
+  "terms.acceptedError": "No s'han pogut desar les teves preferències. Si us plau, torna-ho a intentar.",
+
+  "common.acceptAndContinue": "Acceptar i Continuar",
+  "common.and": "i"
 }
