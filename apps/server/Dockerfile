@@ -13,8 +13,7 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 COPY --from=pruner /app/out/full/ .
 
-# Copy .env file for build-time
-COPY apps/server/.env apps/server/.env
+COPY .env.prod apps/server/.env
 
 RUN npm ci
 
@@ -32,8 +31,6 @@ COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/apps/server/package.json /app/apps/server/package.json
 COPY --from=builder /app/apps/server/.next /app/apps/server/.next
 
-# Copy .env file for runtime
-COPY --from=builder /app/apps/server/.env /app/apps/server/.env
 
 WORKDIR /app/apps/server
 

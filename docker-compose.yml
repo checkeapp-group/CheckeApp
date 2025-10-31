@@ -6,12 +6,12 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     env_file:
-      - ./.env 
+      - ./.env.prod
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD_ROOT}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - checkeapp_db_data:/var/lib/mysql
     ports:
@@ -31,7 +31,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./apps/server/.env
+      - ./.env.prod
     networks:
       - checkeapp-net
 
@@ -47,7 +47,7 @@ services:
     ports:
       - "3024:3001"
     env_file:
-      - ./apps/web/.env
+      - ./.env.prod
     networks:
       - checkeapp-net
 
