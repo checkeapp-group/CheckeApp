@@ -31,7 +31,7 @@ COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/apps/web/package.json /app/apps/web/package.json
 COPY --from=builder /app/apps/web/.next /app/apps/web/.next
 COPY --from=builder /app/apps/web/public /app/apps/web/public
-
+RUN mkdir -p /app/apps/web/public/verifications && chown -R node:node /app/apps/web/public/verifications
 
 WORKDIR /app/apps/web
 
