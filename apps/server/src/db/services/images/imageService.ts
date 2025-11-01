@@ -3,7 +3,8 @@ import { FormData } from 'formdata-node';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 
-const FRONTEND_UPLOAD_URL = `${process.env.NEXT_PUBLIC_APP_URL}/api/upload-image`;
+const FRONTEND_INTERNAL_URL = 'http://web:3001';
+const FRONTEND_UPLOAD_URL = `${FRONTEND_INTERNAL_URL}/api/upload-image`;
 
 export async function processAndDelegateImage(imageUrl: string): Promise<string> {
   try {

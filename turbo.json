@@ -9,7 +9,7 @@
     },
     "server#build": {
       "dependsOn": ["^build", "server#build:types"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "apps/server/drizzle.config.ts","apps/server/src/db/schema/**"],
       "outputs": ["dist/**", ".next/**"]
     },
     "server#build:types": {

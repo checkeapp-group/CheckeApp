@@ -30,6 +30,8 @@ COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/apps/server/package.json /app/apps/server/package.json
 COPY --from=builder /app/apps/server/.next /app/apps/server/.next
 
+COPY apps/server/drizzle.config.ts /app/apps/server/drizzle.config.ts
+
 
 WORKDIR /app/apps/server
 
