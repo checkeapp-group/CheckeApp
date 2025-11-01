@@ -13,10 +13,9 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 COPY --from=pruner /app/out/full/ .
 
-COPY .env.prod apps/server/.env
+COPY .env apps/server/.env
 
 RUN npm ci
-
 # Build with environment variables available
 RUN npm run build --filter=server
 

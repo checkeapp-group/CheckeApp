@@ -14,7 +14,7 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 COPY --from=pruner /app/out/full/ .
 
-COPY .env.prod apps/web/.env
+COPY .env apps/web/.env
 
 RUN npm ci
 
