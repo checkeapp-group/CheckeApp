@@ -38,10 +38,9 @@ export default function TermsAcceptanceModal({
 
   return (
     <Modal
+      hideCloseButton={true}
       isOpen={isOpen}
-      onClose={() => {
-        /* No hacer nada al hacer clic fuera para forzar la aceptación */
-      }}
+      onClose={() => {}}
       title={t("terms.modalTitle")}
     >
       <div className="space-y-6">

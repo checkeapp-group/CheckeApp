@@ -15,6 +15,7 @@ type ModalProps = {
   size?: "sm" | "md" | "lg" | "xl";
   backgroundColor?: string;
   className?: string;
+  hideCloseButton?: boolean;
 };
 
 export function Modal({
@@ -26,6 +27,7 @@ export function Modal({
   size = "md",
   backgroundColor = "bg-background",
   className,
+  hideCloseButton = false,
 }: ModalProps) {
   const sizeClasses = {
     sm: "max-w-sm",
@@ -80,15 +82,17 @@ export function Modal({
                         </Dialog.Description>
                       )}
                     </div>
-                    <Button
-                      aria-label="Cerrar modal"
-                      className="-mt-1 -mr-1 shrink-0"
-                      onClick={onClose}
-                      size="icon"
-                      variant="ghost"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                    {!hideCloseButton && (
+                      <Button
+                        aria-label="Cerrar modal"
+                        className="-mt-1 -mr-1 shrink-0"
+                        onClick={onClose}
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                   <div className="mt-4">{children}</div>
                 </Card>

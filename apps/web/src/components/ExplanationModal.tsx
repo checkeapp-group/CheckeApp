@@ -71,11 +71,9 @@ export function ExplanationModal({ isOpen, onClose }: ExplanationModalProps) {
                   </p>
                 </div>
               </div>
-              {index < steps.length - 1 && (
                 <div className="-bottom-3 -translate-x-1/2 absolute left-1/2 z-10 flex h-6 w-6 transform items-center justify-center rounded-full bg-background">
                   <div className="h-4 w-4 rounded-full border-2 border-primary/30" />
                 </div>
-              )}
             </Card>
           );
         })}

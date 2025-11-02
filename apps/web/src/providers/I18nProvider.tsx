@@ -22,6 +22,16 @@ const I18nContext = createContext<{
 
 export const useI18nContext = () => useContext(I18nContext);
 
+function HtmlLangUpdater() {
+  const { locale } = useI18nContext();
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
+  return null;
+}
+
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useState<Locale>('es');
 
@@ -39,6 +49,7 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <I18nContext.Provider value={{ locale, setLocale: handleSetLocale }}>
+      <HtmlLangUpdater />
       <IntlProvider locale={locale} messages={messagesMap[locale]}>
         {children}
       </IntlProvider>

@@ -108,7 +108,7 @@ const TextInputForm = ({
   return (
     <>
       {!(authLoading || isVerified) && isAuthenticated && (
-        <Card className="mb-4 flex items-center gap-4 border-yellow-500/50 bg-yellow-50 p-4 text-yellow-800">
+        <Card className="mb-8 flex items-center gap-4 border-yellow-500/50 bg-yellow-50 p-4 text-yellow-800">
           <AlertTriangle className="h-6 w-6 flex-shrink-0" />
           <div className="flex-1">
             <h3 className="font-semibold">
