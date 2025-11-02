@@ -42,6 +42,10 @@ const nextConfig: NextConfig = {
     const backendUrl = 'http://server:3000';
     return [
       {
+        source: '/api/verifications/:path*',
+        destination: '/api/verifications/:path*',
+      },
+      {
         source: '/api/:path*',
         destination: `${backendUrl}/api/:path*`,
       },

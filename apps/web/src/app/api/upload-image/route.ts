@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     console.log(`[WEB API] Image successfully saved to: ${filePath}`);
 
-    const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verifications/${fileName}`;
+    const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verifications/${fileName}`;
 
     return NextResponse.json({ success: true, path: publicUrl });
   } catch (error) {
