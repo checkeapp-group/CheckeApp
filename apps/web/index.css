@@ -161,10 +161,6 @@ a:hover {
   color: var(--color-link-hover);
 }
 
-a:visited {
-  color: var(--color-link-visited);
-}
-
 a:focus-visible {
   outline: 2px solid var(--color-ring);
   outline-offset: 2px;
