@@ -3,7 +3,7 @@
 import { LogOutIcon, Menu, ShieldCheckIcon, UserIcon, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect } from "react";
 import { toast } from "sonner";
 import CookieConsentComponent from "@/components/CookieConsent";
@@ -25,6 +25,11 @@ function AppHeader() {
   const { isAuthenticated, user } = useAuth();
   const { openAuthModal } = useAuthModal();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const pathname = usePathname();
+
+  const isLinkActive = (href: string) => {
+    return pathname === href || (href !== '/' && pathname.startsWith(href));
+  };
 
   const handleLogout = async () => {
     await authClient.signOut({
@@ -53,7 +58,11 @@ function AppHeader() {
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-1 md:flex">
             <Link
-              className="rounded-lg p-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+              className={`rounded-lg p-3 transition-all hover:bg-neutral-200/60 ${
+                isLinkActive("/") 
+                  ? "bg-neutral-200/80 font-medium text-primary" 
+                  : "text-neutral-600"
+              }`}
               href="/"
             >
               {t("nav.verify")}
@@ -61,13 +70,21 @@ function AppHeader() {
             {isAuthenticated && (
               <>
                 <Link
-                  className="rounded-lg px-2 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  className={`rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
+                    isLinkActive("/verifications") 
+                      ? "bg-neutral-200/80 font-medium text-primary" 
+                      : "text-neutral-600"
+                  }`}
                   href="/verifications"
                 >
                   {t("verifications.title")}
                 </Link>
                 <Link
-                  className="text-nowrap rounded-lg px-2 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  className={`text-nowrap rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
+                    isLinkActive("/user-verifications") 
+                      ? "bg-neutral-200/80 font-medium text-primary" 
+                      : "text-neutral-600"
+                  }`}
                   href="/user-verifications"
                 >
                   {t("user_verifications.title")}
@@ -122,7 +139,11 @@ function AppHeader() {
             )}
 
             <Link
-              className="rounded-lg px-4 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+              className={`rounded-lg px-4 py-3 transition-all hover:bg-neutral-200/60 ${
+                isLinkActive("/") 
+                  ? "bg-neutral-200/80 font-medium text-primary" 
+                  : "text-neutral-600"
+              }`}
               href="/"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -131,14 +152,22 @@ function AppHeader() {
             {isAuthenticated && (
               <>
                 <Link
-                  className="rounded-lg px-4 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  className={`rounded-lg px-4 py-3 transition-all hover:bg-neutral-200/60 ${
+                    isLinkActive("/verifications") 
+                      ? "bg-neutral-200/80 font-medium text-primary" 
+                      : "text-neutral-600"
+                  }`}
                   href="/verifications"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t("verifications.title")}
                 </Link>
                 <Link
-                  className="rounded-lg px-4 py-3 text-neutral-600 transition-all hover:bg-neutral-200/60"
+                  className={`rounded-lg px-4 py-3 transition-all hover:bg-neutral-200/60 ${
+                    isLinkActive("/user-verifications") 
+                      ? "bg-neutral-200/80 font-medium text-primary" 
+                      : "text-neutral-600"
+                  }`}
                   href="/user-verifications"
                   onClick={() => setMobileMenuOpen(false)}
                 >
