@@ -294,6 +294,12 @@ export default function RootLayout({
               </Link>
               <Link
                 className="transition-colors hover:text-foreground"
+                href="/terms-of-service"
+              >
+                {t("nav.termsOfService")}
+              </Link>
+              <Link
+                className="transition-colors hover:text-foreground"
                 href="/privacy-policy"
               >
                 {t("nav.privacyPolicy")}

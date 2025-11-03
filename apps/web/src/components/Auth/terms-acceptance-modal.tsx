@@ -56,6 +56,14 @@ export default function TermsAcceptanceModal({
             {t("terms.checkboxLabel")}{" "}
             <Link
               className="text-primary underline hover:text-primary/80"
+              href="/terms-of-service"
+              target="_blank"
+            >
+              {t("nav.termsOfService")}
+            </Link>
+            ,{" "}
+            <Link
+              className="text-primary underline hover:text-primary/80"
               href="/legal-notice"
               target="_blank"
             >

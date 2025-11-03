@@ -188,16 +188,10 @@ export default function VerificationResult({ data }) {
         onSuccess: (result) => {
             const shareUrl = `${window.location.origin}/share/${result.shareToken}`;
 
-            toast.success(t("result.shareLink.created"), {
+            navigator.clipboard.writeText(shareUrl);
+            toast.success(t("result.shareLink.copied"), {
                 description: t("result.shareLink.description"),
-                action: {
-                    label: t("result.shareLink.copyLink"),
-                    onClick: () => {
-                        navigator.clipboard.writeText(shareUrl);
-                        toast.info(t("result.shareLink.copied"));
-                    },
-                },
-                duration: 10_000,
+                duration: 5_000,
             });
         },
         onError: (error) => {

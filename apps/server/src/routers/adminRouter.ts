@@ -61,4 +61,15 @@ export const adminRouter = {
 
       return { success: true, message: 'User status updated.' };
     }),
+
+  verifyAllUsers: adminProcedure.input(z.void()).handler(async ({ context }) => {
+    const currentUserId = context.session.user.id;
+
+    await db
+      .update(user)
+      .set({ isVerified: true })
+      .where(not(eq(user.id, currentUserId)));
+
+    return { success: true, message: 'All users have been verified.' };
+  }),
 };

@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 import AdminGuard from "@/components/Auth/admin-guard";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -80,15 +81,66 @@ function AdminUsersPageContent() {
     },
   });
 
+  const verifyAllUsersMutation = useMutation({
+    mutationFn: async () => {
+      await orpc.verifyAllUsers.call();
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["admin-all-users"] });
+      const previousUsers = queryClient.getQueryData<AdminUser[]>([
+        "admin-all-users",
+      ]);
+      queryClient.setQueryData<AdminUser[]>(
+        ["admin-all-users"],
+        (oldUsers = []) =>
+          oldUsers.map((user) => ({ ...user, isVerified: true }))
+      );
+      return { previousUsers };
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previousUsers) {
+        queryClient.setQueryData(["admin-all-users"], context.previousUsers);
+      }
+      toast.error(
+        `Error: ${
+          error instanceof Error
+            ? error.message
+            : t("admin.users.verifyAllFailed")
+        }`
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-all-users"] });
+    },
+    onSuccess: () => {
+      toast.success(t("admin.users.verifyAllSuccess"));
+    },
+  });
+
   if (isLoading) {
     return null;
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 font-bold text-2xl sm:text-3xl">
-        {t("admin.users.title")}
-      </h1>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="font-bold text-2xl sm:text-3xl">
+          {t("admin.users.title")}
+        </h1>
+        <Button
+          className="w-full sm:w-auto"
+          disabled={
+            verifyAllUsersMutation.isPending ||
+            updateUserMutation.isPending ||
+            !users ||
+            users.length === 0
+          }
+          loading={verifyAllUsersMutation.isPending}
+          onClick={() => verifyAllUsersMutation.mutate()}
+        >
+          {t("admin.users.verifyAll")}
+        </Button>
+      </div>
       <div className="hidden overflow-x-auto rounded-lg border md:block">
         <Table>
           <TableHeader>
