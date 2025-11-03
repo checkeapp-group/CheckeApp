@@ -3,7 +3,7 @@ import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db';
 import { user } from '../db/schema/auth';
-import { verification } from '../db/schema/schema';
+import { verification, finalResult, source } from '../db/schema/schema';
 import { saveCriticalQuestions } from '../db/services/criticalQuestions/criticalQuestionService';
 import {
   createVerificationRecord,
@@ -107,6 +107,41 @@ export const verificationRouter = {
       });
     }
   }),
+
+  getPublicVerificationResult: publicProcedure
+    .input(z.object({ verificationId: z.string().uuid() }))
+    .handler(async ({ input }) => {
+      const { verificationId } = input;
+
+      const result = await db.query.verification.findFirst({
+        where: eq(verification.id, verificationId),
+        with: {
+          user: { columns: { name: true } },
+          source: { where: eq(source.isSelected, true) },
+          finalResult: true,
+        },
+      });
+
+      if (!result) {
+        throw new ORPCError('NOT_FOUND', { message: 'Verification not found.' });
+      }
+
+      if (result.status !== 'completed') {
+        throw new ORPCError('FORBIDDEN', {
+          message: 'This verification is not yet public.',
+        });
+      }
+
+      if (!result.finalResult) {
+        throw new ORPCError('NOT_FOUND', {
+          message: 'Verification result is not available yet.',
+        });
+      }
+
+      const { userId, ...safeResult } = result;
+      return safeResult;
+    }),
+
   getOwnVerifications: protectedProcedure
     .input(paginationSchema)
     .handler(async ({ input, context }) => {

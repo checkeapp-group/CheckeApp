@@ -31,7 +31,7 @@ export async function saveSourcesFromAPI(
       summary: apiSource.summary,
       domain: apiSource.domain,
       favicon: apiSource.favicon,
-      isSelected: apiSource.isSelected ?? false,
+      isSelected: true,
       scrapingDate: new Date(),
     }));
     await db.insert(source).values(sourceRecords);

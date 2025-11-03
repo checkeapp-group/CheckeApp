@@ -8,7 +8,6 @@ import FinalVerificationLoader from "@/components/FinalVerificationLoader";
 import GlobalLoader from "@/components/GlobalLoader";
 import { Card } from "@/components/ui/card";
 import VerificationResult from "@/components/VerificationResult";
-import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { orpc } from "@/utils/orpc";
@@ -29,7 +28,6 @@ function ErrorState({ errorMessage }: { errorMessage: string }) {
 export default function FinalResultPage() {
   const { id: verificationId } = useParams();
   const { t } = useI18n();
-  const { isAuthenticated } = useAuth();
   const [showResult, setShowResult] = useState(false);
 
   const {
@@ -65,23 +63,10 @@ export default function FinalResultPage() {
       if (!verificationId || typeof verificationId !== "string") {
         return null;
       }
-      return orpc.getVerificationResultData.call({ verificationId });
+      return orpc.getPublicVerificationResult.call({ verificationId });
     },
     enabled: statusData?.status === "completed",
     retry: false,
-  });
-
-  const { data: verificationDetails, isLoading: isLoadingDetails } = useQuery({
-    queryKey: ["verificationDetails", verificationId],
-    queryFn: () => {
-      if (!verificationId || typeof verificationId !== "string") {
-        return null;
-      }
-      return orpc.getVerificationDetails.call({ verificationId });
-    },
-    enabled: !!verificationId && isAuthenticated,
-    retry: false,
-    refetchInterval: false,
   });
 
   const title =
@@ -134,7 +119,7 @@ export default function FinalResultPage() {
         <FinalVerificationLoader
           isProcessing={isProcessing}
           onComplete={() => setShowResult(true)}
-          question={verificationDetails?.originalText || ""}
+          question={statusData?.originalText || resultData?.originalText || ""}
         />
       </div>
     );

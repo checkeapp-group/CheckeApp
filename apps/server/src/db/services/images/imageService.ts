@@ -17,7 +17,7 @@ export async function processAndDelegateImage(imageUrl: string): Promise<string>
     const imageBuffer = Buffer.from(arrayBuffer);
 
     const processedImageBuffer = await sharp(imageBuffer)
-      .resize({ width: 1920, height: 1080, fit: 'cover' })
+      .resize({ width: 1000, height: 500, fit: 'cover' })
       .webp({ quality: 90 })
       .toBuffer();
 
