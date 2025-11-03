@@ -252,13 +252,12 @@ export const verificationRouter = {
           orderBy: (verifications, { desc }) => [desc(verifications.createdAt)],
           with: {
             user: { columns: { name: true } },
-            finalResult: { columns: { metadata: true } },
+            finalResult: { columns: { metadata: true, imageUrl: true } },
           },
         });
 
         const formattedVerifications = publicVerifications.map((v) => {
           const metadata = v.finalResult?.metadata as FinalResultMetadata | undefined;
-
           return {
             id: v.id,
             createdAt: v.createdAt,
@@ -266,6 +265,7 @@ export const verificationRouter = {
             userName: v.user?.name ?? null,
             claim: metadata?.main_claim ?? null,
             label: metadata?.label ?? null,
+            imageUrl: v.finalResult?.imageUrl,
           };
         });
 
