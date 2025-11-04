@@ -250,7 +250,7 @@
   "error.loadingVerification": "Error en carregar la verificació",
   "error.couldNotLoadResult": "No s'ha pogut carregar el resultat",
   "error.noDataFound": "No s'han trobat dades per a aquesta verificació.",
-  "error.createShareLink": "Error en crear l'enllaç compartit: {error}",
+  "error.createShareLink": "Accedeix al teu compte per crear un enllaç compartit",
 
   "common.closeModal": "Tanca el modal",
   "verification.delete_button": "Eliminar verificació",
@@ -513,7 +513,7 @@
   "verification.sources_timeout_error": "Temps d'espera exhaurit en buscar fonts. Si us plau, torna-ho a intentar.",
 
   "terms.modalTitle": "Acceptació de Termes",
-  "terms.modalDescription": "Per continuar, si us plau, llegeix i accepta els nostres termes de servei i política de privacitat.",
+  "terms.modalDescription": "Per continuar, has de llegir i acceptar les condicions d’ús, l’avís legal i la política de privacitat:",
   "terms.checkboxLabel": "He llegit i accepto els",
   "terms.acceptedSuccess": "Termes acceptats. Benvingut!",
   "terms.acceptedError": "No s'han pogut desar les teves preferències. Si us plau, torna-ho a intentar.",

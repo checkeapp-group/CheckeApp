@@ -277,7 +277,7 @@
   "error.loadingVerification": "Error al cargar la verificación",
   "error.couldNotLoadResult": "No se pudo cargar el resultado",
   "error.noDataFound": "No se encontraron datos para esta verificación.",
-  "error.createShareLink": "Error al crear el enlace compartido: {error}",
+  "error.createShareLink": "Accede a tu cuenta para crear un enlace compartido",
 
   "common.closeModal": "Cerrar modal",
 
@@ -508,7 +508,7 @@
   "about.paragraph3": "En CheckeApp combinamos innovación tecnológica con un profundo compromiso con la transparencia y la objetividad. Nuestra plataforma está diseñada para facilitar el fact-checking de manera accesible y eficiente, brindando a periodistas, investigadores y ciudadanos una solución robusta contra la manipulación informativa.",
   "about.paragraph4": "Con un equipo multidisciplinar y un enfoque centrado en la calidad y la precisión, en CheckeApp seguimos evolucionando para ofrecer nuevas funcionalidades y mejorar nuestros algoritmos. Nuestro objetivo es consolidarnos como un referente en la lucha contra la desinformación, promoviendo un acceso a la información basado en hechos verificables y análisis rigurosos.",
   "terms.modalTitle": "Aceptación de Términos",
-  "terms.modalDescription": "Para continuar, por favor, lee y acepta nuestros términos de servicio y política de privacidad.",
+  "terms.modalDescription": "Para continuar, debes leer y aceptar las condiciones de uso, aviso legal y política de privacidad:",
   "terms.checkboxLabel": "He leído y acepto los",
   "terms.acceptedSuccess": "Términos aceptados. ¡Bienvenido!",
   "terms.acceptedError": "No se pudieron guardar tus preferencias. Por favor, inténtalo de nuevo.",

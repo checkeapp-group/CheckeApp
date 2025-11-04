@@ -256,7 +256,7 @@
   "error.loadingVerification": "Errorea egiaztapena kargatzean",
   "error.couldNotLoadResult": "Ezin izan da emaitza kargatu",
   "error.noDataFound": "Ez da daturik aurkitu egiaztapen honetarako.",
-  "error.createShareLink": "Errorea partekatutako esteka sortzean: {error}",
+  "error.createShareLink": "Sartu zure kontuan partekatutako esteka sortzeko",
 
   "common.closeModal": "Modala itxi",
    "verification.delete_button": "Egiaztapena ezabatu",
@@ -510,7 +510,7 @@
   "cookies.moreInfoDescription": "Gure cookie politikari eta zure aukerai buruzko edozein galderarako, mesedez kontsultatu gure",
 
   "terms.modalTitle": "Baldintzen Onarpena",
-  "terms.modalDescription": "Jarraitzeko, mesedez, irakurri eta onartu gure zerbitzu-baldintzak eta pribatutasun-politika.",
+  "terms.modalDescription": "Jarraitzeko, erabilera-baldintzak, legezko abisua eta pribatutasun-politika irakurri eta onartu behar dituzu:",
   "terms.checkboxLabel": "Irakurri eta onartu ditut",
   "terms.acceptedSuccess": "Baldintzak onartuta. Ongi etorri!",
   "terms.acceptedError": "Ezin izan dira zure lehentasunak gorde. Mesedez, saiatu berriro.",
