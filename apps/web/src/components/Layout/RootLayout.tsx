@@ -245,14 +245,20 @@ export default function RootLayout({
     return null;
   };
 
+  const pathname = usePathname();
+
   useEffect(() => {
     if (isAuthLoading) return;
-    if (isAuthenticated && user && !user.termsAccepted) {
+    
+    const excludedPaths = ["/terms-of-service", "/legal-notice", "/privacy-policy"];
+    const isExcludedPath = excludedPaths.includes(pathname);
+    
+    if (isAuthenticated && user && !user.termsAccepted && !isExcludedPath) {
       setShowTermsModal(true);
     } else {
       setShowTermsModal(false);
     }
-  }, [isAuthenticated, user, isAuthLoading]);
+  }, [isAuthenticated, user, isAuthLoading, pathname]);
 
   return (
     <AuthModalProvider>
