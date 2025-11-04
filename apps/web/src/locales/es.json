@@ -75,7 +75,7 @@
 
   "textInput.loginPlaceholder": "Haz clic para iniciar sesión y empezar a escribir...",
   "textInput.submitting": "Enviando...",
-  "textInput.loginToSubmit": "Inicia sesión para enviar",
+  "textInput.loginToSubmit": "Accede para realizar nuevas verificaciones",
   "textInput.authModalTitle": "Acceso a la entrada de texto",
   "textInput.authModalMessage": "Para utilizar nuestro servicio de verificación de texto necesitas estar registrado. Esto nos ayuda a ofrecer resultados personalizados y seguros.",
   "textInput.label": "Mensaje",

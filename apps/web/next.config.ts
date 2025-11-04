@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
-    const backendUrl = 'http://server:3000';
+    const backendUrl = 'http://localhost:3000';
     return [
       {
         source: '/api/verifications/:path*',
