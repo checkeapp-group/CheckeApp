@@ -241,6 +241,7 @@
   "home.realTime": "Egiaztatu gertakariak denbora errealean iturriak erabiliz",
   "home.noRecentVerifications": "Ez dago azken egiaztapenik",
   "home.howItWorks": "Nola funtzionatzen du?",
+  "home.howItWorks.description": "Ikasi informazioa egiaztatzen 3 urrats errazetan",
 
   "explanation.modal.title": "Nola funtzionatzen du egiaztapenak?",
   "explanation.modal.description": "Gure 3 pauso egiaztapen prozesua",

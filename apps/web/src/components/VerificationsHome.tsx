@@ -46,7 +46,7 @@ export default function VerificationsHome() {
                 {t("home.howItWorks")}
               </span>
 			  <span className="font-light text-sm/tight text-neutral-500 text-wrap text-start">
-                Aprende a verificar información en 3 sencillos pasos
+        {t("home.howItWorks.description")}
               </span>
 				</div>
 			  </div>

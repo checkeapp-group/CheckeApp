@@ -235,6 +235,7 @@
   "home.realTime": "Verifica fets utilitzant fonts en temps real",
   "home.noRecentVerifications": "No hi ha verificacions recents",
   "home.howItWorks": "Com funciona?",
+  "home.howItWorks.description": "Aprèn a verificar informació en 3 senzills passos",
 
   "explanation.modal.title": "Com funciona la verificació?",
   "explanation.modal.description": "El nostre procés de verificació en 3 passos",

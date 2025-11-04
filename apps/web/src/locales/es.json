@@ -262,6 +262,7 @@
   "home.realTime": "Verifica hechos usando fuentes en tiempo real",
   "home.noRecentVerifications": "No hay verificaciones recientes",
   "home.howItWorks": "¿Cómo funciona?",
+  "home.howItWorks.description": "Aprende a verificar información en 3 sencillos pasos",
 
   "explanation.modal.title": "¿Cómo funciona la verificación?",
   "explanation.modal.description": "Nuestro proceso de verificación en 3 pasos",
@@ -509,7 +510,7 @@
   "about.paragraph4": "Con un equipo multidisciplinar y un enfoque centrado en la calidad y la precisión, en CheckeApp seguimos evolucionando para ofrecer nuevas funcionalidades y mejorar nuestros algoritmos. Nuestro objetivo es consolidarnos como un referente en la lucha contra la desinformación, promoviendo un acceso a la información basado en hechos verificables y análisis rigurosos.",
   "terms.modalTitle": "Aceptación de Términos",
   "terms.modalDescription": "Para continuar, debes leer y aceptar las condiciones de uso, aviso legal y política de privacidad:",
-  "terms.checkboxLabel": "He leído y acepto los",
+  "terms.checkboxLabel": "He leído y acepto las",
   "terms.acceptedSuccess": "Términos aceptados. ¡Bienvenido!",
   "terms.acceptedError": "No se pudieron guardar tus preferencias. Por favor, inténtalo de nuevo.",
   "common.acceptAndContinue": "Aceptar y Continuar",
