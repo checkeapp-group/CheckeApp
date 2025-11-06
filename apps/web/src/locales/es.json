@@ -75,7 +75,7 @@
 
   "textInput.loginPlaceholder": "Haz clic para iniciar sesión y empezar a escribir...",
   "textInput.submitting": "Enviando...",
-  "textInput.loginToSubmit": "Inicia sesión para enviar",
+  "textInput.loginToSubmit": "Accede para realizar nuevas verificaciones",
   "textInput.authModalTitle": "Acceso a la entrada de texto",
   "textInput.authModalMessage": "Para utilizar nuestro servicio de verificación de texto necesitas estar registrado. Esto nos ayuda a ofrecer resultados personalizados y seguros.",
   "textInput.label": "Mensaje",
@@ -262,6 +262,7 @@
   "home.realTime": "Verifica hechos usando fuentes en tiempo real",
   "home.noRecentVerifications": "No hay verificaciones recientes",
   "home.howItWorks": "¿Cómo funciona?",
+  "home.howItWorks.description": "Aprende a verificar información en 3 sencillos pasos",
 
   "explanation.modal.title": "¿Cómo funciona la verificación?",
   "explanation.modal.description": "Nuestro proceso de verificación en 3 pasos",
@@ -277,7 +278,7 @@
   "error.loadingVerification": "Error al cargar la verificación",
   "error.couldNotLoadResult": "No se pudo cargar el resultado",
   "error.noDataFound": "No se encontraron datos para esta verificación.",
-  "error.createShareLink": "Error al crear el enlace compartido: {error}",
+  "error.createShareLink": "Accede a tu cuenta para crear un enlace compartido",
 
   "common.closeModal": "Cerrar modal",
 
@@ -508,8 +509,8 @@
   "about.paragraph3": "En CheckeApp combinamos innovación tecnológica con un profundo compromiso con la transparencia y la objetividad. Nuestra plataforma está diseñada para facilitar el fact-checking de manera accesible y eficiente, brindando a periodistas, investigadores y ciudadanos una solución robusta contra la manipulación informativa.",
   "about.paragraph4": "Con un equipo multidisciplinar y un enfoque centrado en la calidad y la precisión, en CheckeApp seguimos evolucionando para ofrecer nuevas funcionalidades y mejorar nuestros algoritmos. Nuestro objetivo es consolidarnos como un referente en la lucha contra la desinformación, promoviendo un acceso a la información basado en hechos verificables y análisis rigurosos.",
   "terms.modalTitle": "Aceptación de Términos",
-  "terms.modalDescription": "Para continuar, por favor, lee y acepta nuestros términos de servicio y política de privacidad.",
-  "terms.checkboxLabel": "He leído y acepto los",
+  "terms.modalDescription": "Para continuar, debes leer y aceptar las condiciones de uso, aviso legal y política de privacidad:",
+  "terms.checkboxLabel": "He leído y acepto las",
   "terms.acceptedSuccess": "Términos aceptados. ¡Bienvenido!",
   "terms.acceptedError": "No se pudieron guardar tus preferencias. Por favor, inténtalo de nuevo.",
   "common.acceptAndContinue": "Aceptar y Continuar",

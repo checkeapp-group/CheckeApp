@@ -59,7 +59,7 @@
 
   "textInput.loginPlaceholder": "Preme para iniciar sesión e comezar a escribir...",
   "textInput.submitting": "Enviando...",
-  "textInput.loginToSubmit": "Inicia sesión para enviar",
+  "textInput.loginToSubmit": "Accede para facer novas verificacións",
   "textInput.authModalTitle": "Acceso á entrada de texto",
   "textInput.authModalMessage": "Para usar o noso servizo de verificación de texto necesitas estar rexistrado. Isto axúdanos a ofrecer resultados personalizados e seguros.",
   "textInput.label": "Mensaxe",
@@ -232,6 +232,7 @@
   "home.realTime": "Verifica feitos usando fontes en tempo real",
   "home.noRecentVerifications": "Non hai verificacións recentes",
   "home.howItWorks": "Como funciona?",
+  "home.howItWorks.description": "Aprende a verificar información en 3 sinxelos pasos", 
 
   "explanation.modal.title": "Como funciona a verificación?",
   "explanation.modal.description": "O noso proceso de verificación en 3 pasos",
@@ -247,7 +248,7 @@
   "error.loadingVerification": "Erro ao cargar a verificación",
   "error.couldNotLoadResult": "Non se puido cargar o resultado",
   "error.noDataFound": "Non se atoparon datos para esta verificación.",
-  "error.createShareLink": "Erro ao crear a ligazón compartida: {error}",
+  "error.createShareLink": "Accede á túa conta para crear unha ligazón compartida",
 
   "common.closeModal": "Pechar modal",
 
@@ -510,7 +511,7 @@
   "verification.delete_modal.message": "Esta acción non se pode desfacer. Borrarase permanentemente a verificación e todos os seus datos asociados, incluíndo preguntas e fontes.",
 
   "terms.modalTitle": "Aceptación de Termos",
-  "terms.modalDescription": "Para continuar, por favor, le e acepta os nosos termos de servizo e política de privacidade.",
+  "terms.modalDescription": "Para continuar, debes ler e aceptar as condicións de uso, o aviso legal e a política de privacidade: ",
   "terms.checkboxLabel": "Lin e acepto os",
   "terms.acceptedSuccess": "Termos aceptados. Benvido!",
   "terms.acceptedError": "Non se puideron gardar as túas preferencias. Por favor, téntao de novo.",

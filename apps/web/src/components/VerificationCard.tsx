@@ -25,11 +25,11 @@ const getLabelStyles = (label: string | null) => {
   switch (label?.toLowerCase()) {
     case "true":
     case "verificado":
-      return "bg-green-100 text-green-800";
+      return "bg-[#dcf4df] text-foreground outline-foreground";
     case "fake":
     case "false":
     case "bulo":
-      return "bg-red-100 text-red-800";
+      return "bg-red-100 text-red-800 outline-red-800";
     default:
       return "bg-orange-100 text-orange-800";
   }
@@ -86,7 +86,7 @@ export default function VerificationCard({
               {verification.label && (
                 <span
                   className={cn(
-                    "rounded-md px-2 py-0.5 font-semibold text-xs uppercase",
+                    "rounded-md px-2 py-0.5 font-semibold text-xs outline uppercase",
                     getLabelStyles(verification.label)
                   )}
                 >

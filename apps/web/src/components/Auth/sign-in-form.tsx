@@ -67,13 +67,13 @@ export default function SignInForm({ onClose }: SignInFormProps) {
           />
         </svg>
       </Button>
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-info to-success" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#83d59a] via-[#2fbe9a] to-[#04abd0]" />
       <div className="px-6 py-8 sm:px-8 sm:py-10">
         <div className="mb-6 text-center">
-          <h1 className="mt-4 font-bold text-2xl text-foreground tracking-tight sm:text-3xl">
+          <h1 className="mt-4 font-bold text-2xl gradient-title-green tracking-tight sm:text-3xl">
             {t("auth.welcome")}
           </h1>
-          <p className="mt-2 text-gray-600 text-sm">
+          <p className="mt-2 text-gray-600 text-base">
             {t("textInput.loginToSubmit")}
           </p>
         </div>
@@ -93,12 +93,6 @@ export default function SignInForm({ onClose }: SignInFormProps) {
             <GoogleIcon />
             {t("auth.continueWithGoogle")}
           </Button>
-        </div>
-
-        <div className="mt-6 text-center">
-          <p className="text-muted-foreground text-xs">
-            {t("auth.termsAcceptance")}
-          </p>
         </div>
       </div>
     </div>

@@ -33,8 +33,8 @@ const getStatusAppearance = (status: VerificationData["status"]) => {
     case "completed":
       return {
         icon: CheckCircle,
-        color: "text-green-600",
-        bgColor: "bg-green-100",
+        color: "text-foreground",
+        bgColor: "bg-[#dcf4df]",
       };
     case "error":
       return {
@@ -57,8 +57,8 @@ const getLabelStyles = (label: string | null) => {
     case "verificado":
       return {
         icon: CheckCircle,
-        color: "text-green-800",
-        bgColor: "bg-green-100",
+        color: "text-foreground",
+        bgColor: "bg-[#dcf4df]",
       };
     case "fake":
     case "false":
@@ -150,12 +150,12 @@ export default function UserVerificationCard({
 
               <div
                 className={cn(
-                  "flex items-center gap-1.5 rounded-md px-2 py-0.5 font-bold text-xs uppercase",
+                  "flex items-center gap-1.5 rounded-md px-2 py-0.5 font-bold text-xs uppercase outline",
                   displayInfo.bgColor,
                   displayInfo.color
                 )}
               >
-                <StatusIcon className="h-3 w-3" />
+                {/* <StatusIcon className="h-3 w-3" /> */}
                 <span>{displayInfo.text}</span>
               </div>
             </div>

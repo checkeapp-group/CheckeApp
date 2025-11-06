@@ -52,7 +52,7 @@ export default function TermsAcceptanceModal({
             id="terms"
             onCheckedChange={(checked) => setIsChecked(Boolean(checked))}
           />
-          <Label className="font-medium text-sm leading-normal" htmlFor="terms">
+          <Label className="font-medium text-sm leading-normal text-neutral-600" htmlFor="terms">
             {t("terms.checkboxLabel")}{" "}
             <Link
               className="text-primary underline hover:text-primary/80"

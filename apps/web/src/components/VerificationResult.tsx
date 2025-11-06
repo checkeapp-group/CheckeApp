@@ -260,12 +260,12 @@ export default function VerificationResult({ data }) {
     const getLabelStyles = (labelValue?: string) => {
         const normalizedLabel = labelValue?.toLowerCase();
         if (normalizedLabel === "true") {
-            return "border-green-200 bg-green-100 text-green-800";
+            return "border-foreground bg-[#dcf4df] text-foreground";
         }
         if (normalizedLabel === "false" || normalizedLabel === "fake") {
-            return "border-red-200 bg-red-100 text-red-800";
+            return "border-red-800 bg-red-100 text-red-800";
         }
-        return "border-orange-200 bg-orange-100 text-orange-800";
+        return "border-orange-800 bg-orange-100 text-orange-800";
     };
 
     return (
