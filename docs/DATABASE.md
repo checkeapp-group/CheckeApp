@@ -25,13 +25,16 @@ The database follows these core principles:
 erDiagram
     %% Authentication Domain
     USERS {
-        varchar_36 id PK "🔑 Primary Key"
-        text name "👤 User Name"
-        varchar_255 email "📧 Unique Email"
-        boolean email_verified "✅ Verification Status"
-        text image "🖼️ Profile Image"
-        timestamp created_at "📅 Creation Date"
-        timestamp updated_at "🔄 Last Update"
+        varchar(36) id PK "🔑 Clave Primaria (UUID)"
+        text name "👤 Nombre de Usuario"
+        varchar(255) email UK "📧 Email Único"
+        boolean emailVerified "✅ Estado de Verificación de Email"
+        boolean is_verified "👍 Verificado por Admin"
+        boolean is_admin "👑 Rol de Administrador"
+        boolean termsAccepted "📜 Términos Aceptados"
+        text image "🖼️ URL de Imagen de Perfil"
+        timestamp createdAt "📅 Fecha de Creación"
+        timestamp updatedAt "🔄 Última Actualización"
     }
 
     SESSIONS {
@@ -63,14 +66,14 @@ erDiagram
 
     %% Fact-Checking Domain
     VERIFICATIONS {
-        varchar_36 id PK "🔑 Primary Key"
-        varchar_36 user_id FK "👤 User Reference"
-        text original_text "📝 Text to Verify"
-        enum status "🚦 Process Status"
-        timestamp created_at "📅 Creation Date"
-        timestamp updated_at "🔄 Last Update"
-        varchar_36 share_token "✅ Token to share the verification"
-        enum lenguage "🗣️ Lenguage that the article is written in"
+        varchar(36) id PK
+        varchar(36) user_id FK "👤 Referencia a USER"
+        text original_text "📝 Texto a Verificar (10-5000 chars)"
+        enum status "🚦 Estado del Proceso"
+        enum language "🗣️ Idioma (es, eu, ca, gl)"
+        varchar(36) share_token UK "🔗 Token para compartir"
+        timestamp created_at
+        timestamp updated_at
     }
 
     CRITICAL_QUESTIONS {
@@ -80,7 +83,7 @@ erDiagram
         text original_question "📝 Original Question"
         boolean is_edited "✏️ User Modified"
         int order_index "📊 Display Order"
-        timestamp created_at "📅 Creation Date":
+        timestamp created_at "📅 Creation Date"
     }
 
     SOURCES {
@@ -258,6 +261,8 @@ erDiagram
         timestamp created_at
         timestamp updated_at
         boolean is_verified
+        boolean is_admin
+        boolean termsAccepted
     }
 
     VERIFICATION {

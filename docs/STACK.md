@@ -17,13 +17,12 @@ This document outlines the technologies, frameworks, and libraries used in the C
 
 ## 🔧 Backend (`apps/server`)
 
-| Category                                                                       | Technology                   | Version | Description                                          |
-| ------------------------------------------------------------------------------ | ---------------------------- | ------- | ---------------------------------------------------- |
-| <img src="./next-js.png" width="20" height="20" alt="Next-js" /> **Framework** | Next.js                      | 15.5.0  | React framework for building full-stack applications |
-| 🔌 **API**                                                                     | oRPC                         | 1.8.4   | End-to-end type-safe APIs with OpenAPI integration   |
-| <img src="./drizzle-orm.png" width="20" height="20" alt="Drizzle" /> **ORM**   | Drizzle                      | 0.44.2  | TypeScript-first Object Relational Mapper            |
-| 🔐 **Authentication**                                                          | Better Auth                  | 1.3.7   | Authentication library for Next.js                   |
-| 🕷️ **Web Scraping**                                                            | @extractus/article-extractor | 8.0.20  | Extracts article content from a URL                  |
+| Category                                                                       | Technology  | Version | Description                                          |
+| ------------------------------------------------------------------------------ | ----------- | ------- | ---------------------------------------------------- |
+| <img src="./next-js.png" width="20" height="20" alt="Next-js" /> **Framework** | Next.js     | 15.5.0  | React framework for building full-stack applications |
+| 🔌 **API**                                                                     | oRPC        | 1.8.4   | End-to-end type-safe APIs with OpenAPI integration   |
+| <img src="./drizzle-orm.png" width="20" height="20" alt="Drizzle" /> **ORM**   | Drizzle     | 0.44.2  | TypeScript-first Object Relational Mapper            |
+| 🔐 **Authentication**                                                          | Better Auth | 1.3.7   | Authentication library for Next.js                   |
 
 ---
 

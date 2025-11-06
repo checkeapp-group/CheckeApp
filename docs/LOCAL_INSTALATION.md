@@ -64,6 +64,7 @@ DB_PORT=3306
 DB_USER=user
 DB_PASSWORD=password
 DB_NAME=FactCheckerProject
+MODEL=
 
 # Authentication (CRITICAL: Generate a strong, unique secret)
 # You can generate one here: https://generate-secret.vercel.app/32

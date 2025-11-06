@@ -4,8 +4,8 @@
 
 This document describes the two primary API interfaces in the CheckeApp:
 
-1.  **Internal API (oRPC)**: A type-safe API used for all communication between the frontend (`web`) and the backend (`server`).
-2.  **External API (REST)**: A RESTful API provided by an external AI service, which the backend calls to perform long-running tasks like generating questions and analyzing sources.
+1. **Internal API (oRPC)**: A type-safe API used for all communication between the frontend (`web`) and the backend (`server`).
+2. **External API (REST)**: A RESTful API provided by an external AI service, which the backend calls to perform long-running tasks like generating questions and analyzing sources.
 
 ---
 
@@ -45,9 +45,9 @@ The backend communicates with this external, job-based REST API to perform AI ta
 
 All `POST` endpoints follow an asynchronous pattern:
 
-1.  The backend sends a `POST` request to start a job.
-2.  The external API immediately responds with a `200 OK` and a `{ job_id }`.
-3.  The backend (or frontend, via an oRPC procedure) must then poll the `GET /result/{job_id}` endpoint until the `status` is `completed` or `failed`.
+1. The backend sends a `POST` request to start a job.
+2. The external API immediately responds with a `200 OK` and a `{ job_id }`.
+3. The backend (or frontend, via an oRPC procedure) must then poll the `GET /result/{job_id}` endpoint until the `status` is `completed` or `failed`.
 
 ### Key External Endpoints
 
@@ -76,10 +76,3 @@ All `POST` endpoints follow an asynchronous pattern:
 - **Returns (Completed)**: `{ "status": "completed", "result": { ... } }`
 
 ---
-
-## 3. Mock API (for Development)
-
-For local development (`API_MODE=development`), the backend uses a set of "Fake API" endpoints that simulate the behavior of the external API.
-
-- **Location**: `apps/server/src/app/api/fakeAPI/`
-- **Behavior**: These endpoints mimic the asynchronous job flow by using `setTimeout` to simulate processing time. They return pre-defined, static data structures that match what the real external API would provide. This allows the frontend and backend logic to be developed and tested without incurring costs or relying on the external service.
