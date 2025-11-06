@@ -4,27 +4,27 @@ import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { db } from '../db';
 import { source, verification } from '../db/schema/schema';
-import { validateVerificationAccess } from '../db/services/verifications/verificationsPermissionsService';
-import { protectedProcedure, publicProcedure } from '../lib/orpc';
+import { publicProcedure } from '../lib/orpc';
 
 export const shareRouter = {
-  // This is a PROTECTED procedure because only the owner can create a share link
-  createShareLink: protectedProcedure
+  // This is a PUBLIC procedure because anyone can create a share link
+  createShareLink: publicProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
-    .handler(async ({ input, context }) => {
+    .handler(async ({ input }) => {
       const { verificationId } = input;
-      await validateVerificationAccess(verificationId, context.session.user.id, 'view');
 
       const existingVerification = await db.query.verification.findFirst({
         where: eq(verification.id, verificationId),
         columns: {
           shareToken: true,
+          status: true,
         },
       });
 
       if (!existingVerification) {
         throw new ORPCError('NOT_FOUND');
       }
+
 
       // If a token already exists, return it immediately
       if (existingVerification.shareToken) {
