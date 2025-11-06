@@ -26,8 +26,6 @@ export async function POST(request: Request) {
     const filePath = path.join(UPLOAD_DIR, fileName);
     await fs.writeFile(filePath, buffer);
 
-    console.log(`[WEB API] Image successfully saved to: ${filePath}`);
-
     const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verifications/${fileName}`;
 
     return NextResponse.json({ success: true, path: publicUrl });
