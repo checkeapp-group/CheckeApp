@@ -42,7 +42,7 @@ const TextInputForm = ({
 
   const isAuthenticated = propIsAuthenticated ?? hookIsAuthenticated;
   const maxLength = 5000;
-  const minLength = 30;
+  const minLength = 10;
 
   const handleUnauthenticatedAction = useCallback(() => {
     if (authLoading || isAuthenticated) {

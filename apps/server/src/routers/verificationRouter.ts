@@ -35,7 +35,7 @@ export const verificationRouter = {
   startVerification: protectedProcedure
     .input(
       z.object({
-        text: z.string().min(30).max(5000).trim(),
+        text: z.string().min(10).max(5000).trim(),
         language: z.enum(['es', 'eu', 'ca', 'gl']).default('es'),
       })
     )
