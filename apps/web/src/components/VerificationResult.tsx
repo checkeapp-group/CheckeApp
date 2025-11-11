@@ -364,6 +364,7 @@ export default function VerificationResult({ data }) {
                         alt={user.name || "User avatar"}
                         className="rounded-full"
                         height={48}
+                        referrerPolicy="no-referrer"
                         src={
                           "https://lh3.googleusercontent.com/a/ACg8ocKqO9iEv0b9Uiy7VTvsc2boqc7JXl2sdTpIv2nImYc0mJdGLoY=s96-c"
                         }
