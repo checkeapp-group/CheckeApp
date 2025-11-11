@@ -17,6 +17,7 @@ graph TD
         C --> F[sourcesRouter];
         C --> G[userRouter];
         C --> H[shareRouter];
+        C --> I[adminRouter];
     end
 
     subgraph "Business Logic Layer (Services)"
@@ -65,6 +66,7 @@ graph TD
   - `sourcesRouter.ts`: Manages sources and orchestrates the final analysis.
   - `userRouter.ts`: Retrieves authenticated user information.
   - `shareRouter.ts`: Handles result-sharing logic.
+  - `adminRouter.ts`: Administrative operations (user management, verification control).
 
 ### Business Logic Layer (`apps/server/src/db/services/`)
 

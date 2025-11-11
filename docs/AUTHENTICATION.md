@@ -35,6 +35,8 @@ In addition to standard authentication, the system enforces a custom authorizati
 ### Backend (`apps/server`)
 
 - **Configuration (`/lib/auth.ts`)**: Defines the `drizzleAdapter`, session duration, and `better-auth` security settings.
+  - **Initial Admin Setup**: The first user to sign up is automatically promoted to `isAdmin: true` and `isVerified: true`.
+  - **Disabled Feature**: Email and password authentication is explicitly disabled.
 - **API Endpoints (`/app/api/auth/[...all]/route.ts`)**: Exposes REST endpoints (`/api/auth/signin/email`, `/api/auth/signup/email`, etc.) automatically handled by `better-auth`.
 - **oRPC Protection (`/lib/orpc.ts`)**: The `requireAuth` middleware is applied to `protectedProcedure`s to ensure only users with a valid session can access business logic endpoints.
 

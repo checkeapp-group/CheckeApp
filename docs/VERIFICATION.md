@@ -12,7 +12,7 @@ The process is orchestrated by the frontend, which initiates jobs on the backend
 
 1. **📝 Text Submission & Question Generation**: The user submits text. The backend starts a job to generate questions.
 2. **❓ Question Editing & Source Search**: The user edits the questions. When confirmed, the backend starts a job to find sources.
-3. **🔗 Source Selection & Final Analysis**: The user selects sources. When confirmed, the backend starts the final, long-running analysis job.
+3. **🔗 Source Selection & Final Analysis**: The user selects sources. When confirmed, the backend starts the final, long-running analysis job (article and image generation).
 4. **📊 Result Display**: The user is redirected to a results page that polls for the final report.
 
 ---
@@ -29,7 +29,7 @@ sequenceDiagram
     participant ExtAPI as ExternalAPI
 
     User->>+FE: Submits text and language
-    FE->>+BE: oRPC call: startVerification({ text, language })
+    FE->>+BE: REST call: POST /api/verify/start
     BE->>BE: Creates verification record (status: 'draft')
     BE->>BE: Updates status to 'processing_questions'
     BE->>+ExtAPI: POST /stepwise/critical-questions
@@ -49,7 +49,7 @@ sequenceDiagram
 - It stores the `job_id` in `sessionStorage` (e.g., `verification_job_<verificationId>`) to pass it to the next page.
 - Redirects the user to the edit page (`/verify/[verificationId]/edit`).
 
-#### Backend (`verificationRouter.ts`)
+#### Backend (`apps/server/src/app/api/verify/start/route.ts`)
 
 - The `startVerification` procedure creates a `verification` record in the database with the provided language and an initial status.
 - It immediately calls the external API to start the question generation job.
@@ -77,12 +77,20 @@ sequenceDiagram
         API-->>-BE: Returns { status, result: { questions } }
         BE-->>-FE: Returns job status
     end
-
-    FE->>+BE: oRPC call: saveGeneratedQuestions({ verificationId, questions })
-    BE->>BE: Saves questions to DB
-    BE->>BE: Updates verification status to 'sources_ready'
-    BE-->>-FE: Returns { success: true }
+    Note over FE: Questions are now available via `orpc.getVerificationQuestions`
     Note over FE: Displays QuestionsList component
+
+    User->>QE: Edits, reorders, adds questions
+    QE->>BE: Calls update/delete/add/reorder oRPC procedures
+
+    User->>+QE: Clicks \"Confirm and Continue\"
+    QE->>+BE: REST call: POST /api/verify/[id]/confirm-questions
+    BE->>BE: Retrieves questions & language from DB
+    BE->>+API: POST /stepwise/search-sources
+    API-->>-BE: Returns { job_id }
+    BE-->>-QE: Returns new { jobId } for source search
+    QE-->>-User: Continues to next step
+    Note over QE: Stores new job_id for next polling cycle
 
     User->>QE: Edits, reorders, adds questions
     QE->>BE: Calls update/delete/add/reorder oRPC procedures
@@ -103,7 +111,7 @@ sequenceDiagram
 
 - Retrieves the `job_id` from `sessionStorage`.
 - Uses `useQuery` with a `refetchInterval` to poll the `getJobResult` oRPC procedure.
-- Once the job is completed, it calls the `saveGeneratedQuestions` mutation.
+- Once the job is completed, the frontend calls `orpc.saveSearchedSources` (if it was a source job) or relies on the backend to have saved the questions (if it was a question job).
 - The `QuestionsList` component then fetches the saved questions using `getVerificationQuestions`.
 
 #### Frontend (`QuestionsList.tsx`)
@@ -111,9 +119,10 @@ sequenceDiagram
 - Allows the user to perform CRUD operations on the questions.
 - When the user clicks "Confirm", it calls the `confirmQuestionsAndSearchSources` mutation.
 
-#### Backend (`questionRouter.ts`)
+#### Backend (`apps/server/src/app/api/verify/[id]/confirm-questions.ts`)
 
-- `confirmQuestionsAndSearchSources` retrieves the final set of questions and the verification's language from the database.
+- This is a REST API route, not an oRPC procedure.
+- It retrieves the final set of questions and the verification's language from the database.
 - It calls the external API's `/stepwise/search-sources` endpoint.
 - It returns a new `job_id` to the frontend for the source-searching task.
 
@@ -142,7 +151,7 @@ sequenceDiagram
     User->>+SL: Clicks "Continue to Analysis"
     SL->>+BE: oRPC call: continueToAnalysis({ verificationId })
     BE->>BE: Updates status to 'generating_summary'
-    BE->>BE: Asynchronously calls generateAndSaveFinalAnalysis()
+    BE->>BE: Asynchronously calls generateAndSaveFinalAnalysis() (includes article and image generation)
     BE-->>-SL: Returns { success: true }
     SL-->>-User: Redirects to /verify/[id]/finalResult
 
@@ -169,7 +178,7 @@ sequenceDiagram
 
 #### Backend (`sourcesRouter.ts`)
 
-- `continueToAnalysis` updates the verification status to `generating_summary` and asynchronously (without awaiting) calls `generateAndSaveFinalAnalysis`. It immediately returns success to the frontend.
+- `continueToAnalysis` updates the verification status to `generating_summary` and asynchronously (without awaiting) calls `generateAndSaveFinalAnalysis`. This function orchestrates both article and image generation jobs. It immediately returns success to the frontend.
 
 #### Frontend (`FinalResultPage.tsx`)
 

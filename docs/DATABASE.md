@@ -103,6 +103,7 @@ erDiagram
         varchar_36 id PK "🔑 Primary Key"
         varchar_36 verification_id FK "📋 Verification Reference"
         text final_text "📋 Final Analysis"
+        varchar(255) image_url "🖼️ URL de Imagen Generada"
         json labels_json "🏷️ Classification Labels"
         json citations_json "📚 Source Citations"
         json answers_json "💬 Question Answers"
@@ -183,8 +184,9 @@ erDiagram
   draft --> processing_questions
   processing_questions --> sources_ready
   sources_ready --> generating_summary
-  generating_summary --> completed
-  generating_summary --> error
+  generating_summary --> generating_image
+  generating_image --> completed
+  generating_image --> error
 
   ```
 
@@ -269,7 +271,7 @@ erDiagram
         varchar id PK "36 chars, UUID"
         varchar user_id FK "Referencias USER"
         text original_text "10-5000 chars"
-        enum status "draft, processing_questions, sources_ready, generating_summary, completed, error"
+        enum status "draft, processing_questions, sources_ready, generating_summary, generating_image, completed, error"
         timestamp created_at
         timestamp updated_at
         boolean is_verified
@@ -302,6 +304,7 @@ erDiagram
         varchar id PK "36 chars, UUID"
         varchar verification_id FK "Referencias VERIFICATION, único"
         text final_text "≥ 10 chars"
+        varchar image_url "≤ 255 chars"
         json labels_json "JSON válido o NULL"
         json citations_json "JSON válido o NULL"
         json answers_json "JSON válido o NULL"

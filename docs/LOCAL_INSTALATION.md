@@ -58,9 +58,9 @@ Your apps/server/.env file should look like this. The default values are pre-con
 
 ```env
 # Database Connection (Defaults are set for the Docker container)
-DATABASE_URL="mysql://user:password@localhost:3306/FactCheckerProject"
+DATABASE_URL="mysql://user:password@localhost:3319/FactCheckerProject"
 DB_HOST=localhost
-DB_PORT=3306
+DB_PORT=3319
 DB_USER=user
 DB_PASSWORD=password
 DB_NAME=FactCheckerProject

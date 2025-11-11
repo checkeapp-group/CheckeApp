@@ -25,12 +25,14 @@ This is not an exhaustive list but covers the main procedures in the verificatio
 | :--------------------------------- | :------------------- | :------------------------------ | :--------------------------- | :---------------------------------------------------------------------------------- |
 | `startVerification`                | `verificationRouter` | `{ text, language }`            | `{ verificationId, job_id }` | Creates a verification record and starts the external job to generate questions.    |
 | `getJobResult`                     | `verificationRouter` | `{ jobId }`                     | `{ status, result }`         | Polls the external API to get the status and result of an asynchronous job.         |
-| `saveGeneratedQuestions`           | `verificationRouter` | `{ verificationId, questions }` | `{ success }`                | Saves the questions returned by the external job to the database.                   |
+| `getVerificationQuestions`         | `questionRouter`     | `{ verificationId }`            | `Question[]`                 | Fetches the critical questions for a verification.                                  |
 | `confirmQuestionsAndSearchSources` | `questionRouter`     | `{ verificationId }`            | `{ jobId }`                  | Confirms user-edited questions and starts the external job to search for sources.   |
-| `saveSearchedSources`              | `questionRouter`     | `{ verificationId, sources }`   | `{ success }`                | Saves the sources returned by the external job to the database.                     |
-| `continueToAnalysis`               | `sourcesRouter`      | `{ verificationId }`            | `{ success }`                | Starts the final asynchronous analysis process on the backend.                      |
-| `getVerificationProgress`          | `sourcesRouter`      | `{ verificationId }`            | `{ status, hasFinalResult }` | A lightweight polling endpoint for the frontend to check the final analysis status. |
-| `getVerificationResultData`        | `sourcesRouter`      | `{ verificationId }`            | `VerificationResultData`     | Fetches the complete, final verification report once it's ready.                    |
+| `updateSourceSelection`            | `sourcesRouter`      | `{ sourceId, isSelected }`      | `{ success }`                | Updates the selection status of a source.                                           |
+| `continueToAnalysis`               | `sourcesRouter`      | `{ verificationId }`            | `{ success }`                | Starts the final asynchronous analysis process (article and image generation).      |
+| `getVerificationProgress`          | `verificationRouter` | `{ verificationId }`            | `{ status, hasFinalResult }` | A lightweight polling endpoint for the frontend to check the final analysis status. |
+| `getFinalResult`                   | `verificationRouter` | `{ verificationId }`            | `FinalResultData`            | Fetches the complete, final verification report once it's ready.                    |
+| `getMe`                            | `userRouter`         | `void`                          | `User`                       | Retrieves the authenticated user's profile.                                         |
+| `getAllUsers`                      | `adminRouter`        | `void`                          | `User[]`                     | Retrieves all users (Admin only).                                                   |
 
 ---
 
@@ -67,6 +69,12 @@ All `POST` endpoints follow an asynchronous pattern:
 
 - **Purpose**: Starts the final analysis job to generate the fact-checking article.
 - **Payload**: `{ "questions": string[], "input": string, "language": string, "location": string, "sources": object[], "model": string }`
+- **Returns**: `{ "job_id": string }`
+
+#### `POST /stepwise/generate-image`
+
+- **Purpose**: Starts a job to generate a final image for the verification result.
+- **Payload**: `{ "input": string, "model": string, "size": string, "style": string }`
 - **Returns**: `{ "job_id": string }`
 
 #### `GET /result/{job_id}`
