@@ -35,7 +35,7 @@ const getLabelStyles = (label: string | null) => {
   }
 };
 
-const getLabelText = (label: string | null, t:any) => {
+const getLabelText = (label: string | null, t: any) => {
   switch (label?.toLowerCase()) {
     case "true":
     case "verificado":
@@ -56,10 +56,10 @@ export default function VerificationCard({
 
   return (
     <Link
-      className="block h-full"
+      className="group block h-full"
       href={`/verify/${verification.id}/finalResult`}
     >
-      <div className="relative h-full overflow-hidden rounded-2xl bg-card shadow-md ring-1 ring-border/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:ring-2 hover:ring-primary/50">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-md ring-1 ring-border/50 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl hover:ring-primary/50">
         <div className="absolute inset-0 overflow-hidden rounded-2xl">
           {verification.imageUrl ? (
             <Image
@@ -86,7 +86,7 @@ export default function VerificationCard({
               {verification.label && (
                 <span
                   className={cn(
-                    "rounded-md px-2 py-0.5 font-semibold text-xs outline uppercase",
+                    "rounded-md px-2 py-0.5 font-semibold text-xs uppercase outline",
                     getLabelStyles(verification.label)
                   )}
                 >
