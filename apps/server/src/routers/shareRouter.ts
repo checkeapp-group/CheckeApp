@@ -54,6 +54,7 @@ export const shareRouter = {
           user: {
             columns: {
               name: true,
+              image: true,
             },
           },
           source: {

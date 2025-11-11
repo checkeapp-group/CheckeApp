@@ -228,8 +228,6 @@ export default function VerificationResult({ data }) {
     }
   })();
 
-  console.log("Citations:", citations);
-
   // Convert citations object to sorted array for sources display
   const sources = Object.entries(citations)
     .sort(([a], [b]) => Number(a) - Number(b))
@@ -264,7 +262,6 @@ export default function VerificationResult({ data }) {
     }
     return "border-orange-800 bg-orange-100 text-orange-800";
   };
-
   return (
     <div className="fadeIn relative w-full">
       <div className="absolute top-[-15vw] left-0 z-[-1] h-[40vw] w-full lg:top-[-20vw] xl:top-[-32vw]">
@@ -360,12 +357,26 @@ export default function VerificationResult({ data }) {
             {/* User Info Card */}
             <Card className="bg-white p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                <div className="relative mr-2 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                  {user?.image ? (
+                    <div>
+                      <Image
+                        alt={user.name || "User avatar"}
+                        className="rounded-full"
+                        height={48}
+                        src={
+                          "https://lh3.googleusercontent.com/a/ACg8ocKqO9iEv0b9Uiy7VTvsc2boqc7JXl2sdTpIv2nImYc0mJdGLoY=s96-c"
+                        }
+                        width={48}
+                      />
+                    </div>
+                  ) : (
                     <span className="font-bold text-muted-foreground text-xl">
                       {user?.name?.charAt(0).toUpperCase() || "A"}
                     </span>
-                  </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
                   <div>
                     <p className="font-semibold text-foreground">
                       {user?.name || t("result.anonymous")}

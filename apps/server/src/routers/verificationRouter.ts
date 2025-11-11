@@ -3,7 +3,7 @@ import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db';
 import { user } from '../db/schema/auth';
-import { verification, finalResult, source } from '../db/schema/schema';
+import { source, verification } from '../db/schema/schema';
 import { saveCriticalQuestions } from '../db/services/criticalQuestions/criticalQuestionService';
 import {
   createVerificationRecord,
@@ -116,7 +116,7 @@ export const verificationRouter = {
       const result = await db.query.verification.findFirst({
         where: eq(verification.id, verificationId),
         with: {
-          user: { columns: { name: true } },
+          user: { columns: { name: true, image: true} },
           source: { where: eq(source.isSelected, true) },
           finalResult: true,
         },

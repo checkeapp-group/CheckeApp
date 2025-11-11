@@ -11,9 +11,7 @@
 ---
 
 <p align="center">
-    <!-- Project Status and License -->
-    <a href="https://github.com/YOUR_USERNAME/CheckeApp/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/YOUR_USERNAME/CheckeApp?style=for-the-badge&color=007ec6"></a>
-    <a href="#"><img alt="Project Status" src="https://img.shields.io/badge/status-in%20development-yellowgreen?style=for-the-badge"></a>
+    <a href="#"><img alt="Project Status" src="https://img.shields.io/badge/status-finished-brightgreen?style=for-the-badge"></a>
     <br>
     <!-- Additional Supporters and Collaborators -->
     <a href="https://www.surlabs.com/"><img alt="Surlabs" src="https://img.shields.io/badge/Developer-Surlabs-00529B?style=for-the-badge"></a>
@@ -24,6 +22,7 @@
     <a href="http://www.hitz.eus/"><img alt="HiTZ Center" src="https://img.shields.io/badge/HiTZ-Basque%20Center%20for%20Language%20Technology-blueviolet?style=for-the-badge"></a>
     <br>
 </p>
+
 
 ---
 
