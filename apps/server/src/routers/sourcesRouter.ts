@@ -83,6 +83,7 @@ export const sourcesRouter = {
         columns: {
           status: true,
           userId: true,
+          originalText: true,
         },
         with: {
           finalResult: {
@@ -106,6 +107,7 @@ export const sourcesRouter = {
       return {
         status: verificationState.status,
         hasFinalResult: !!verificationState.finalResult,
+        originalText: verificationState.originalText,
       };
     }),
 

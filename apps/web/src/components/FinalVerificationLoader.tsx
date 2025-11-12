@@ -112,9 +112,11 @@ export default function FinalVerificationLoader({
 
         <div className="mb-6 min-h-[60px] font-semibold text-gray-800 text-xl md:text-2xl">
           <Typewriter
+            key={question}
+            onInit={(typewriter) => {
+              typewriter.typeString(question).start();
+            }}
             options={{
-              strings: [question],
-              autoStart: true,
               loop: true,
               delay: 50,
               cursor: "",

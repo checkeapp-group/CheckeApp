@@ -119,7 +119,7 @@ export default function FinalResultPage() {
         <FinalVerificationLoader
           isProcessing={isProcessing}
           onComplete={() => setShowResult(true)}
-          question={statusData?.originalText || resultData?.originalText || ""}
+          question={statusData?.originalText || resultData?.originalText}
         />
       </div>
     );
