@@ -117,6 +117,47 @@ function AdminUsersPageContent() {
     },
   });
 
+  const exportToCSV = useMutation({
+    mutationFn: () => orpc._exportFinalResultsToCSV.call(),
+    onSuccess: (data) => {
+      if (!data || data.length === 0) {
+        toast.info(t("admin.users.noDataToExport"));
+        return;
+      }
+
+      const headers = Object.keys(data[0]);
+      const csvRows = [headers.join(",")];
+
+      for (const row of data) {
+        const values = headers.map((header) => {
+          const escaped = ("" + row[header]).replace(/"/g, '""');
+          return `"${escaped}"`;
+        });
+        csvRows.push(values.join(","));
+      }
+
+      const csvString = csvRows.join("\n");
+      const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "verifications_export.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success(t("admin.users.exportSuccess"));
+    },
+    onError: (error) => {
+      toast.error(
+        t("admin.users.exportFailed", {
+          error: error.message,
+        })
+      );
+    },
+  });
+
   if (isLoading) {
     return null;
   }
@@ -127,6 +168,13 @@ function AdminUsersPageContent() {
         <h1 className="font-bold text-2xl sm:text-3xl">
           {t("admin.users.title")}
         </h1>
+        <Button
+          className="w-full sm:w-auto"
+          loading={exportToCSV.isPending}
+          onClick={() => exportToCSV.mutate()}
+        >
+          {t("admin.users.exportResults")}
+        </Button>
         <Button
           className="w-full sm:w-auto"
           disabled={

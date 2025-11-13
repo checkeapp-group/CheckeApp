@@ -190,3 +190,79 @@ async function _saveImageResult(
     console.error('Error guardando el resultado de la imagen:', error);
   }
 }
+
+export async function exportFinalResultsToCSV(): Promise<any[]> {
+  try {
+    const results = await db.query.finalResult.findMany({
+      with: {
+        verification: {
+          columns: {
+            originalText: true,
+          },
+        },
+      },
+      columns: {
+        id: false,
+        verificationId: false,
+        imageUrl: false,
+        finalText: true,
+        labelsJson: true,
+        citationsJson: true,
+        answersJson: true,
+        metadata: true,
+        createdAt: true,
+      },
+    });
+
+    const parseJson = (json: any) => {
+      if (typeof json === 'object' && json !== null) return json;
+      if (typeof json !== 'string') return null;
+      try {
+        return JSON.parse(json);
+      } catch {
+        return null;
+      }
+    };
+
+    const formattedResults = results.map(result => {
+      const metadata = parseJson(result.metadata);
+      const labels = parseJson(result.labelsJson);
+      const citations = parseJson(result.citationsJson);
+      const answers = parseJson(result.answersJson);
+
+      const formattedCitations =
+        citations && typeof citations === 'object' && !Array.isArray(citations)
+          ? Object.values(citations)
+              .map((c: any) => `[${c.source || 'N/A'}](${c.url || ''})`)
+              .join('; ')
+          : '';
+
+      const formattedAnswers =
+        answers && typeof answers === 'object' && !Array.isArray(answers)
+          ? Object.entries(answers)
+              .map(
+                ([question, answer]) =>
+                  `P: ${question || 'Pregunta no disponible'}\nR: ${answer || 'Respuesta no disponible'}`
+              )
+              .join('\n\n')
+          : '';
+
+      console.log('Citations:', citations,answers);
+      return {
+        'Fecha': result.createdAt.toISOString().split('T')[0],
+        'Texto Original': result.verification?.originalText?.replace(/\r?\n|\r/g, ' ') || '',
+        'Veredicto': metadata?.label || 'N/A',
+        'Afirmación Principal': metadata?.main_claim?.replace(/\r?\n|\r/g, ' ') || 'N/A',
+        'Texto Final': result.finalText?.replace(/\r?\n|\r/g, ' ') || '',
+        'Categorías': Array.isArray(labels) ? labels.join(', ') : '',
+        'Fuentes': formattedCitations,
+        'Respuestas Detalladas': formattedAnswers,
+      };
+    });
+
+    return formattedResults;
+  } catch (error) {
+    console.error('Error exporting final results to CSV:', error);
+    throw new Error('Failed to export results.');
+  }
+}

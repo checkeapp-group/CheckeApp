@@ -295,6 +295,10 @@
   "admin.users.verifyAllSuccess": "Todos los usuarios han sido verificados correctamente",
   "admin.users.verifyAllFailed": "Error al verificar los usuarios",
   "admin.title": "Administración",
+  "admin.users.exportResults": "Exportar Resultados a CSV",
+  "admin.users.exportSuccess": "Exportación completada.",
+  "admin.users.exportFailed": "La exportación ha fallado: {error}",
+  "admin.users.noDataToExport": "No hay datos para exportar.",
 
   "sources.openInNewTab": "Abrir {domain} en nueva pestaña",
   "sources.showLessAction": "← Mostrar menos",

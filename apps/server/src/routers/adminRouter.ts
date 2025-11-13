@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { db } from './../db';
 import { user } from '../db/schema/auth';
 import { protectedProcedure } from './../lib/orpc';
+import { exportFinalResultsToCSV } from '@/db/services/finalResult/finalsResultService';
 
 const adminProcedure = protectedProcedure.use(async ({ context, next }) => {
   const currentUser = await db.query.user.findFirst({
@@ -72,4 +73,16 @@ export const adminRouter = {
 
     return { success: true, message: 'All users have been verified.' };
   }),
+
+_exportFinalResultsToCSV: adminProcedure.input(z.void()).handler(async () => {
+    try {
+      const data = await exportFinalResultsToCSV();
+      return data;
+    } catch (error) {
+      console.error('Error in _exportFinalResultsToCSV procedure:', error);
+      throw new ORPCError('INTERNAL_SERVER_ERROR', {
+        message: 'Failed to export data.',
+      });
+    }
+  })
 };

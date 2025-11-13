@@ -280,7 +280,10 @@
   "admin.users.verifyAllSuccess": "Erabiltzaile guztiak ondo egiaztatu dira",
   "admin.users.verifyAllFailed": "Errorea erabiltzaileak egiaztatzean",
   "admin.title": "Administrazioa",
-
+  "admin.users.exportResults": "CSV-ra emaitzak esportatu",
+  "admin.users.exportSuccess": "Esportazioa osatu da.",
+  "admin.users.exportFailed": "Esportazioak huts egin du: {error}",
+  "admin.users.noDataToExport": "Ez dago esportatzeko daturik.",
   "sources.openInNewTab": "{domain} fitxa berrian ireki",
   "sources.showLessAction": "← Gutxiago erakutsi",
   "sources.readMoreAction": "Irakurri gehiago →",

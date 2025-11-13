@@ -274,7 +274,10 @@
   "admin.users.verifyAllSuccess": "Tots els usuaris han estat verificats correctament",
   "admin.users.verifyAllFailed": "Error en verificar els usuaris",
   "admin.title": "Administració",
-
+  "admin.users.exportResults": "Exportar Resultats a CSV",
+  "admin.users.exportSuccess": "Exportació completada.",
+  "admin.users.exportFailed": "L'exportació ha fallat: {error}",
+  "admin.users.noDataToExport": "No hi ha dades per exportar.",
   "sources.openInNewTab": "Obrir {domain} en una pestanya nova",
   "sources.showLessAction": "← Mostrar menys",
   "sources.readMoreAction": "Llegir més →",
