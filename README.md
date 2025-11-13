@@ -23,7 +23,6 @@
     <br>
 </p>
 
-
 ---
 
 ## About The Project
@@ -67,3 +66,18 @@ This project is built with a modern, type-safe technology stack. For technical d
 
 <p align="center"> <img src="./docs/surlabsLogo_rm_bg.png" alt="Footer" /> </p>
 <p align="center"> <img src="./apps//web/public/NEXTGENERATION_CONBANDERA_REDES_PRTR_BLANCO-1200x72.png" alt="Footer" /> </p>
+
+---
+
+## License
+
+This project is open source and distributed under the **[Apache License 2.0](./LICENSE)**.
+
+You may freely use, modify, and distribute this software in compliance with the License.
+See the [LICENSE](./LICENSE) file for details.
+
+<p align="center">
+  <a href="https://www.apache.org/licenses/LICENSE-2.0">
+    <img alt="Apache 2.0" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge">
+  </a>
+</p>
