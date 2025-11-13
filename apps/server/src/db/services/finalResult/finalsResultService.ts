@@ -247,7 +247,6 @@ export async function exportFinalResultsToCSV(): Promise<any[]> {
               .join('\n\n')
           : '';
 
-      console.log('Citations:', citations,answers);
       return {
         'Fecha': result.createdAt.toISOString().split('T')[0],
         'Texto Original': result.verification?.originalText?.replace(/\r?\n|\r/g, ' ') || '',
