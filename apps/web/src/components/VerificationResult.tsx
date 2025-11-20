@@ -356,51 +356,58 @@ export default function VerificationResult({ data }) {
           <div className="space-y-8">
             {/* User Info Card */}
             <Card className="bg-white p-4">
-              <div className="flex items-center justify-between">
-                <div className="relative mr-2 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                  {user?.image ? (
-                    <div>
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0">
+                  <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                    {user?.image ? (
                       <Image
-                        alt={user.name || "User avatar"}
-                        className="rounded-full"
+                        alt={`${user.name || t("result.anonymous")}'s profile`}
+                        className="rounded-full object-cover"
                         height={48}
                         referrerPolicy="no-referrer"
-                        src={
-                          "https://lh3.googleusercontent.com/a/ACg8ocKqO9iEv0b9Uiy7VTvsc2boqc7JXl2sdTpIv2nImYc0mJdGLoY=s96-c"
-                        }
+                        src={user.image}
                         width={48}
                       />
-                    </div>
-                  ) : (
-                    <span className="font-bold text-muted-foreground text-xl">
-                      {user?.name?.charAt(0).toUpperCase() || "A"}
-                    </span>
-                  )}
+                    ) : (
+                      <span
+                        aria-label={t("result.avatar.fallback", {
+                          name: user?.name || t("result.anonymous"),
+                        })}
+                        className="font-bold text-foreground text-xl"
+                      >
+                        {user?.name?.charAt(0).toUpperCase() || "A"}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div>
-                    <p className="font-semibold text-foreground">
-                      {user?.name || t("result.anonymous")}
-                    </p>
-                    <p className="text-muted-foreground text-sm">
-                      {new Date(createdAt).toLocaleDateString("es-ES", {
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-semibold text-foreground">
+                    {user?.name || t("result.anonymous")}
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    <time dateTime={new Date(createdAt).toISOString()}>
+                      {new Date(createdAt).toLocaleDateString(undefined, {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                       })}
-                    </p>
-                  </div>
+                    </time>
+                  </p>
                 </div>
-                <Button
-                  aria-label={t("result.share.ariaLabel")}
-                  className="cursor-pointer bg-white text-foreground shadow-none hover:bg-neutral-200/60"
-                  disabled={createShareLinkMutation.isPending}
-                  onClick={() => createShareLinkMutation.mutate()}
-                  size="icon"
-                  variant="ghost"
-                >
-                  <Share2 className="h-5 w-5" />
-                </Button>
+
+                <div className="flex-shrink-0">
+                  <Button
+                    aria-label={t("result.share.ariaLabel")}
+                    className="bg-white text-foreground shadow-none transition-colors hover:bg-neutral-200/60 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={createShareLinkMutation.isPending}
+                    onClick={() => createShareLinkMutation.mutate()}
+                    size="icon"
+                    variant="ghost"
+                  >
+                    <Share2 aria-hidden="true" className="h-5 w-5" />
+                  </Button>
+                </div>
               </div>
             </Card>
 
