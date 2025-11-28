@@ -150,6 +150,7 @@ export const verificationRouter = {
         const result = await getVerificationsList({
           ...input,
           userId,
+          excludeStatus: 'error',
         });
         return result;
       } catch (error) {

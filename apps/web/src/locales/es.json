@@ -160,6 +160,8 @@
   "questions.generating": "Generando preguntas críticas...",
   "questions.generating_description": "Estamos analizando el texto y generando preguntas relevantes. Esto puede tardar hasta un minuto.",
   "questions.timeout_error": "Tiempo de espera agotado. No se pudieron generar las preguntas. Por favor, inténtalo de nuevo.",
+  "questions.taking_long_title": "El análisis está tomando más tiempo de lo habitual",
+  "questions.taking_long_description": "Esto puede deberse a la complejidad del texto o la carga de la IA. No cierres esta pestaña.",
 
   "sources.scraped": "Obtenido",
   "sources.showLess": "Ver menos",
@@ -178,6 +180,9 @@
   "sources.continue_analysis": "Continuar con el Análisis",
   "sources.searching": "Buscando fuentes...",
   "sources.searching_description": "Estamos buscando fuentes relevantes para verificar las afirmaciones. Esto puede tardar hasta un minuto.",
+  "sources.timeout_error": "Tiempo de espera agotado. No se pudieron buscar las fuentes. Por favor, inténtalo de nuevo.",
+  "sources.taking_long_title": "La búsqueda está tomando más tiempo de lo habitual",
+  "sources.taking_long_description": "Esto puede deberse a la cantidad de fuentes o la carga de la IA. No cierres esta pestaña.",
 
   "verification.sources_found": "¡Éxito! Se encontraron fuentes.",
   "verification.search_sources_error": "Ocurrió un error al buscar fuentes.",

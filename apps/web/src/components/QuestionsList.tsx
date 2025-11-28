@@ -21,18 +21,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   CheckCircle2,
+  Info,
   Loader2,
   Lock,
   Plus,
   RefreshCw,
-  Wand2,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
@@ -197,26 +196,45 @@ export default function QuestionsList({
   // Show loading when polling for questions
   if (isPollingForQuestions) {
     return (
-      <Card className="border-primary/30 bg-primary/5 p-12 text-center">
-        <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-primary" />
-        <p className="mb-2 font-semibold text-lg text-primary">
-          {t("questions.generating")}
-        </p>
-        <p className="text-muted-foreground text-sm">
-          {t("questions.generating_description")}
-        </p>
-      </Card>
+      <div className="space-y-4">
+        <Card className="border-primary/30 bg-primary/5 p-12 text-center">
+          <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-primary" />
+          <p className="mb-2 font-semibold text-lg text-primary">
+            {t("questions.generating")}
+          </p>
+          <p className="text-muted-foreground text-sm">
+            {t("questions.generating_description")}
+          </p>
+        </Card>
+        {hasTimedOut && (
+          <Card className="fade-in slide-in-from-bottom-4 animate-in border-green-200 bg-green-50 p-4 duration-700">
+            <div className="flex items-start gap-3">
+              <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600" />
+              <div className="flex-1">
+                <p className="font-medium text-green-900 text-sm">
+                  {t("questions.taking_long_title")}
+                </p>
+                <p className="mt-1 text-green-700 text-xs">
+                  {t("questions.taking_long_description")}
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+      </div>
     );
   }
 
   if (hasTimedOut && questions.length === 0) {
     return (
-      <Card className="border-destructive/30 bg-destructive/5 p-8 text-center">
-        <AlertCircle className="mx-auto mb-4 h-12 w-12 text-destructive" />
-        <p className="mb-4 font-semibold text-destructive">
+      <Card className="border-green-200 bg-green-50 p-8 text-center">
+        <Info className="mx-auto mb-4 h-12 w-12 text-green-600" />
+
+        <p className="mb-4 font-semibold text-green-900">
           {t("questions.timeout_error")}
         </p>
-        <Button onClick={() => refetch()} variant="destructive">
+
+        <Button onClick={() => refetch()} variant="default">
           <RefreshCw className="mr-2 h-4 w-4" /> {t("common.retry")}
         </Button>
       </Card>

@@ -286,13 +286,13 @@ export default function VerificationResult({ data }) {
             {title || t("result.untitled")}
           </h1>
           {main_claim && (
-            <p
+            <div
               className={`whitespace-pre-wrap rounded-md border px-3 py-2 font-semibold text-lg leading-6 transition-colors duration-200 ${getLabelStyles(
                 label
               )}`}
             >
               {main_claim}
-            </p>
+            </div>
           )}
         </div>
 

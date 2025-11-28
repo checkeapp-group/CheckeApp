@@ -503,9 +503,14 @@
   "questions.generating": "Xerando preguntas críticas...",
   "questions.generating_description": "Estamos analizando o texto e xerando preguntas relevantes. Isto pode tardar ata un minuto.",
   "questions.timeout_error": "Tempo de espera esgotado. Non se puideron xerar as preguntas. Por favor, téntao de novo.",
+  "questions.taking_long_title": "A análise está tardando máis do habitual",
+  "questions.taking_long_description": "Isto pode deberse á complexidade do texto ou á carga da IA. Non peches esta pestana.",
 
   "sources.searching": "Buscando fontes...",
   "sources.searching_description": "Estamos buscando fontes relevantes para verificar as afirmacións. Isto pode tardar ata un minuto.",
+  "sources.timeout_error": "Tempo de espera esgotado. Non se puideron buscar as fontes. Por favor, téntao de novo.",
+  "sources.taking_long_title": "A busca está tardando máis do habitual",
+  "sources.taking_long_description": "Isto pode deberse á cantidade de fontes ou á carga da IA. Non peches esta pestana.",
 
   "verification.sources_timeout_error": "Tempo de espera esgotado ao buscar fontes. Por favor, téntao de novo.",
   "verification.delete_button": "Eliminar Verificación",

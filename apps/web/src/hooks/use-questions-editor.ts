@@ -6,12 +6,13 @@ import { toast } from 'sonner';
 import { useGlobalLoader } from '@/hooks/use-global-loader';
 import type { Question } from '@/types/questions';
 import { orpc } from '@/utils/orpc';
+import { useI18n } from './use-i18n';
 
 type UseQuestionsEditorProps = {
   verificationId: string;
 };
 
-const POLLING_TIMEOUT = Number(process.env.EXTERNAL_API_TIMEOUT) || 60000;
+const POLLING_TIMEOUT = Number(process.env.EXTERNAL_API_TIMEOUT) || 6000000;
 
 type UseQuestionsEditorReturn = {
   questions: Question[];
@@ -35,6 +36,7 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps):
   const [retryCount, setRetryCount] = useState(0);
   const [pollingStartTime, setPollingStartTime] = useState<number | null>(null);
   const [hasTimedOut, setHasTimedOut] = useState(false);
+  const { t } = useI18n();
 
   const questionsQuery = useQuery(
     orpc.getVerificationQuestions.queryOptions({
@@ -80,9 +82,7 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps):
         (!data || data.length === 0)
       ) {
         setHasTimedOut(true);
-        toast.error(
-          'Tiempo de espera agotado al generar preguntas. Por favor, inténtalo de nuevo.'
-        );
+        toast.info(t("questions.timeout_error"));
       }
     };
 
@@ -247,6 +247,13 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps):
     [reorderQuestionsMutation]
   );
 
+  const refetch = useCallback(() => {
+    setHasTimedOut(false);
+    setPollingStartTime(null);
+    setRetryCount(0);
+    return questionsQuery.refetch();
+  }, [questionsQuery]);
+
   const questions = useMemo(() => (questionsQuery.data as Question[] | undefined) || [], [questionsQuery.data]);
 
   const isPollingForQuestions =
@@ -280,7 +287,7 @@ export function useQuestionsEditor({ verificationId }: UseQuestionsEditorProps):
     addQuestion,
     reorderQuestions,
     canContinue,
-    refetch: questionsQuery.refetch,
+    refetch,
     pendingChanges:
       updateQuestionMutation.isPending ||
       deleteQuestionMutation.isPending ||

@@ -30,11 +30,19 @@ export default function SharePage() {
 
   useGlobalLoader(isLoading, "share-page");
 
-  // Set page metadata with verification image when data is available
+  // Set page metadata with verification data
+  const title =
+    data?.finalResult?.metadata?.title ??
+    data?.originalText ??
+    t("meta.share.title");
+  const description =
+    data?.finalResult?.metadata?.main_claim ??
+    t("meta.share.description");
   const verificationImageUrl = data?.finalResult?.imageUrl;
+
   usePageMetadata(
-    t("meta.share.title"),
-    t("meta.share.description"),
+    title,
+    description,
     verificationImageUrl || undefined
   );
 

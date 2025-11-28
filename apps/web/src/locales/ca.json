@@ -510,9 +510,14 @@
   "questions.generating": "Generant preguntes crítiques...",
   "questions.generating_description": "Estem analitzant el text i generant preguntes rellevants. Això pot trigar fins a un minut.",
   "questions.timeout_error": "Temps d'espera exhaurit. No s'han pogut generar les preguntes. Si us plau, torna-ho a intentar.",
+  "questions.taking_long_title": "L'anàlisi està trigant més del que és habitual",
+  "questions.taking_long_description": "Això pot ser degut a la complexitat del text o la càrrega de la IA. No tanquis aquesta pestanya.",
 
   "sources.searching": "Buscant fonts...",
   "sources.searching_description": "Estem buscant fonts rellevants per verificar les afirmacions. Això pot trigar fins a un minut.",
+  "sources.timeout_error": "Temps d'espera exhaurit. No s'han pogut buscar les fonts. Si us plau, torna-ho a intentar.",
+  "sources.taking_long_title": "La cerca està trigant més del que és habitual",
+  "sources.taking_long_description": "Això pot ser degut a la quantitat de fonts o la càrrega de la IA. No tanquis aquesta pestanya.",
 
   "verification.sources_timeout_error": "Temps d'espera exhaurit en buscar fonts. Si us plau, torna-ho a intentar.",
 

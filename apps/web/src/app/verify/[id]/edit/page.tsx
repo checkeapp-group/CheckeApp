@@ -38,11 +38,6 @@ function PageContent({verificationId}: {verificationId?: string | null}) {
     const queryClient = useQueryClient();
     const [jobId, setJobId] = useState<string | null>(null);
 
-    usePageMetadata(
-        t("meta.verifyEdit.title", {id: verificationId || ""}),
-        t("meta.verifyEdit.description")
-    );
-
     useEffect(() => {
         const storedJobId = verificationId
             ? sessionStorage.getItem(`verification_job_${verificationId}`)
@@ -62,6 +57,14 @@ function PageContent({verificationId}: {verificationId?: string | null}) {
             orpc.getVerificationDetails.call({verificationId: verificationId!}),
         enabled: !!verificationId,
     });
+
+    // Set page metadata with verification data
+    const title = verificationData?.originalText
+        ? `${verificationData.originalText.substring(0, 60)}${verificationData.originalText.length > 60 ? "..." : ""} - ${t("meta.verifyEdit.title")}`
+        : t("meta.verifyEdit.title");
+    const description = verificationData?.originalText ?? t("meta.verifyEdit.description");
+
+    usePageMetadata(title, description);
 
     const saveQuestionsMutation = useMutation({
         mutationFn: (

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, like, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, like, ne, sql } from 'drizzle-orm';
 import { db } from '../..';
 import { user } from '../../schema/auth';
 import { finalResult, verification, type verificationtatusType } from '../../schema/schema';
@@ -11,6 +11,7 @@ type GetVerificationsListParams = {
   sortOrder?: 'asc' | 'desc';
   search?: string;
   status?: verificationtatusType;
+  excludeStatus?: verificationtatusType;
 };
 
 export async function getVerificationsList({
@@ -21,6 +22,7 @@ export async function getVerificationsList({
   sortOrder = 'desc',
   search,
   status,
+  excludeStatus,
 }: GetVerificationsListParams) {
   const offset = (page - 1) * limit;
 
@@ -34,7 +36,9 @@ export async function getVerificationsList({
   if (status) {
     whereConditions.push(eq(verification.status, status));
   }
-
+  if (excludeStatus) {
+    whereConditions.push(ne(verification.status, excludeStatus));
+  }
   // Mapeo de columnas para ordenación segura
   const sortableColumns: Record<string, any> = {
     createdAt: verification.createdAt,

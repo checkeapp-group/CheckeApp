@@ -19,6 +19,7 @@ import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 import FooterBanner from "@/public/footer_banner.png";
 import TermsAcceptanceModal from "../Auth/terms-acceptance-modal";
 import { Button } from "../ui/button";
+import { usePageMetadata } from "@/hooks/use-page-metadata";
 
 function AppHeader() {
   const { t } = useI18n();
@@ -28,7 +29,7 @@ function AppHeader() {
   const pathname = usePathname();
 
   const isLinkActive = (href: string) => {
-    return pathname === href || (href !== '/' && pathname.startsWith(href));
+    return pathname === href || (href !== "/" && pathname.startsWith(href));
   };
 
   const handleLogout = async () => {
@@ -59,8 +60,8 @@ function AppHeader() {
           <nav className="hidden items-center gap-1 md:flex">
             <Link
               className={`rounded-lg p-3 transition-all hover:bg-neutral-200/60 ${
-                isLinkActive("/") 
-                  ? "bg-neutral-200/80 font-medium text-primary" 
+                isLinkActive("/")
+                  ? "bg-neutral-200/80 font-medium text-primary"
                   : "text-neutral-600"
               }`}
               href="/"
@@ -71,8 +72,8 @@ function AppHeader() {
               <>
                 <Link
                   className={`rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
-                    isLinkActive("/verifications") 
-                      ? "bg-neutral-200/80 font-medium text-primary" 
+                    isLinkActive("/verifications")
+                      ? "bg-neutral-200/80 font-medium text-primary"
                       : "text-neutral-600"
                   }`}
                   href="/verifications"
@@ -81,8 +82,8 @@ function AppHeader() {
                 </Link>
                 <Link
                   className={`text-nowrap rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
-                    isLinkActive("/user-verifications") 
-                      ? "bg-neutral-200/80 font-medium text-primary" 
+                    isLinkActive("/user-verifications")
+                      ? "bg-neutral-200/80 font-medium text-primary"
                       : "text-neutral-600"
                   }`}
                   href="/user-verifications"
@@ -140,8 +141,8 @@ function AppHeader() {
 
             <Link
               className={`rounded-lg px-4 py-3 transition-all hover:bg-neutral-200/60 ${
-                isLinkActive("/") 
-                  ? "bg-neutral-200/80 font-medium text-primary" 
+                isLinkActive("/")
+                  ? "bg-neutral-200/80 font-medium text-primary"
                   : "text-neutral-600"
               }`}
               href="/"
@@ -153,8 +154,8 @@ function AppHeader() {
               <>
                 <Link
                   className={`rounded-lg px-4 py-3 transition-all hover:bg-neutral-200/60 ${
-                    isLinkActive("/verifications") 
-                      ? "bg-neutral-200/80 font-medium text-primary" 
+                    isLinkActive("/verifications")
+                      ? "bg-neutral-200/80 font-medium text-primary"
                       : "text-neutral-600"
                   }`}
                   href="/verifications"
@@ -164,8 +165,8 @@ function AppHeader() {
                 </Link>
                 <Link
                   className={`rounded-lg px-4 py-3 transition-all hover:bg-neutral-200/60 ${
-                    isLinkActive("/user-verifications") 
-                      ? "bg-neutral-200/80 font-medium text-primary" 
+                    isLinkActive("/user-verifications")
+                      ? "bg-neutral-200/80 font-medium text-primary"
                       : "text-neutral-600"
                   }`}
                   href="/user-verifications"
@@ -234,6 +235,12 @@ export default function RootLayout({
   const { isLoading } = useLoading();
   const [showTermsModal, setShowTermsModal] = React.useState(false);
 
+  // Update page metadata based on current locale
+  usePageMetadata(
+    t("meta.home.title"),
+    t("meta.home.description")
+  );
+
   const searchParams = useSearchParams();
   const LoginModalTrigger = () => {
     const { openAuthModal } = useAuthModal();
@@ -249,10 +256,14 @@ export default function RootLayout({
 
   useEffect(() => {
     if (isAuthLoading) return;
-    
-    const excludedPaths = ["/terms-of-service", "/legal-notice", "/privacy-policy"];
+
+    const excludedPaths = [
+      "/terms-of-service",
+      "/legal-notice",
+      "/privacy-policy",
+    ];
     const isExcludedPath = excludedPaths.includes(pathname);
-    
+
     if (isAuthenticated && user && !user.termsAccepted && !isExcludedPath) {
       setShowTermsModal(true);
     } else {

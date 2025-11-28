@@ -12,7 +12,7 @@ const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build';
 const config = {
   baseUrl: process.env.EXTERNAL_API_BASE_URL,
   apiKey: process.env.EXTERNAL_API_KEY,
-  timeout: Number.parseInt(process.env.EXTERNAL_API_TIMEOUT || '60000'),
+  timeout: Number.parseInt(process.env.EXTERNAL_API_TIMEOUT || '600000'),
   maxRetries: Number.parseInt(process.env.MAX_RETRIES || '3'),
   retryDelay: Number.parseInt(process.env.RETRY_DELAY || '1000'),
   mode: apiMode,
@@ -211,7 +211,7 @@ export async function pollForResult<T>(
   stepName: string,
   verificationId: string
 ): Promise<T> {
-  const maxAttempts = 50; 
+  const maxAttempts = 100; 
   const delay = 4000;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {

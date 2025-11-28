@@ -1,15 +1,18 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useGlobalLoader } from '@/hooks/use-global-loader';
 import type { Source } from '@/types/source';
 import { orpc } from '../utils/orpc';
+import { useI18n } from './use-i18n';
 
 type UseSourcesEditorProps = {
   verificationId: string;
 };
+
+const POLLING_TIMEOUT = Number(process.env.EXTERNAL_API_TIMEOUT) || 6000000;
 
 type UseSourcesEditorReturn = {
   sources: Source[];
@@ -26,15 +29,22 @@ type UseSourcesEditorReturn = {
   deselectAll: () => void;
   availableDomains: string[];
   isUpdating: boolean;
+  refetch: () => any;
+  hasTimedOut: boolean;
+  isPollingForSources: boolean;
 };
 
 export function useSourcesEditor({ verificationId }: UseSourcesEditorProps): UseSourcesEditorReturn {
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<{ domain?: string; sortBy?: string }>({
     sortBy: 'date_desc',
   });
+  const [pollingStartTime, setPollingStartTime] = useState<number | null>(null);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   const queryKey = orpc.getSources.key({
     input: { verificationId, filters, searchQuery },
@@ -49,7 +59,62 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps): Use
         searchQuery,
       }),
     enabled: !!verificationId,
+    refetchInterval: (query: { state: { data?: Source[]; error: any } }) => {
+      const hasData = query.state.data && query.state.data.length > 0;
+      const hasError = query.state.error;
+      const maxRetriesReached = retryCount >= 60;
+
+      if (hasData || hasError || maxRetriesReached || hasTimedOut) {
+        return false;
+      }
+      return Number(process.env.RETRY_DELAY) || 1000;
+    },
   });
+
+  // Iniciar el polling cuando se empiece a cargar
+  useEffect(() => {
+    const data = sourcesQuery.data;
+    const shouldStartPolling =
+      !pollingStartTime &&
+      (!data || data.length === 0) &&
+      !hasTimedOut &&
+      !sourcesQuery.error &&
+      (sourcesQuery.isLoading || sourcesQuery.isFetching);
+
+    if (shouldStartPolling) {
+      setPollingStartTime(Date.now());
+    }
+  }, [pollingStartTime, sourcesQuery.data, hasTimedOut, sourcesQuery.error, sourcesQuery.isLoading, sourcesQuery.isFetching]);
+
+  // Detectar timeout
+  useEffect(() => {
+    if (!pollingStartTime || hasTimedOut) {
+      return;
+    }
+
+    const checkTimeout = () => {
+      const elapsed = Date.now() - pollingStartTime;
+      const data = sourcesQuery.data;
+      if (elapsed >= POLLING_TIMEOUT && (!data || data.length === 0)) {
+        setHasTimedOut(true);
+        toast.info(t('sources.timeout_error'));
+      }
+    };
+
+    const timeoutId = setTimeout(checkTimeout, POLLING_TIMEOUT);
+    return () => clearTimeout(timeoutId);
+  }, [pollingStartTime, hasTimedOut, sourcesQuery.data, t]);
+
+  // Actualizar retry count
+  useEffect(() => {
+    const data = sourcesQuery.data;
+    if (data && data.length > 0) {
+      setRetryCount(30);
+      setPollingStartTime(null);
+    } else if (sourcesQuery.isFetching) {
+      setRetryCount((c) => c + 1);
+    }
+  }, [sourcesQuery.data, sourcesQuery.isFetching]);
 
   const updateSelectionMutation = useMutation({
     mutationFn: (variables: { sourceId: string; isSelected: boolean }) =>
@@ -139,6 +204,19 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps): Use
     return [...new Set(domains)];
   }, [allDomainsQuery.data]);
 
+  const refetch = useCallback(() => {
+    setHasTimedOut(false);
+    setPollingStartTime(null);
+    setRetryCount(0);
+    return sourcesQuery.refetch();
+  }, [sourcesQuery]);
+
+  const isPollingForSources =
+    pollingStartTime !== null &&
+    sources.length === 0 &&
+    !hasTimedOut &&
+    !sourcesQuery.error;
+
   useGlobalLoader(updateSelectionMutation.isPending, `source-update-${verificationId}`);
   useGlobalLoader(batchUpdateSelectionMutation.isPending, `source-batch-update-${verificationId}`);
 
@@ -159,5 +237,8 @@ export function useSourcesEditor({ verificationId }: UseSourcesEditorProps): Use
 
     availableDomains,
     isUpdating: updateSelectionMutation.isPending || batchUpdateSelectionMutation.isPending,
+    refetch,
+    hasTimedOut,
+    isPollingForSources,
   };
 }

@@ -144,6 +144,8 @@
   "questions.generating": "Galdera kritikoak sortzen...",
   "questions.generating_description": "Testua aztertzen ari gara eta galdera egokiak sortzen. Minutu bat behar izan dezake.",
   "questions.timeout_error": "Itxaron-denbora amaitu da. Ezin izan dira galderak sortu. Mesedez, saiatu berriro.",
+  "questions.taking_long_title": "Azterketa normalean baino denbora gehiago hartzen ari da",
+  "questions.taking_long_description": "Hau testuaren konplexutasunagatik edo IAren kargagatik izan daiteke. Ez itxi fitxa hau.",
 
   "sources.scraped": "Lortuta",
   "sources.showLess": "Gutxiago ikusi",
@@ -162,6 +164,9 @@
   "sources.continue_analysis": "Analisiari jarraitu",
   "sources.searching": "Iturriak bilatzen...",
   "sources.searching_description": "Baieztapenak egiaztatzeko iturri egokiak bilatzen ari gara. Minutu bat behar izan dezake.",
+  "sources.timeout_error": "Itxaron-denbora amaitu da. Ezin izan dira iturriak bilatu. Mesedez, saiatu berriro.",
+  "sources.taking_long_title": "Bilaketa normalean baino denbora gehiago hartzen ari da",
+  "sources.taking_long_description": "Hau iturrien kopuruagatik edo IAren kargagatik izan daiteke. Ez itxi fitxa hau.",
   "sources.clickToSelect": "Egin klik hautatzeko",
   "sources.all_domains": "Domeinu guztiak",
 
