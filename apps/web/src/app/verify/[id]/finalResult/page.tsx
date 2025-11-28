@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
+import type { Metadata, ResolvingMetadata } from "next";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import FinalVerificationLoader from "@/components/FinalVerificationLoader";
@@ -9,8 +10,83 @@ import GlobalLoader from "@/components/GlobalLoader";
 import { Card } from "@/components/ui/card";
 import VerificationResult from "@/components/VerificationResult";
 import { useI18n } from "@/hooks/use-i18n";
-import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { orpc } from "@/utils/orpc";
+
+type Props = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+async function getVerificationData(id: string) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/rpc/getPublicVerificationResult`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verificationId: id }),
+        next: { revalidate: 60 },
+      }
+    );
+
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    return data.result;
+  } catch (error) {
+    console.error("Error fetching metadata:", error);
+    return null;
+  }
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const id = params.id;
+  const data = await getVerificationData(id);
+
+  if (!(data && data.finalResult)) {
+    return {
+      title: "Verificación no encontrada",
+      description: "No se pudo cargar el resultado de la verificación.",
+    };
+  }
+
+  const { metadata, imageUrl, finalText } = data.finalResult;
+
+  const title =
+    metadata?.title || data.originalText || "Resultado de Verificación";
+  const description =
+    metadata?.main_claim ||
+    finalText?.substring(0, 160) + "..." ||
+    "Verificación detallada realizada por CheckeApp.";
+  const image = imageUrl || "/og-image-default.png";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+  };
+}
 
 function ErrorState({ errorMessage }: { errorMessage: string }) {
   const { t } = useI18n();
@@ -68,19 +144,6 @@ export default function FinalResultPage() {
     enabled: statusData?.status === "completed",
     retry: false,
   });
-
-  const title =
-    resultData?.finalResult?.metadata?.title ??
-    resultData?.originalText ??
-    t("result.untitled");
-  const main_claim = resultData?.finalResult?.metadata?.main_claim;
-  const verificationImageUrl = resultData?.finalResult?.imageUrl;
-
-  usePageMetadata(
-    title,
-    main_claim || t("meta.verifyResult.description"),
-    verificationImageUrl || undefined
-  );
 
   if (statusError) {
     return <ErrorState errorMessage={statusError.message} />;

@@ -9,6 +9,7 @@ type RootLayoutProps = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://checkeapp.com"),
   title: {
     template: "%s | CheckeApp",
     default: "CheckeApp - Verifica tu información",
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_ES",
     alternateLocale: ["eu_ES", "ca_ES", "gl_ES"],
-    url: "https://checkeapp.com",
+    url: "/",
     siteName: "CheckeApp",
     title: "CheckeApp - Verifica tu información",
     description:
