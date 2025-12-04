@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import FinalResultClient from "./FinalResultClient";
 
 type Props = {
@@ -8,8 +8,7 @@ type Props = {
 
 async function getVerificationMetadata(id: string) {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_SERVER_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
     const response = await fetch(`${baseUrl}/rpc/getPublicVerificationResult`, {
       method: "POST",
@@ -30,14 +29,16 @@ async function getVerificationMetadata(id: string) {
   }
 }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const id = params.id;
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const awaitedParams = await params;
+  const id = awaitedParams.id;
   const data = await getVerificationMetadata(id);
 
-  if (!(data && data.finalResult)) {
+  if (!data?.finalResult) {
     return {
       title: "Verificación en proceso",
       description: "Analizando la veracidad de la información en CheckeApp.",
@@ -50,7 +51,7 @@ export async function generateMetadata(
     metadata?.title || data.originalText || "Resultado de Verificación";
   const description =
     metadata?.main_claim ||
-    finalText?.substring(0, 160) + "..." ||
+    `${finalText?.substring(0, 160)}...` ||
     "Verificación detallada realizada por CheckeApp.";
 
   const image = imageUrl || "/og-image-default.png";
@@ -80,6 +81,7 @@ export async function generateMetadata(
   };
 }
 
-export default function FinalResultPage({ params }: Props) {
-  return <FinalResultClient verificationId={params.id} />;
+export default async function FinalResultPage({ params }: Props) {
+  const awaitedParams = await params;
+  return <FinalResultClient verificationId={awaitedParams.id} />;
 }

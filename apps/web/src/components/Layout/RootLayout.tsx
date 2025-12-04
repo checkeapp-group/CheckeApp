@@ -6,20 +6,18 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect } from "react";
 import { toast } from "sonner";
-import CookieConsentComponent from "@/components/CookieConsent";
 import GlobalLoader from "@/components/GlobalLoader";
 import UserMenu from "@/components/UserMenu";
 import { LanguageSelector } from "@/components/ui/lenguage-selector";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
+import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { authClient } from "@/lib/auth-client";
-import { AuthModalProvider, useAuthModal } from "@/providers/AuthModalProvider";
+import { useAuthModal } from "@/providers/AuthModalProvider";
 import { useLoading } from "@/providers/LoadingProvider";
 import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 import FooterBanner from "@/public/footer_banner.png";
-import TermsAcceptanceModal from "../Auth/terms-acceptance-modal";
 import { Button } from "../ui/button";
-import { usePageMetadata } from "@/hooks/use-page-metadata";
 
 function AppHeader() {
   const { t } = useI18n();
@@ -231,57 +229,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const { t } = useI18n();
-  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { isLoading } = useLoading();
-  const [showTermsModal, setShowTermsModal] = React.useState(false);
-
-  // Update page metadata based on current locale
-  usePageMetadata(
-    t("meta.home.title"),
-    t("meta.home.description")
-  );
-
+  const { openAuthModal } = useAuthModal();
   const searchParams = useSearchParams();
-  const LoginModalTrigger = () => {
-    const { openAuthModal } = useAuthModal();
-    useEffect(() => {
-      if (searchParams.get("login") === "true") {
-        openAuthModal();
-      }
-    }, [searchParams, openAuthModal]);
-    return null;
-  };
-
-  const pathname = usePathname();
 
   useEffect(() => {
-    if (isAuthLoading) return;
-
-    const excludedPaths = [
-      "/terms-of-service",
-      "/legal-notice",
-      "/privacy-policy",
-    ];
-    const isExcludedPath = excludedPaths.includes(pathname);
-
-    if (isAuthenticated && user && !user.termsAccepted && !isExcludedPath) {
-      setShowTermsModal(true);
-    } else {
-      setShowTermsModal(false);
+    if (searchParams.get("login") === "true") {
+      openAuthModal();
     }
-  }, [isAuthenticated, user, isAuthLoading, pathname]);
+  }, [searchParams, openAuthModal]);
+
+  // Update page metadata based on current locale
+  usePageMetadata(t("meta.home.title"), t("meta.home.description"));
 
   return (
-    <AuthModalProvider>
+    <>
       {isLoading && <GlobalLoader />}
-      <Suspense fallback={null}>
-        <LoginModalTrigger />
-      </Suspense>
-      <TermsAcceptanceModal
-        isOpen={showTermsModal}
-        onClose={() => setShowTermsModal(false)}
-      />
-      <CookieConsentComponent />
+      <Suspense fallback={null} />
       <div className="flex min-h-screen flex-col">
         <AppHeader />
         <main className="flex-1">{children}</main>
@@ -303,30 +267,6 @@ export default function RootLayout({
               >
                 {t("nav.about")}
               </Link>
-              <Link
-                className="transition-colors hover:text-foreground"
-                href="/legal-notice"
-              >
-                {t("nav.legalAdvice")}
-              </Link>
-              <Link
-                className="transition-colors hover:text-foreground"
-                href="/terms-of-service"
-              >
-                {t("nav.termsOfService")}
-              </Link>
-              <Link
-                className="transition-colors hover:text-foreground"
-                href="/privacy-policy"
-              >
-                {t("nav.privacyPolicy")}
-              </Link>
-              <Link
-                className="transition-colors hover:text-foreground"
-                href="/cookies-policy"
-              >
-                {t("nav.cookiesPolicy")}
-              </Link>
             </div>
           </div>
           <div className="container mx-auto border-border border-t py-4 text-center text-muted-foreground text-xs">
@@ -338,6 +278,6 @@ export default function RootLayout({
           </div>
         </footer>
       </div>
-    </AuthModalProvider>
+    </>
   );
 }
