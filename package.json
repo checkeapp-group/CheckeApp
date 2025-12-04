@@ -36,10 +36,11 @@
     "bcryptjs": "^3.0.2",
     "ci": "^2.3.0",
     "clsx": "^2.1.1",
-    "drizzle-kit": "^0.31.4",
+    "drizzle-kit": "^0.31.7",
     "fetch-blob": "^4.0.0",
     "formdata-node": "^6.0.3",
     "ldrs": "^1.1.7",
+    "next": "^15.5.7",
     "ogl": "^1.0.11",
     "react-intl": "^7.1.11",
     "react-markdown": "^10.1.0",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",
+    "postcss": "^8.5.6",
     "turbo": "^2.5.4",
     "ultracite": "5.2.4"
   },
