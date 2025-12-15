@@ -68,18 +68,18 @@ function AppHeader() {
             >
               {t("nav.verify")}
             </Link>
+            <Link
+              className={`rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
+                isLinkActive("/verifications")
+                  ? "bg-neutral-200/80 font-medium text-primary"
+                  : "text-neutral-600"
+              }`}
+              href="/verifications"
+            >
+              {t("verifications.title")}
+            </Link>
             {isAuthenticated && (
               <>
-                <Link
-                  className={`rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
-                    isLinkActive("/verifications")
-                      ? "bg-neutral-200/80 font-medium text-primary"
-                      : "text-neutral-600"
-                  }`}
-                  href="/verifications"
-                >
-                  {t("verifications.title")}
-                </Link>
                 <Link
                   className={`text-nowrap rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
                     isLinkActive("/user-verifications")
@@ -236,10 +236,7 @@ export default function RootLayout({
   const [showTermsModal, setShowTermsModal] = React.useState(false);
 
   // Update page metadata based on current locale
-  usePageMetadata(
-    t("meta.home.title"),
-    t("meta.home.description")
-  );
+  usePageMetadata(t("meta.home.title"), t("meta.home.description"));
 
   const searchParams = useSearchParams();
   const LoginModalTrigger = () => {

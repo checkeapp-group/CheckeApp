@@ -1,7 +1,7 @@
 import { getSessionCookie } from 'better-auth/cookies';
 import { type NextRequest, NextResponse } from 'next/server';
 
-const publicRoutes = ['/', '/share/:path*', '/verify/:path*'];
+const publicRoutes = ['/', '/share/:path*', '/verify/:path*', '/verifications'];
 const homeUrl = '/';
 
 function matches(pattern: string, pathname: string) {
