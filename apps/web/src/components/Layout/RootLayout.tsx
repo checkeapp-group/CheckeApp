@@ -15,11 +15,11 @@ import { useI18n } from "@/hooks/use-i18n";
 import { authClient } from "@/lib/auth-client";
 import { AuthModalProvider, useAuthModal } from "@/providers/AuthModalProvider";
 import { useLoading } from "@/providers/LoadingProvider";
-import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 import FooterBanner from "@/public/footer_banner.png";
 import TermsAcceptanceModal from "../Auth/terms-acceptance-modal";
 import { Button } from "../ui/button";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
+import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 
 function AppHeader() {
   const { t } = useI18n();
