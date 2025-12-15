@@ -11,13 +11,13 @@ import UserMenu from "@/components/UserMenu";
 import { LanguageSelector } from "@/components/ui/lenguage-selector";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
-import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import { useLoading } from "@/providers/LoadingProvider";
-import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 import FooterBanner from "@/public/footer_banner.png";
 import { Button } from "../ui/button";
+import { usePageMetadata } from "@/hooks/use-page-metadata";
+import FactCheckerLogo from "@/public/FactCheckerLogo.webp";
 
 function AppHeader() {
   const { t } = useI18n();
@@ -66,18 +66,18 @@ function AppHeader() {
             >
               {t("nav.verify")}
             </Link>
+            <Link
+              className={`rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
+                isLinkActive("/verifications")
+                  ? "bg-neutral-200/80 font-medium text-primary"
+                  : "text-neutral-600"
+              }`}
+              href="/verifications"
+            >
+              {t("verifications.title")}
+            </Link>
             {isAuthenticated && (
               <>
-                <Link
-                  className={`rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
-                    isLinkActive("/verifications")
-                      ? "bg-neutral-200/80 font-medium text-primary"
-                      : "text-neutral-600"
-                  }`}
-                  href="/verifications"
-                >
-                  {t("verifications.title")}
-                </Link>
                 <Link
                   className={`text-nowrap rounded-lg px-2 py-3 transition-all hover:bg-neutral-200/60 ${
                     isLinkActive("/user-verifications")
@@ -230,7 +230,11 @@ export default function RootLayout({
 }) {
   const { t } = useI18n();
   const { isLoading } = useLoading();
-  const { openAuthModal } = useAuthModal();
+  const [showTermsModal, setShowTermsModal] = React.useState(false);
+
+  // Update page metadata based on current locale
+  usePageMetadata(t("meta.home.title"), t("meta.home.description"));
+
   const searchParams = useSearchParams();
 
   useEffect(() => {
