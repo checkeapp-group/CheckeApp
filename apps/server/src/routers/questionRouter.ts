@@ -26,6 +26,7 @@ import {
 } from '../lib/questionsSchemas';
 
 export const questionsRouter = {
+    // Retrieves all critical questions for a verification with job status polling
   getVerificationQuestions: protectedProcedure
     .input(getQuestionsSchema)
     .handler(async ({ input, context }) => {
@@ -34,6 +35,7 @@ export const questionsRouter = {
       return getCriticalQuestions(verificationId);
     }),
 
+    // Updates a critical question text with ownership validation
   updateQuestion: protectedProcedure
     .input(updateQuestionSchema)
     .handler(async ({ input, context }) => {
@@ -43,6 +45,7 @@ export const questionsRouter = {
       return { success: true, message: 'Pregunta actualizada correctamente' };
     }),
 
+    // Deletes a critical question with ownership validation
   deleteQuestion: protectedProcedure
     .input(deleteQuestionSchema)
     .handler(async ({ input, context }) => {
@@ -52,6 +55,7 @@ export const questionsRouter = {
       return { success: true, message: 'Pregunta eliminada correctamente' };
     }),
 
+    // Adds a new critical question to a verification
   addQuestion: protectedProcedure.input(addQuestionSchema).handler(async ({ input, context }) => {
     const { verificationId, questionText } = input;
     await validateVerificationAccess(verificationId, context.session.user.id, 'edit');
@@ -59,6 +63,7 @@ export const questionsRouter = {
     return { success: true, message: 'Pregunta añadida correctamente', question: newQuestion };
   }),
 
+    // Reorders critical questions based on drag-and-drop operations
   reorderQuestions: protectedProcedure
     .input(reorderQuestionsSchema)
     .handler(async ({ input, context }) => {

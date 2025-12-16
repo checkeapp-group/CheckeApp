@@ -10,6 +10,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { orpc } from "@/utils/orpc";
 
+// Public shared verification result page accessible via share token
 export default function SharePage() {
   const { t } = useI18n();
   const { token: shareToken } = useParams();

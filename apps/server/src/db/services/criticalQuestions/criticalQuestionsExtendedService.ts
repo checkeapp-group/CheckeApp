@@ -78,6 +78,7 @@ export async function deleteQuestionWithValidation(
   await deleteCriticalQuestion(questionId);
 }
 
+// Creates new question with proper ordering index
 export async function createNewQuestion(data: QuestionCreateData): Promise<any> {
   const trimmedText = data.questionText.trim();
 

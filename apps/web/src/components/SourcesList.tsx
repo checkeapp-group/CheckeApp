@@ -40,6 +40,7 @@ type SourcesListProps = {
   isPollingForSources?: boolean;
 };
 
+// Manages source selection with filtering, sorting, search, and polling for API-fetched sources
 export default function SourcesList({
   verificationId,
   onComplete,

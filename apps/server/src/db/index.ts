@@ -18,4 +18,5 @@ const combinedSchema = {
   ...factCheckerSchema,
 };
 
+// Exports configured database client for use across the application
 export const db = drizzle(pool, { schema: combinedSchema, mode: 'default' });

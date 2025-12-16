@@ -19,7 +19,9 @@ const adminProcedure = protectedProcedure.use(async ({ context, next }) => {
   return next({ context });
 });
 
+// Router handling admin-only operations: user management and data exports
 export const adminRouter = {
+    // Retrieves all users with verification counts for admin dashboard
   getAllUsers: adminProcedure.input(z.void()).handler(async ({ context }) => {
     const currentUserId = context.session.user.id;
     return db.query.user.findMany({
@@ -36,6 +38,7 @@ export const adminRouter = {
     });
   }),
 
+    // Updates user verification or admin status
   updateUserStatus: adminProcedure
     .input(
       z.object({

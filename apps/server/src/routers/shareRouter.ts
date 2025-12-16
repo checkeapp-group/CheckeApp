@@ -6,6 +6,7 @@ import { db } from '../db';
 import { source, verification } from '../db/schema/schema';
 import { publicProcedure } from '../lib/orpc';
 
+// Router handling shareable link creation and public result access
 export const shareRouter = {
   // This is a PUBLIC procedure because anyone can create a share link
   createShareLink: publicProcedure

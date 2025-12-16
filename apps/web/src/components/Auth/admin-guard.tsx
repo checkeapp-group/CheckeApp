@@ -9,6 +9,7 @@ type AdminGuardProps = {
   children: React.ReactNode;
 };
 
+// Route guard component that restricts access to admin users only
 export default function AdminGuard({ children }: AdminGuardProps) {
   const { user, isLoading } = useAuth();
   const { navigate } = useAppRouter();

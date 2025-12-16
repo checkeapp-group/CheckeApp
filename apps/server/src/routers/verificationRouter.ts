@@ -31,7 +31,9 @@ const paginationSchema = z.object({
   search: z.string().optional(),
 });
 
+// Router handling verification lifecycle: creation, status checks, listing, and deletion
 export const verificationRouter = {
+    // Starts a new verification process by creating a record and generating critical questions via external API
   startVerification: protectedProcedure
     .input(
       z.object({
@@ -93,6 +95,7 @@ export const verificationRouter = {
       }
     }),
 
+    // Fetches paginated list of public verifications with search and sorting
   getPublicVerifications: publicProcedure.input(paginationSchema).handler(async ({ input }) => {
     try {
       const result = await getVerificationsList({
@@ -108,6 +111,7 @@ export const verificationRouter = {
     }
   }),
 
+    // Retrieves public verification result for sharing without authentication
   getPublicVerificationResult: publicProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
     .handler(async ({ input }) => {
@@ -236,6 +240,7 @@ export const verificationRouter = {
       }
     }),
 
+    // Fetches featured verifications for homepage display
   getVerificationsHome: publicProcedure
     .input(
       z.object({
@@ -293,6 +298,7 @@ export const verificationRouter = {
         };
       }
     }),
+    // Deletes a verification and all its related data with ownership validation
   deleteVerification: protectedProcedure
     .input(z.object({ verificationId: z.string().uuid() }))
     .handler(async ({ input, context }) => {

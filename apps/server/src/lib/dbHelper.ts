@@ -46,6 +46,7 @@ export function getDB(): DrizzleDB {
   return db;
 }
 
+// Database helper utilities for common queries
 export async function getConnection(): Promise<mysql12.PoolConnection> {
   if (!pool) {
     initDB();

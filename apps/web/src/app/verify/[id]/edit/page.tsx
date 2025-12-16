@@ -25,6 +25,7 @@ function ErrorState({errorMessage}: {errorMessage: string}) {
     );
 }
 
+// Verification editing page with multi-step workflow for questions and sources
 export default function VerificationEditPage() {
     const params = useParams();
     const verificationId = Array.isArray(params.id) ? params.id[0] : params.id;

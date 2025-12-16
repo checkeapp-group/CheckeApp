@@ -25,6 +25,7 @@ function VerificationsPageContent() {
   );
 }
 
+// Public verifications list page with search and filtering
 export default function VerificationsPage() {
   return <VerificationsPageContent />;
 }

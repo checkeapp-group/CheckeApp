@@ -7,6 +7,7 @@ import { sourcesRouter } from './sourcesRouter';
 import { userRouter } from './userRouter';
 import { verificationRouter } from './verificationRouter';
 
+// Main application router combining all feature routers with health check endpoint
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => 'OK'),
   ...questionsRouter,

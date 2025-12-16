@@ -22,6 +22,7 @@ type TextInputFormProps = {
   isLocked?: boolean;
 };
 
+// Form component for submitting text to be verified with authentication checks and character limits
 const TextInputForm = ({
   isAuthenticated: propIsAuthenticated,
   onSuccess,
@@ -44,6 +45,7 @@ const TextInputForm = ({
   const maxLength = 5000;
   const minLength = 10;
 
+    // Shows authentication modal when unauthenticated users try to interact with the form
   const handleUnauthenticatedAction = useCallback(() => {
     if (authLoading || isAuthenticated) {
       return;
@@ -51,6 +53,7 @@ const TextInputForm = ({
     setShowAuthModal(true);
   }, [authLoading, isAuthenticated]);
 
+    // Handles textarea input changes, blocking unauthenticated users and updating text state
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!isAuthenticated) {
       handleUnauthenticatedAction();
@@ -59,12 +62,14 @@ const TextInputForm = ({
     onTextChange(e.target.value);
   };
 
+    // Triggers authentication modal on any interaction from unauthenticated users
   const handleInteraction = () => {
     if (!isAuthenticated) {
       handleUnauthenticatedAction();
     }
   };
 
+    // Submits the text for verification, validating user permissions and text length before API call
   const handleSubmit = async () => {
     if (isLoading || !isAuthenticated || text.trim().length < minLength) {
       return;

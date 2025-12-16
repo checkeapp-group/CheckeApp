@@ -22,6 +22,7 @@ const I18nContext = createContext<{
 
 export const useI18nContext = () => useContext(I18nContext);
 
+// Component that updates HTML lang attribute when locale changes
 function HtmlLangUpdater() {
   const { locale } = useI18nContext();
 
@@ -32,6 +33,7 @@ function HtmlLangUpdater() {
   return null;
 }
 
+// Context provider managing internationalization with 4 supported languages (es, eu, ca, gl)
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useState<Locale>('es');
 
@@ -42,6 +44,7 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+    // Updates locale in state and persists to localStorage
   const handleSetLocale = (newLocale: Locale) => {
     localStorage.setItem('locale', newLocale);
     setLocale(newLocale);

@@ -18,6 +18,7 @@ type ModalProps = {
   hideCloseButton?: boolean;
 };
 
+// Reusable modal dialog component with backdrop and close functionality
 export function Modal({
   isOpen,
   onClose,

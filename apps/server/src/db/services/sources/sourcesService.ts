@@ -13,6 +13,7 @@ type ApiSourceData = {
   isSelected?: boolean;
 };
 
+// Batch saves sources fetched from external API
 export async function saveSourcesFromAPI(
   verificationId: string,
   sourcesData: ApiSourceData[]
@@ -58,6 +59,7 @@ export async function saveSourcesFromAPI(
   }
 }
 
+// Retrieves sources for verification with filtering and sorting
 export async function getSources(
   verificationId: string,
   filters?: { domain?: string; sortBy?: string },
@@ -97,6 +99,7 @@ export async function getSources(
   }
 }
 
+// Updates which sources are selected for final analysis
 export async function updateSourceSelection(sourceId: string, isSelected: boolean): Promise<void> {
   try {
     await db.update(source).set({ isSelected }).where(eq(source.id, sourceId));

@@ -74,6 +74,7 @@ export async function updateVerificationStatus(
     );
   }
 }
+// Retrieves verification by ID with optional columns selection
 export async function getVerificationById(verificationId: string) {
   try {
     const result = await db.query.verification.findFirst({

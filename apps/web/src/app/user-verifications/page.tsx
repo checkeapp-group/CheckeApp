@@ -26,6 +26,7 @@ function UserVerificationsPageContent() {
     );
 }
 
+// User's personal verification history page (authenticated)
 export default function UserVerificationsPage() {
     return (
         <AuthGuard>

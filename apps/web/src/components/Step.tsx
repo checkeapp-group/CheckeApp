@@ -17,6 +17,7 @@ type StepProps = {
   onSelect?: () => void;
 };
 
+// Collapsible step component for multi-step workflow with completion status and progress indicators
 export default function Step({
   title,
   stepNumber,

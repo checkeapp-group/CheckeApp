@@ -5,6 +5,7 @@ import SignInForm from "@/components/Auth/sign-in-form";
 import { useI18n } from "@/hooks/use-i18n";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
 
+// Login page component with authentication form
 export default function LoginPage() {
   const { t } = useI18n();
 

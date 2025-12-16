@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
 import { authClient } from "@/lib/auth-client";
 
+// User dropdown menu with profile, settings, and logout options
 export default function UserMenu() {
   const { t } = useI18n();
   const { user } = useAuth();

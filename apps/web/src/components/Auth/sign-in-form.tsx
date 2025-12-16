@@ -5,6 +5,7 @@ import { useGlobalLoader } from "@/hooks/use-global-loader";
 import { useI18n } from "@/hooks/use-i18n";
 import { authClient } from "@/lib/auth-client";
 
+// Google logo SVG icon component for OAuth button
 const GoogleIcon = () => (
   <svg
     className="mr-2 h-4 w-4"
@@ -34,6 +35,7 @@ type SignInFormProps = {
   onClose?: () => void;
 };
 
+// Authentication form with Google OAuth sign-in option
 export default function SignInForm({ onClose }: SignInFormProps) {
   const { isPending } = authClient.useSession();
   const { t } = useI18n();

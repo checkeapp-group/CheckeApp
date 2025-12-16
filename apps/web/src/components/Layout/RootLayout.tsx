@@ -223,6 +223,7 @@ function AppHeader() {
   );
 }
 
+// Main layout wrapper with header, navigation, and content area
 export default function RootLayout({
   children,
 }: {

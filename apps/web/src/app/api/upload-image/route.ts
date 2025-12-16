@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import { NextResponse } from 'next/server';
 import path from 'path';
 
+// API endpoint for uploading verification result images
 export async function POST(request: Request) {
   try {
     const UPLOAD_DIR = path.join(process.cwd(), 'public', 'verifications');

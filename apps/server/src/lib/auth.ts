@@ -4,6 +4,7 @@ import { eq, type SQLWrapper, sql } from 'drizzle-orm';
 import { db } from '../db';
 import * as schema from './../db/schema/auth';
 
+// Better Auth configuration with Google provider
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'mysql',

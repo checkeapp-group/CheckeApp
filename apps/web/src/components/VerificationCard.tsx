@@ -49,6 +49,7 @@ const getLabelText = (label: string | null, t: any) => {
   }
 };
 
+// Card displaying verification summary with metadata, status, and navigation link
 export default function VerificationCard({
   verification,
 }: VerificationCardProps) {

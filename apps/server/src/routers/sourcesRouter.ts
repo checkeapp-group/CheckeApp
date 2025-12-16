@@ -9,7 +9,9 @@ import { getSources, updateSourceSelection } from '../db/services/sources/source
 import { validateVerificationAccess } from '../db/services/verifications/verificationsPermissionsService';
 import { protectedProcedure, publicProcedure } from '../lib/orpc';
 
+// Router handling source operations: fetching, selection, preview, and final analysis generation
 export const sourcesRouter = {
+    // Fetches preview content from a URL for source evaluation
   getSourcePreview: protectedProcedure
     .input(
       z.object({
@@ -34,6 +36,7 @@ export const sourcesRouter = {
       }
     }),
 
+    // Retrieves all sources for a verification with filtering and sorting
   getSources: protectedProcedure
     .input(
       z.object({
@@ -48,6 +51,7 @@ export const sourcesRouter = {
       return getSources(verificationId, filters, searchQuery);
     }),
 
+    // Updates which sources are selected for final analysis
   updateSourceSelection: protectedProcedure
     .input(
       z.object({

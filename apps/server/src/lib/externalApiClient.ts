@@ -123,6 +123,7 @@ async function makeApiCall<T>(url: string, data: any): Promise<T> {
   }
 }
 
+// Calls external AI API to generate critical questions from input text
 export async function generateQuestions(data: {
   input: string;
   model: string;
@@ -133,6 +134,7 @@ export async function generateQuestions(data: {
   return makeApiCall<{ job_id: string }>(url, data);
 }
 
+// Calls external API to search for sources related to questions
 export async function searchSources(data: {
   questions: string[];
   input: string;

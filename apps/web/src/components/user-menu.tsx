@@ -13,6 +13,7 @@ import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
 
 
+// Alternative user menu component with account navigation
 export default function UserMenu() {
   const { t } = useI18n();
   const { data: session, isPending } = authClient.useSession();

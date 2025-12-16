@@ -11,9 +11,11 @@ type LoadingContextType = {
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 
+// Context provider managing global loading state with support for multiple concurrent loaders
 export const LoadingProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeLoaders, setActiveLoaders] = useState<Set<string>>(new Set());
 
+    // Registers a new loader by ID to show global loading indicator
   const addLoader = useCallback((id: string) => {
     setActiveLoaders((prev) => {
       const newSet = new Set(prev);
@@ -22,6 +24,7 @@ export const LoadingProvider = ({ children }: { children: React.ReactNode }) => 
     });
   }, []);
 
+    // Unregisters a loader by ID to hide loading indicator when all loaders complete
   const removeLoader = useCallback((id: string) => {
     setActiveLoaders((prev) => {
       const newSet = new Set(prev);
@@ -42,6 +45,7 @@ export const LoadingProvider = ({ children }: { children: React.ReactNode }) => 
   return <LoadingContext.Provider value={value}>{children}</LoadingContext.Provider>;
 };
 
+// Hook to access loading context for adding/removing loaders
 export const useLoading = () => {
   const context = useContext(LoadingContext);
   if (context === undefined) {

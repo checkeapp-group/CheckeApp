@@ -10,6 +10,7 @@ import RootLayout from "./Layout/RootLayout";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 
+// Root providers wrapper combining theme, query client, loading, auth modal, and layout providers
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider

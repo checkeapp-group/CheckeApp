@@ -12,6 +12,7 @@ type FinalVerificationLoaderProps = {
   onComplete: () => void;
 };
 
+// Loading state component shown during final result generation
 export default function FinalVerificationLoader({
   question,
   isProcessing,

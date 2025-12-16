@@ -12,6 +12,7 @@ const AuthModalContext = createContext<AuthModalContextType | undefined>(
   undefined
 );
 
+// Context provider managing auth modal visibility state globally
 export const AuthModalProvider = ({
   children,
 }: {
@@ -19,6 +20,7 @@ export const AuthModalProvider = ({
 }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+    // Opens the authentication modal dialog
   const openAuthModal = () => setShowAuthModal(true);
   const closeAuthModal = () => setShowAuthModal(false);
 
@@ -30,6 +32,7 @@ export const AuthModalProvider = ({
   );
 };
 
+// Hook to access auth modal controls from any component
 export const useAuthModal = () => {
   const context = useContext(AuthModalContext);
   if (context === undefined) {
