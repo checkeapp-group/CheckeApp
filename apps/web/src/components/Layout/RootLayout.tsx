@@ -240,9 +240,9 @@ export default function RootLayout({
 
   useEffect(() => {
     if (searchParams.get("login") === "true") {
-      openAuthModal();
+      useAuthModal();
     }
-  }, [searchParams, openAuthModal]);
+  }, [searchParams, useAuthModal]);
 
   // Update page metadata based on current locale
   usePageMetadata(t("meta.home.title"), t("meta.home.description"));
