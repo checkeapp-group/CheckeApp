@@ -14,6 +14,7 @@ function PreviousVerifications() {
     return <VerificationsHome />;
 }
 
+// Homepage with text input form for starting new verifications
 export default function HomePage() {
     const {t} = useI18n();
     const [text, setText] = useState("");

@@ -50,10 +50,6 @@
   "common.selectOption": "Selecciona una opció",
 
   "nav.about": "Quant a",
-  "nav.legalAdvice": "Avís Legal",
-  "nav.termsOfService": "Condicions d'Ús",
-  "nav.privacyPolicy": "Política de Privacitat",
-  "nav.cookiesPolicy": "Política de Cookies",
   "nav.help": "Ajuda",
   "nav.verify": "Inici",
 
@@ -283,7 +279,6 @@
   "sources.readMoreAction": "Llegir més →",
 
   "auth.continueWithGoogle": "Continua amb Google",
-  "auth.termsAcceptance": "En continuar, acceptes els nostres Termes del Servei.",
   "auth.orSignUpWith": "O registra’t amb",
   "auth.googleProvider": "Google",
 
@@ -384,11 +379,7 @@
   "legal.links.title": "6. Enllaços Externs",
   "legal.links.text": "La Web pot contenir enllaços a altres llocs web gestionats per tercers. El Titular no assumeix cap mena de responsabilitat pel contingut, la informació o els serveis que poguessin aparèixer en aquests llocs, i aquests enllaços s'ofereixen únicament amb fins informatius, sense implicar necessàriament l'aprovació o recomanació per part del Titular.",
   "legal.dataProtection.title": "7. Protecció de Dades Personals",
-  "legal.dataProtection.text": "En compliment de la normativa vigent en matèria de protecció de dades (Reglament (UE) 2016/679, conegut com a RGPD, i la normativa nacional aplicable), el Titular es compromet a tractar les dades personals que es recaptin a la Web complint amb totes les mesures de seguretat i les obligacions legals. Per a més informació sobre el tractament de les teves dades personals, pots consultar la nostra",
-  "legal.dataProtection.privacyLink": "Política de Privacitat",
-  "legal.cookies.title": "8. Cookies",
-  "legal.cookies.text": "Aquesta Web pot utilitzar cookies pròpies i de tercers amb la finalitat d'optimitzar l'experiència de l'Usuari. Per a més informació, consulta la nostra",
-  "legal.cookies.link": "Política de Cookies",
+  "legal.dataProtection.text": "En compliment de la normativa vigent en matèria de protecció de dades (Reglament (UE) 2016/679, conegut com a RGPD, i la normativa nacional aplicable), el Titular es compromet a tractar les dades personals que es recaptin a la Web complint con todas les mesures de seguretat i les obligacions legals. Per a més informació sobre el tractament de les teves dades personals, pots consultar la nostra",
   "legal.jurisdiction.title": "9. Legislació i Jurisdicció Aplicable",
   "legal.jurisdiction.text": "El present Avís Legal es regeix per la legislació espanyola. Per a qualsevol controvèrsia que pogués derivar-se de l'accés o ús de la Web, les parts se sotmeten als Jutjats i Tribunals del domicili del Titular, llevat que la llei estableixi un altre fur imperatiu.",
   "legal.contact.title": "10. Contacte",

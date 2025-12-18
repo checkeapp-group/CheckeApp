@@ -50,10 +50,6 @@
   "common.selectOption": "Selecciona unha opción",
 
   "nav.about": "Acerca de",
-  "nav.legalAdvice": "Aviso Legal",
-  "nav.termsOfService": "Condicións de Uso",
-  "nav.privacyPolicy": "Política de Privacidade",
-  "nav.cookiesPolicy": "Política de Cookies",
   "nav.help": "Axuda",
   "nav.verify": "Inicio",
 
@@ -276,7 +272,6 @@
   "sources.readMoreAction": "Ler máis →",
 
   "auth.continueWithGoogle": "Continuar con Google",
-  "auth.termsAcceptance": "Ao continuar, aceptas os nosos Termos de Servizo.",
   "auth.orSignUpWith": "Ou rexístrate con",
   "auth.googleProvider": "Google",
 
@@ -378,10 +373,6 @@
   "legal.links.text": "A Web pode conter ligazóns a outros sitios web xestionados por terceiros. O Titular non asume ningún tipo de responsabilidade polo contido, a información ou os servizos que puidesen aparecer en ditos sitios, e ditas ligazóns ofrécense unicamente con fins informativos, sen implicar necesariamente a aprobación ou recomendación por parte do Titular.",
   "legal.dataProtection.title": "7. Protección de Datos Persoais",
   "legal.dataProtection.text": "En cumprimento da normativa vixente en materia de protección de datos (Regulamento (UE) 2016/679, coñecido como RXPD, e a normativa nacional aplicable), o Titular comprométese a tratar os datos persoais que se recaden na Web cumprindo con todas as medidas de seguridade e as obrigas legais. Para máis información sobre o tratamento dos teus datos persoais, podes consultar a nosa",
-  "legal.dataProtection.privacyLink": "Política de Privacidade",
-  "legal.cookies.title": "8. Cookies",
-  "legal.cookies.text": "Esta Web pode utilizar cookies propias e de terceiros co fin de optimizar a experiencia do Usuario. Para máis información, consulta a nosa",
-  "legal.cookies.link": "Política de Cookies",
   "legal.jurisdiction.title": "9. Lexislación e Xurisdición Aplicable",
   "legal.jurisdiction.text": "O presente Aviso Legal ríxese pola lexislación española. Para calquera controversia que puidese derivarse do acceso ou uso da Web, as partes sométense aos Xulgados e Tribunais do domicilio do Titular, salvo que a lei estableza outro foro imperativo.",
   "legal.contact.title": "10. Contacto",

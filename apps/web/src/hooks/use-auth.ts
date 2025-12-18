@@ -44,6 +44,7 @@ async function fetchUserStatus(): Promise<{
   return response.json();
 }
 
+// Hook providing authentication state, user data, and verification status with session management
 export function useAuth() {
   const router = useRouter();
   const { data: session, isPending: isSessionLoading } = authClient.useSession();

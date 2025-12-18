@@ -64,6 +64,15 @@ erDiagram
         timestamp updated_at "🔄 Last Update"
     }
 
+    AUTH_VERIFICATION {
+        varchar_36 id PK "🔑 Primary Key"
+        text identifier "🔑 Verification Identifier (e.g., email)"
+        text value "🔐 Verification Value (e.g., code, token)"
+        timestamp expires_at "⏰ Expiry Time"
+        timestamp created_at "📅 Creation Date"
+        timestamp updated_at "🔄 Last Update"
+    }
+
     %% Fact-Checking Domain
     VERIFICATIONS {
         varchar(36) id PK
@@ -125,6 +134,8 @@ erDiagram
     USERS ||--o{ SESSIONS : "has sessions"
     USERS ||--o{ ACCOUNTS : "has oauth accounts"
     USERS ||--o{ VERIFICATIONS : "creates verifications"
+
+    AUTH_VERIFICATION }o--o{ ACCOUNTS : "is used by accounts"
 
     VERIFICATIONS ||--o{ CRITICAL_QUESTIONS : "generates questions"
     VERIFICATIONS ||--o{ SOURCES : "finds sources"
@@ -225,7 +236,8 @@ erDiagram
   - Structured JSON data for labels, citations, answers
   - One result per verification (unique constraint)
   - Rich metadata storage
-  - Metadata with aditional information from the API
+  - `metadata` stores all additional, flexible information from the API response that is not explicitly typed (e.g., model raw output, generation configuration).
+  - `image_url` is an explicit column containing the URL of the generated image, which is _not_ considered part of the `metadata` JSON blob.
 - **Constraints**:
   - JSON validation for all JSON fields
   - Minimum final text length (10 characters)
@@ -255,6 +267,15 @@ erDiagram
     VERIFICATION ||--o{ SOURCE : "busca"
     VERIFICATION ||--o| FINAL_RESULT : "produce"
     VERIFICATION ||--o{ PROCESS_LOG : "registra"
+
+    AUTH_VERIFICATION {
+        varchar id PK "36 chars, UUID"
+        text identifier "E.g. user email or ID"
+        text value "Verification token/code"
+        timestamp expires_at
+        timestamp created_at
+        timestamp updated_at
+    }
 
     USER {
         varchar id PK "36 chars, UUID"
@@ -332,6 +353,7 @@ graph TD
     U[👤 user] --> S[🎫 session]
     U --> A[🔐 account]
     U --> V[📋 verifications]
+    A --> AV[🔒 auth_verification]
 
     V --> CQ[❓ critical_questions]
     V --> SO[📰 sources]
@@ -341,6 +363,8 @@ graph TD
     U -.->|CASCADE DELETE| S
     U -.->|CASCADE DELETE| A
     U -.->|CASCADE DELETE| V
+    A -.->|CASCADE DELETE| AV
+
     V -.->|CASCADE DELETE| CQ
     V -.->|CASCADE DELETE| SO
     V -.->|CASCADE DELETE| FR

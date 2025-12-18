@@ -52,15 +52,19 @@ Our platform simplifies the complex task of fact-checking into an intuitive work
 
 ## For Developers
 
-This project is built with a modern, type-safe technology stack. For technical details, please refer to the documentation below.
+This project is built with a modern, type-safe technology stack designed for scalability and maintainability.
 
 ### Technical Documentation 📚
 
-- [Technology Stack](./docs/STACK.md)
-- [Database Architecture](./docs/DATABASE.md)
-- [Frontend (Web)](./docs/WEB.md)
-- [Backend (Server)](./docs/SERVER.md)
-- [Verification](./docs/VERIFICATION.md)
+If you want to install, configure, or contribute to this project, please refer to our comprehensive technical documentation:
+
+- **[Getting Started Guide](./docs/GETTING_STARTED.md)** - Installation, configuration, and setup
+- **[API Reference](./docs/API.md)** - Complete API documentation (Internal & External)
+- **[Technology Stack](./docs/STACK.md)** - Technologies, frameworks, and versions
+- **[Database Architecture](./docs/DATABASE.md)** - Database schema and design patterns
+- **[Backend (Server)](./docs/SERVER.md)** - Backend architecture and services
+- **[Frontend (Web)](./docs/WEB.md)** - Frontend architecture and components
+- **[Verification Process](./docs/VERIFICATION.md)** - Fact-checking workflow details
 
 ---
 

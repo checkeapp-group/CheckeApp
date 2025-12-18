@@ -10,6 +10,7 @@ import { ExplanationModal } from "./ExplanationModal";
 import { Button } from "./ui/button";
 import VerificationCard from "./VerificationCard";
 
+// Displays featured verifications on the homepage
 export default function VerificationsHome() {
   const { t } = useI18n();
   const limit = 6;

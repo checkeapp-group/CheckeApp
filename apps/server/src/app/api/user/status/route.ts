@@ -4,6 +4,7 @@ import { db } from '../../../../db/index';
 import { user } from '../../../../db/schema/auth';
 import { auth } from '../../../../lib/auth';
 
+// API endpoint to get user verification and admin status
 export async function GET(request: NextRequest) {
   try {
     // Get the session from request headers

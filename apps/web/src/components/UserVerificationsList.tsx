@@ -13,6 +13,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { orpc } from "@/utils/orpc";
 import UserVerificationCard from "./UserVerificationCard";
 
+// Displays user's personal verification history with pagination
 export default function UserVerificationsList() {
   const { t } = useI18n();
   const router = useRouter();

@@ -13,6 +13,7 @@ import { useI18n } from '@/hooks/use-i18n';
 import { orpc } from '@/utils/orpc';
 import VerificationCard from './VerificationCard';
 
+// Public verifications list with search, sorting, and pagination functionality
 export default function VerificationsList() {
   const { t } = useI18n();
   const router = useRouter();
@@ -49,6 +50,7 @@ export default function VerificationsList() {
 
   useGlobalLoader(isLoading, 'verifications-list');
 
+    // Updates URL params to change sort order and triggers data refetch
   const handleSortChange = (value: string) => {
     const [newSortBy, newSortOrder] = value.split('-');
     const params = new URLSearchParams(searchParams.toString());
@@ -57,12 +59,14 @@ export default function VerificationsList() {
     router.push(`?${params.toString()}`);
   };
 
+    // Updates URL params to navigate to different page in pagination
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', newPage.toString());
     router.push(`?${params.toString()}`);
   };
 
+    // Updates search term with debouncing and resets pagination to first page
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     const params = new URLSearchParams(searchParams.toString());

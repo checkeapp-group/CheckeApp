@@ -12,6 +12,7 @@ import { orpc } from "@/utils/orpc";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
+// Renders a section header with icon and title for result display sections
 const SectionHeader = ({
   icon: Icon,
   title,
@@ -25,6 +26,7 @@ const SectionHeader = ({
   </div>
 );
 
+// Processes markdown text and converts citation numbers into clickable links with source information
 const ContentWithCitations = ({
   text,
   citations,
@@ -124,6 +126,7 @@ const ContentWithCitations = ({
   );
 };
 
+// Displays website favicon with fallback handling for failed image loads
 const FaviconImage = ({
   src,
   domain,
@@ -160,6 +163,7 @@ const FaviconImage = ({
   );
 };
 
+// Main result display component showing final analysis, image, sources, and detailed answers with sharing functionality
 export default function VerificationResult({ data }) {
   const { t } = useI18n();
   const createShareLinkMutation = useMutation({

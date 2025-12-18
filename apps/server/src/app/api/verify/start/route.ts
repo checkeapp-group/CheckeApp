@@ -16,6 +16,7 @@ const startVerificationSchema = z.object({
   language: z.enum(['es', 'eu', 'ca', 'gl']).default('es'),
 });
 
+// API endpoint to start a new verification process
 export async function POST(request: NextRequest) {
   let verificationId: string | null = null;
 

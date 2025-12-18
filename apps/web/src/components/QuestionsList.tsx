@@ -105,6 +105,7 @@ function SortableQuestionItem({
   );
 }
 
+// Manages list of critical questions with CRUD operations, drag-and-drop reordering, and polling for generated questions
 export default function QuestionsList({
   verificationId,
   onComplete,

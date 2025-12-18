@@ -5,6 +5,7 @@ import { db } from '../db';
 import { user } from '../db/schema/auth';
 import { protectedProcedure } from '../lib/orpc';
 
+// Router handling user operations: current user info, verification status, and terms acceptance
 export const userRouter = {
   // Procedure to get the current authenticated user's details
   getCurrentUser: protectedProcedure
@@ -46,6 +47,7 @@ export const userRouter = {
     return { isVerified: currentUser.isVerified };
   }),
 
+    // Records user acceptance of terms and conditions
   acceptTerms: protectedProcedure.input(z.void()).handler(async ({ context }) => {
     const userId = context.session.user.id;
     try {

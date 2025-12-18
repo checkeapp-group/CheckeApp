@@ -44,4 +44,5 @@ export const link = new RPCLink({
 
 export const client: AppRouterClient = createORPCClient(link);
 
+// oRPC client instance with TanStack Query integration for type-safe API calls
 export const orpc = createTanstackQueryUtils(client);

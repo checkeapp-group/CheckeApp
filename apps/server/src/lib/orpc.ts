@@ -3,6 +3,7 @@ import type { Context } from './context';
 
 export const o = os.$context<Context>();
 
+// oRPC procedure builder for public endpoints without authentication
 export const publicProcedure = o;
 
 const requireAuth = o.middleware(async ({ context, next }) => {
@@ -16,4 +17,5 @@ const requireAuth = o.middleware(async ({ context, next }) => {
   });
 });
 
+// oRPC procedure builder for authenticated endpoints with session validation
 export const protectedProcedure = publicProcedure.use(requireAuth);

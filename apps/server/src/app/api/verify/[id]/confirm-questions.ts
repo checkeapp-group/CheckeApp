@@ -8,6 +8,7 @@ import { validateVerificationAccess } from '../../../../db/services/verification
 import { auth } from '../../../../lib/auth';
 import { callExternalApiWithLogging, searchSources } from '../../../../lib/externalApiClient';
 
+// API endpoint to confirm questions and proceed with verification
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Authentication check

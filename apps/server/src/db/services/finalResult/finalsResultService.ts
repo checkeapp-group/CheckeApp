@@ -32,6 +32,7 @@ type ImageJobResult = {
   cost: number;
 };
 
+// Orchestrates final analysis generation: calls API, saves result, uploads image
 export async function generateAndSaveFinalAnalysis(verificationId: string): Promise<void> {
   try {
     await updateVerificationStatus(verificationId, 'generating_summary');
@@ -191,6 +192,7 @@ async function _saveImageResult(
   }
 }
 
+// Exports all final results to CSV format for admin download
 export async function exportFinalResultsToCSV(): Promise<any[]> {
   try {
     const results = await db.query.finalResult.findMany({

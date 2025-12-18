@@ -9,6 +9,7 @@ type AuthModalProps = {
   onClose: () => void;
 };
 
+// Modal dialog wrapper for authentication form with transition animations
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   return (
     <Transition as={Fragment} show={isOpen}>

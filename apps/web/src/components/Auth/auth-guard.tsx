@@ -10,6 +10,7 @@ type AuthGuardProps = {
   openAuthModal?: () => void;
 };
 
+// Route guard component that redirects unauthenticated users to homepage
 export default function AuthGuard({ children }: AuthGuardProps) {
   const { data: session, isPending } = authClient.useSession();
   const { navigate } = useAppRouter();

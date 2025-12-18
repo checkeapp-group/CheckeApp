@@ -1,6 +1,7 @@
 import { NewtonsCradle } from 'ldrs/react';
 import 'ldrs/react/NewtonsCradle.css';
 
+// Global loading overlay that appears when any loader is active
 export default function GlobalLoader() {
   return (
     <div className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center">

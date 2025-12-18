@@ -77,6 +77,7 @@ const getLabelStyles = (label: string | null) => {
   }
 };
 
+// Card component for displaying user verification summary in lists
 export default function UserVerificationCard({
   verification,
 }: UserVerificationCardProps) {

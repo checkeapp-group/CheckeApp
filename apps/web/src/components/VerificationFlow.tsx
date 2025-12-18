@@ -30,6 +30,7 @@ type Verification = {
   originalText: string;
 };
 
+// Determines which step should be active and which steps are completed based on verification status
 const determineInitialState = (status: VerificationStatus) => {
   const state = { activeStep: "step-1", completedSteps: [] as string[] };
   switch (status) {
@@ -57,6 +58,7 @@ type VerificationFlowProps = {
   verification: Verification;
 };
 
+// Main verification workflow orchestrator managing multi-step verification process with polling and state management
 export default function VerificationFlow({
   verification,
 }: VerificationFlowProps) {
@@ -228,15 +230,18 @@ export default function VerificationFlow({
     }
   }, [jobResult, saveSourcesMutation]);
 
+    // Deletes the current verification and redirects to user verifications page
   const handleDeleteVerification = () => {
     deleteVerificationMutation.mutate();
     setIsDeleteModalOpen(false);
   };
 
+    // Confirms questions and triggers source search API call with polling
   const handleQuestionsConfirmed = () => {
     searchSourcesMutation.mutate();
   };
 
+    // Confirms selected sources and proceeds to final analysis generation step
   const handleSourcesConfirmed = () => {
     continueToAnalysisMutation.mutate();
   };
